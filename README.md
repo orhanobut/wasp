@@ -5,8 +5,12 @@ maximum readability and easiness. The idea is the same with retrofit (Thanks).
 
 ###Add dependency
 ```groovy
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
+}
 dependencies {
     compile 'com.github.nr4bt:wasp:1.0.0-SNAPSHOT@aar'
+}
 ```
 
 ###Usage
