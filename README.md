@@ -40,7 +40,7 @@ public interface GitHubService {
     @POST("/repos/{user}/{repo}")
     void addName(@Path("user") String user,
                  @Path("repo") String repo,
-                 @Body String body,
+                 @Body Repo repo,
                  RepoCallBack callBack
     );
 }
