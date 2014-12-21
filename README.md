@@ -75,3 +75,7 @@ Do everything by using service object for example. Request will be handled in th
 ```java
 service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 ```
+
+####TODO
+- Add static header annotation
+- Add request intercepter
