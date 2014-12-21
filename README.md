@@ -14,7 +14,13 @@ dependencies {
 ```
 
 ###Usage
-Create a service interface. This will be used to make the network requests. You can use appropriate annotations to define the request. GET,DELETE,POST,PUT can be used for http method. @Path is used to replace. @Query is used to add query params, @Header is used to add headers.
+Create a service interface. This will be used to make the network requests.You can use appropriate annotations to define the request. 
+
+- @GET,@DELETE,@POST,@PUT can be used for http method. 
+- @Path is used for replacement for specific words in the url. 
+- @Query is used to add query params
+- @Header is used to add headers.
+
 ```java
 public interface MyService {
 
