@@ -22,7 +22,7 @@ Create a service interface. This will be used to make the network requests.You c
 - @Header is used to add headers.
 
 ```java
-public interface MyService {
+public interface GitHubService {
 
     @GET("/repos/{user}/{repo}")
     void fetchRepo(@Path("user") String user,
