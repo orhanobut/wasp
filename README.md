@@ -79,3 +79,5 @@ service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 ####TODO
 - Add static header annotation
 - Add request intercepter
+- Improve log
+- Improve error handling and error response
