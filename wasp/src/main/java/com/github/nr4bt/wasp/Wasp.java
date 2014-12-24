@@ -54,6 +54,9 @@ public class Wasp {
         }
 
         public Builder setLogLevel(LogLevel logLevel) {
+            if (logLevel == null) {
+                throw new NullPointerException("Log level should not be null");
+            }
             this.logLevel = logLevel;
             return this;
         }
@@ -77,6 +80,9 @@ public class Wasp {
             }
             if (logLevel == null) {
                 logLevel = LogLevel.ALL;
+            }
+            if (endPointUrl == null) {
+                throw new NullPointerException("End point may not be null");
             }
         }
     }
