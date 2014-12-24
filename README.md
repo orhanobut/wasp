@@ -30,6 +30,9 @@ public interface GitHubService {
                    RepoCallBack callBack
     );
 
+    /**
+    * query params will be added to url, ie : example.com/users/nr4bt/repos?page=1&sort=asc
+    **/
     @GET("/users/{user}/repos")
     void fetchRepoBySearch(@Path("user") String user,
                            @Query("page") int pageNumber,
