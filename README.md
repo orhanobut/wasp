@@ -5,14 +5,24 @@ maximum readability and easiness. The idea is the same with retrofit (Thanks).
 
 ###Add dependency
 ```groovy
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
+}
 dependencies {
     compile 'com.github.nr4bt:wasp:1.0.0-SNAPSHOT@aar'
+}
 ```
 
 ###Usage
-Create a service interface. This will be used to make the network requests. You can use appropriate annotations to define the request. GET,DELETE,POST,PUT can be used for http method. @Path is used to replace. @Query is used to add query params, @Header is used to add headers.
+Create a service interface. This will be used to make the network requests.You can use appropriate annotations to define the request. 
+
+- @GET,@DELETE,@POST,@PUT can be used for http method. 
+- @Path is used for replacement for specific words in the url. 
+- @Query is used to add query params
+- @Header is used to add headers.
+
 ```java
-public interface MyService {
+public interface GitHubService {
 
     @GET("/repos/{user}/{repo}")
     void fetchRepo(@Path("user") String user,
@@ -30,7 +40,7 @@ public interface MyService {
     @POST("/repos/{user}/{repo}")
     void addName(@Path("user") String user,
                  @Path("repo") String repo,
-                 @Body String body,
+                 @Body Repo repo,
                  RepoCallBack callBack
     );
 }
@@ -65,3 +75,9 @@ Do everything by using service object for example. Request will be handled in th
 ```java
 service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 ```
+
+####TODO
+- Add static header annotation
+- Add request intercepter
+- Improve log
+- Improve error handling and error response
