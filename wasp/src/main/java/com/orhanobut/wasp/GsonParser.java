@@ -1,11 +1,8 @@
-package com.github.nr4bt.wasp;
+package com.orhanobut.wasp;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 

@@ -3,10 +3,10 @@ package com.orhanobut.waspsample;
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 
-import com.github.nr4bt.wasp.CallBack;
-import com.github.nr4bt.wasp.Wasp;
-import com.github.nr4bt.wasp.http.GET;
-import com.github.nr4bt.wasp.http.Path;
+import com.orhanobut.wasp.CallBack;
+import com.orhanobut.wasp.Wasp;
+import com.orhanobut.wasp.http.GET;
+import com.orhanobut.wasp.http.Path;
 
 import junit.framework.Assert;
 

@@ -1,4 +1,4 @@
-package com.github.nr4bt.wasp;
+package com.orhanobut.wasp;
 
 import java.lang.reflect.Type;
 

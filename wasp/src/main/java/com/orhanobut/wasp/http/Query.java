@@ -1,21 +1,20 @@
-package com.github.nr4bt.wasp.http;
+package com.orhanobut.wasp.http;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Make a POST request to a REST path relative to base URL
+ * Make a GET request to a REST path relative to base URL
  *
  * @author Orhan Obut
  */
 @Documented
-@Target(METHOD)
+@Target(PARAMETER)
 @Retention(RUNTIME)
-@RestMethod(value = "POST", hasBody = true)
-public @interface POST {
+public @interface Query {
     String value();
 }

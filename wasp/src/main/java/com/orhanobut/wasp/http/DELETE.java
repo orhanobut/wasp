@@ -1,4 +1,4 @@
-package com.github.nr4bt.wasp.http;
+package com.orhanobut.wasp.http;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -8,14 +8,14 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Make a PUT request to a REST path relative to base URL
+ * Make a DELETE request to a REST path relative to base URL
  *
  * @author Orhan Obut
  */
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-@RestMethod(value = "PUT", hasBody = true)
-public @interface PUT {
+@RestMethod(value = "DELETE")
+public @interface DELETE {
     String value();
 }
