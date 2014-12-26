@@ -30,6 +30,9 @@ public interface GitHubService {
                    RepoCallBack callBack
     );
 
+    /**
+    * query params will be added to url, ie : example.com/users/nr4bt/repos?page=1&sort=asc
+    **/
     @GET("/users/{user}/repos")
     void fetchRepoBySearch(@Path("user") String user,
                            @Query("page") int pageNumber,
@@ -39,7 +42,7 @@ public interface GitHubService {
 
     @POST("/repos/{user}/{repo}")
     void addName(@Path("user") String user,
-                 @Path("repo") String repo,
+                 @Header("auth") String authToken,
                  @Body Repo repo,
                  RepoCallBack callBack
     );
@@ -65,13 +68,14 @@ public class RepoCallBack implements CallBack<Repo> {
 Initialize the service. The best approach is the initialize this in the Application class and use it everywhere.
 ```java
 GitHubService service = new Wasp.Builder(this)    
-        .setEndpoint("https://api.github.com")
-        .setLogLevel(LogLevel.ALL)            
-        .build()                              
-        .create(MyService.class);             
+        .setEndpoint("https://api.github.com")   // Must be set
+        .setLogLevel(LogLevel.ALL)               // Optional, default ALL   
+        .setParser(new GsonParser())             // Optional, you can pass your gson object as parameter if needed
+        .build()                                 // Must be called
+        .create(MyService.class);                // Must be called in order to create object           
 ```
 
-Do everything by using service object for example. Request will be handled in the background and callback will be called.
+Make a network call by using service object. Request will be handled in the background and callback will be called.
 ```java
 service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 ```
@@ -81,3 +85,4 @@ service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 - Add request intercepter
 - Improve log
 - Improve error handling and error response
+- Improve the test coverage
