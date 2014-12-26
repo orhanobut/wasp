@@ -1,7 +1,6 @@
-package com.github.nr4bt.wasp;
+package com.orhanobut.wasp;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;

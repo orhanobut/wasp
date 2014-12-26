@@ -1,10 +1,10 @@
-package com.github.nr4bt.wasp;
+package com.orhanobut.wasp;
 
-import com.github.nr4bt.wasp.http.Body;
-import com.github.nr4bt.wasp.http.Header;
-import com.github.nr4bt.wasp.http.Path;
-import com.github.nr4bt.wasp.http.Query;
-import com.github.nr4bt.wasp.http.RestMethod;
+import com.orhanobut.wasp.http.Body;
+import com.orhanobut.wasp.http.Header;
+import com.orhanobut.wasp.http.Path;
+import com.orhanobut.wasp.http.Query;
+import com.orhanobut.wasp.http.RestMethod;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

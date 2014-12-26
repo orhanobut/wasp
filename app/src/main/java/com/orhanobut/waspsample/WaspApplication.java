@@ -2,8 +2,8 @@ package com.orhanobut.waspsample;
 
 import android.app.Application;
 
-import com.github.nr4bt.wasp.LogLevel;
-import com.github.nr4bt.wasp.Wasp;
+import com.orhanobut.wasp.LogLevel;
+import com.orhanobut.wasp.Wasp;
 
 /**
  * @author Orhan Obut

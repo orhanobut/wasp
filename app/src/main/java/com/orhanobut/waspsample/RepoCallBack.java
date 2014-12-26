@@ -2,10 +2,8 @@ package com.orhanobut.waspsample;
 
 import android.util.Log;
 
-import com.github.nr4bt.wasp.CallBack;
-import com.github.nr4bt.wasp.WaspError;
-
-import java.util.List;
+import com.orhanobut.wasp.CallBack;
+import com.orhanobut.wasp.WaspError;
 
 /**
  * @author Orhan Obut
