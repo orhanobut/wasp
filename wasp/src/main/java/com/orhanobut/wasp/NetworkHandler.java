@@ -88,7 +88,9 @@ final class NetworkHandler implements InvocationHandler {
         final CallBack<?> callBack = (CallBack<?>) lastArg;
         final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
-        WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint, parser).build();
+        WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint, parser)
+                .setRequestInterceptor(requestInterceptor)
+                .build();
         Logger.d(waspRequest.toString());
         networkStack.invokeRequest(waspRequest, new CallBack<String>() {
             @Override
