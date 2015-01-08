@@ -9,15 +9,10 @@ import com.android.volley.toolbox.HttpStack;
  */
 public class Wasp {
 
-    private final NetworkStack networkStack;
-    private final Parser parser;
-    private final String endPoint;
+    private final Builder builder;
 
     private Wasp(Builder builder) {
-        //currently only volley is supported
-        networkStack = VolleyNetworkStack.newInstance(builder.context, builder.httpStack);
-        parser = builder.parser;
-        endPoint = builder.endPointUrl;
+        this.builder = builder;
     }
 
     public <T> T create(Class<T> service) {
@@ -27,7 +22,8 @@ public class Wasp {
         if (!service.isInterface()) {
             throw new IllegalArgumentException("Only interface type is supported");
         }
-        return (T) NetworkHandler.newInstance(service.getClassLoader(), service, networkStack, parser, endPoint);
+        NetworkHandler handler = NetworkHandler.newInstance(service, builder);
+        return (T) handler.getProxyClass();
     }
 
     public static class Builder {
@@ -37,6 +33,8 @@ public class Wasp {
         private Context context;
         private Parser parser;
         private HttpStack httpStack;
+        private RequestInterceptor requestInterceptor;
+        private NetworkStack networkStack;
 
         public Builder(Context context) {
             if (context == null) {
@@ -80,6 +78,11 @@ public class Wasp {
             return this;
         }
 
+        public Builder setRequestInterceptor(RequestInterceptor interceptor) {
+            this.requestInterceptor = interceptor;
+            return this;
+        }
+
         public Wasp build() {
             init();
             return new Wasp(this);
@@ -98,6 +101,35 @@ public class Wasp {
             if (httpStack == null) {
                 httpStack = new OkHttpStack();
             }
+            networkStack = VolleyNetworkStack.newInstance(context, httpStack);
+        }
+
+        public String getEndPointUrl() {
+            return endPointUrl;
+        }
+
+        public LogLevel getLogLevel() {
+            return logLevel;
+        }
+
+        public Context getContext() {
+            return context;
+        }
+
+        public Parser getParser() {
+            return parser;
+        }
+
+        public HttpStack getHttpStack() {
+            return httpStack;
+        }
+
+        public RequestInterceptor getRequestInterceptor() {
+            return requestInterceptor;
+        }
+
+        public NetworkStack getNetworkStack() {
+            return networkStack;
         }
     }
 }
