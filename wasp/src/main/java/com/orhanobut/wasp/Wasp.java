@@ -2,6 +2,8 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
+import com.android.volley.toolbox.HttpStack;
+
 /**
  * @author Orhan Obut
  */
@@ -13,7 +15,7 @@ public class Wasp {
 
     private Wasp(Builder builder) {
         //currently only volley is supported
-        networkStack = VolleyNetworkStack.newInstance(builder.context);
+        networkStack = VolleyNetworkStack.newInstance(builder.context, builder.httpStack);
         parser = builder.parser;
         endPoint = builder.endPointUrl;
     }
@@ -34,6 +36,7 @@ public class Wasp {
         private LogLevel logLevel;
         private Context context;
         private Parser parser;
+        private HttpStack httpStack;
 
         public Builder(Context context) {
             if (context == null) {
@@ -69,6 +72,14 @@ public class Wasp {
             return this;
         }
 
+        public Builder setHttpStack(HttpStack httpStack) {
+            if (httpStack == null) {
+                throw new NullPointerException("HttpStack may not be null");
+            }
+            this.httpStack = httpStack;
+            return this;
+        }
+
         public Wasp build() {
             init();
             return new Wasp(this);
@@ -83,6 +94,9 @@ public class Wasp {
             }
             if (endPointUrl == null) {
                 throw new NullPointerException("End point may not be null");
+            }
+            if (httpStack == null) {
+                httpStack = new OkHttpStack();
             }
         }
     }

@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -19,12 +20,12 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private final RequestQueue requestQueue;
 
-    private VolleyNetworkStack(Context context) {
-        requestQueue = Volley.newRequestQueue(context);
+    private VolleyNetworkStack(Context context, HttpStack stack) {
+        requestQueue = Volley.newRequestQueue(context, stack);
     }
 
-    static VolleyNetworkStack newInstance(Context context) {
-        return new VolleyNetworkStack(context);
+    static VolleyNetworkStack newInstance(Context context, HttpStack stack) {
+        return new VolleyNetworkStack(context, stack);
     }
 
     private RequestQueue getRequestQueue() {
