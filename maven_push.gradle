@@ -11,10 +11,17 @@ if (isReleaseBuild()) {
             : "https://oss.sonatype.org/content/repositories/snapshots/"
 }
 
-def Properties versionProps = new Properties()
-versionProps.load(new FileInputStream('credential.properties'))
-def USERNAME = versionProps['USERNAME'];
-def PASSWORD = versionProps['PASSWORD'];
+def USERNAME = "";
+def PASSWORD = "";
+
+if (file('credential.properties').exists()) {
+
+    def Properties versionProps = new Properties()
+    versionProps.load(new FileInputStream('credential.properties'))
+    USERNAME = versionProps['USERNAME'];
+    PASSWORD = versionProps['PASSWORD'];
+
+}
 
 afterEvaluate { project ->
     uploadArchives {
