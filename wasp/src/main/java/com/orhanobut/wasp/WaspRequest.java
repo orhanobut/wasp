@@ -73,6 +73,7 @@ final class WaspRequest {
         private String relativeUrl;
         private StringBuilder queryParamBuilder;
         private Map<String, String> headers;
+        private RequestInterceptor requestInterceptor;
 
         Builder(MethodInfo methodInfo, Object[] args, String baseUrl, Parser parser) {
             this.methodInfo = methodInfo;
@@ -109,7 +110,7 @@ final class WaspRequest {
                     continue;
                 }
                 if (annotationType == Header.class) {
-                    String key = ((Query) annotation).value();
+                    String key = ((Header) annotation).value();
                     addHeaderParam(key, (String) value);
                     continue;
                 }
@@ -119,8 +120,46 @@ final class WaspRequest {
             }
         }
 
+        Builder setRequestInterceptor(RequestInterceptor interceptor) {
+            this.requestInterceptor = interceptor;
+            return this;
+        }
+
+        //TODO need test here
+
+        /**
+         * Merges static and param headers and create a request.
+         *
+         * @return WaspRequest
+         */
         WaspRequest build() {
+            postInit();
             return new WaspRequest(getUrl(), methodInfo.getHttpMethod(), headers, body);
+        }
+
+        /**
+         * It is called right before building a request, this method will add
+         * intercepted headers, params and static headers
+         */
+        private void postInit() {
+            //Add static headers
+            for (Map.Entry<String, String> entry : methodInfo.getHeaders().entrySet()) {
+                addHeaderParam(entry.getKey(), entry.getValue());
+            }
+
+            if (requestInterceptor == null) {
+                return;
+            }
+
+            //Add intercepted query params
+            for (Map.Entry<String, String> entry : requestInterceptor.getQueryParams().entrySet()) {
+                addQueryParam(entry.getKey(), entry.getValue());
+            }
+
+            //Add intercepted headers
+            for (Map.Entry<String, String> entry : requestInterceptor.getHeaders().entrySet()) {
+                addHeaderParam(entry.getKey(), entry.getValue());
+            }
         }
 
         private String getBody(Object body) {

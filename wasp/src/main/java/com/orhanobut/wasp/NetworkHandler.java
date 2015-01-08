@@ -1,7 +1,5 @@
 package com.orhanobut.wasp;
 
-import android.util.Log;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -23,36 +21,29 @@ final class NetworkHandler implements InvocationHandler {
     private final NetworkStack networkStack;
     private final Parser parser;
     private final String endPoint;
+    private final ClassLoader classLoader;
+    private final RequestInterceptor requestInterceptor;
 
-    private ClassLoader loader;
-
-    private NetworkHandler(ClassLoader loader, Class<?> service, NetworkStack networkStack, Parser parser,
-                           String endPoint) {
-        this.loader = loader;
+    private NetworkHandler(Class<?> service, Wasp.Builder builder) {
         this.service = service;
-        this.networkStack = networkStack;
-        this.parser = parser;
-        this.endPoint = endPoint;
+        this.networkStack = builder.getNetworkStack();
+        this.parser = builder.getParser();
+        this.endPoint = builder.getEndPointUrl();
+        this.requestInterceptor = builder.getRequestInterceptor();
+
+        ClassLoader loader = service.getClassLoader();
+        this.classLoader = loader != null ? loader : ClassLoader.getSystemClassLoader();
     }
 
-    static Object newInstance(ClassLoader classLoader, Class<?> service, NetworkStack networkStack, Parser parser,
-                              String endPoint) {
-        NetworkHandler networkHandler = new NetworkHandler(classLoader, service, networkStack, parser, endPoint);
-        return networkHandler.getProxyClass();
+    public static NetworkHandler newInstance(Class<?> service, Wasp.Builder builder) {
+        return new NetworkHandler(service, builder);
     }
 
-    private Object getProxyClass() {
-        if (loader == null) {
-            loader = ClassLoader.getSystemClassLoader();
-        }
-        if (service == null) {
-            throw new NullPointerException("Service may not be null");
-        }
-
+    Object getProxyClass() {
         List<Method> methods = getMethods(service);
         fillMethods(methods);
 
-        return Proxy.newProxyInstance(loader, new Class[]{service}, this);
+        return Proxy.newProxyInstance(classLoader, new Class[]{service}, this);
     }
 
     private static List<Method> getMethods(Class<?> service) {
@@ -86,7 +77,7 @@ final class NetworkHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
-        Log.d(TAG, "method invoked");
+        Logger.d("Proxy method invoked");
         if (args.length == 0) {
             throw new IllegalArgumentException("Callback must be sent as param");
         }
