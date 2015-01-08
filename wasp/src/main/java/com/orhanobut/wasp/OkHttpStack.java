@@ -11,7 +11,7 @@ import java.net.URL;
 /**
  * @author Emmar Kardeslik
  */
-public class OkHttpStack extends HurlStack {
+class OkHttpStack extends HurlStack {
 
     private final OkUrlFactory factory;
 
@@ -21,7 +21,7 @@ public class OkHttpStack extends HurlStack {
 
     public OkHttpStack(final OkHttpClient client) {
         if (client == null) {
-            throw new NullPointerException("Client may not be null.");
+            throw new NullPointerException("HttpClient may not be null.");
         }
 
         this.factory = new OkUrlFactory(client);
