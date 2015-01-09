@@ -85,6 +85,7 @@ service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 - mock data support (local file or dynamic)
 - certificate pinning support
 - trust-all certificate support for testing purposes
+- auto body creation for simple jsons to prevent model implementation
 - Improve log
 - Improve error handling and error response
 - Improve the test coverage
