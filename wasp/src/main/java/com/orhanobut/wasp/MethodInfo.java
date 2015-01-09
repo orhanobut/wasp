@@ -1,6 +1,7 @@
 package com.orhanobut.wasp;
 
 import com.orhanobut.wasp.http.Body;
+import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
@@ -12,12 +13,17 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Orhan Obut
  */
 final class MethodInfo {
+
+    private static final int HEAD_VALUE_LENGTH = 2;
 
     private final Method method;
 
@@ -25,10 +31,10 @@ final class MethodInfo {
     private String httpMethod;
     private Type responseObjectType;
     private Annotation[] methodAnnotations;
+    private Map<String, String> headers;
 
     private MethodInfo(Method method) {
         this.method = method;
-
         init();
     }
 
@@ -46,6 +52,17 @@ final class MethodInfo {
         Annotation[] annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
+
+            // look for headers
+            if (annotationType == Headers.class) {
+                String[] headers = ((Headers) annotation).value();
+                if (headers == null) {
+                    throw new NullPointerException("HEAD value may not be null");
+                }
+                addHeaders(headers);
+                continue;
+            }
+
             RestMethod methodInfo = null;
 
             // Look for a @RestMethod annotation on the parameter annotation indicating request method.
@@ -67,6 +84,19 @@ final class MethodInfo {
             }
             relativeUrl = path;
             httpMethod = methodInfo.value();
+        }
+    }
+
+    private void addHeaders(String[] values) {
+        for (String header : values) {
+            String[] strings = header.split(":");
+            if (strings.length != HEAD_VALUE_LENGTH) {
+                throw new IllegalArgumentException("HEAD value must follow key : value format");
+            }
+            if (headers == null) {
+                headers = new HashMap<>();
+            }
+            headers.put(strings[0], strings[1]);
         }
     }
 
@@ -175,5 +205,9 @@ final class MethodInfo {
 
     Annotation[] getMethodAnnotations() {
         return methodAnnotations;
+    }
+
+    Map<String, String> getHeaders() {
+        return headers != null ? headers : Collections.<String, String>emptyMap();
     }
 }

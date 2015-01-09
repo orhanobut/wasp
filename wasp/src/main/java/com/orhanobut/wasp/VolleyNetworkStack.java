@@ -18,6 +18,11 @@ import java.util.Map;
  */
 final class VolleyNetworkStack implements NetworkStack {
 
+    private static final String METHOD_GET = "GET";
+    private static final String METHOD_PUT = "PUT";
+    private static final String METHOD_POST = "POST";
+    private static final String METHOD_DELETE = "DELETE";
+
     private final RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, HttpStack stack) {
@@ -38,27 +43,8 @@ final class VolleyNetworkStack implements NetworkStack {
     private void addToQueue(final WaspRequest waspRequest, final CallBack callBack) {
         final String url = waspRequest.getUrl();
         int method = getMethod(waspRequest.getMethod());
-        Request request = new StringRequest(
-                method,
-                url,
-                new Response.Listener<String>() {
-
-                    @Override
-                    public void onResponse(String s) {
-                        callBack.onSuccess(s);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        callBack.onError(new WaspError(
-                                url,
-                                volleyError.getMessage(),
-                                volleyError.networkResponse.statusCode
-                        ));
-                    }
-                }
-        ) {
+        VolleyResponse response = VolleyResponse.newInstance(callBack, url);
+        Request request = new StringRequest(method, url, response, response) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -76,13 +62,13 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private int getMethod(String method) {
         switch (method) {
-            case "GET":
+            case METHOD_GET:
                 return Request.Method.GET;
-            case "POST":
+            case METHOD_POST:
                 return Request.Method.POST;
-            case "PUT":
+            case METHOD_PUT:
                 return Request.Method.PUT;
-            case "DELETE":
+            case METHOD_DELETE:
                 return Request.Method.DELETE;
             default:
                 throw new IllegalArgumentException("Method must be DELETE,POST,PUT or GET");
@@ -97,4 +83,44 @@ final class VolleyNetworkStack implements NetworkStack {
     public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
         addToQueue(waspRequest, callBack);
     }
+
+    private static class VolleyResponse<T> implements
+            Response.Listener<T>,
+            Response.ErrorListener {
+
+        private final CallBack callBack;
+        private final String url;
+
+        private VolleyResponse(CallBack callBack, String url) {
+            this.callBack = callBack;
+            this.url = url;
+        }
+
+        public static VolleyResponse newInstance(CallBack callBack, String url) {
+            return new VolleyResponse(callBack, url);
+        }
+
+        @Override
+        public void onResponse(T response) {
+            callBack.onSuccess(response);
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            int statusCode = WaspError.INVALID_STATUS_CODE;
+            if (error == null) {
+                callBack.onError(new WaspError(url, "No message", statusCode));
+                return;
+            }
+            if (error.networkResponse != null) {
+                statusCode = error.networkResponse.statusCode;
+            }
+            callBack.onError(new WaspError(
+                    url,
+                    error.getMessage(),
+                    statusCode
+            ));
+        }
+    }
+
 }

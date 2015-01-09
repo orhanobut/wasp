@@ -5,6 +5,8 @@ package com.orhanobut.wasp;
  */
 public class WaspError {
 
+    public static final int INVALID_STATUS_CODE = -1;
+    
     private final String errorMessage;
     private final int statusCode;
     private final String url;
