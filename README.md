@@ -81,8 +81,10 @@ service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 ```
 
 ####TODO
-- Add static header annotation
-- Add request intercepter
+- Volley retry policy
+- mock data support (local file or dynamic)
+- certificate pinning support
+- trust-all certificate support for testing purposes
 - Improve log
 - Improve error handling and error response
 - Improve the test coverage
