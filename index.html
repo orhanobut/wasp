@@ -217,6 +217,20 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         .create(MyService.class);   
 </pre>
 
+
+
+<br>
+     <h4>Http Stack</h4>
+     <p>You can set your custom http stack instead of default. Default is okhttp.</p>
+<pre class='prettyprint'>
+
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .setHttpStack(new YourHttpStack());       
+        .build()                        
+        .create(MyService.class);   
+</pre>
+
 <br>
 <h4>TODO</h4>
 <p>Contribute to complete below todos</p>
