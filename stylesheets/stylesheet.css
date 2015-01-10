@@ -301,11 +301,10 @@ Full-Width Styles
 }
 
 #project_tagline {
-  color: #fff;
+  color: #b2b2b2;
   font-size: 24px;
   font-weight: 300;
   background: none;
-  text-shadow: #b2b2b2 0px 0px 10px;
 }
 
 #downloads {
