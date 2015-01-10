@@ -46,15 +46,19 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private void addToQueue(final WaspRequest waspRequest, final CallBack callBack) {
         final String url = waspRequest.getUrl();
-        int method = getMethod(waspRequest.getMethod());
-        VolleyListener listener = VolleyListener.newInstance(callBack, url);
-        Request request = new VolleyRequest(method, url, waspRequest.getBody(), listener) {
+        final int method = getMethod(waspRequest.getMethod());
+        final VolleyListener listener = VolleyListener.newInstance(callBack, url);
+        final Request request = new VolleyRequest(method, url, waspRequest.getBody(), listener) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();
             }
         };
+
+        if (waspRequest.getRetryPolicy() != null) {
+            request.setRetryPolicy(waspRequest.getRetryPolicy());
+        }
 
         addToQueue(request);
     }
