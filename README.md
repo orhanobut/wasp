@@ -1,7 +1,6 @@
 #Wasp
 Wasp is a wrapper for network libraries in order to make it simple. Currently volley is used as default current
-network stack. The idea is to get rid of request classes and gather them into one place and easy to access with the
-maximum readability and easiness. The idea is the same with retrofit (Thanks).
+network stack. The idea is to get rid of request classes and gather them into one place and easy to access them. Is it customizable for every situation and you don't need to struggle with json converter as well.
 
 ###Add dependency
 ```groovy
