@@ -41,7 +41,7 @@ GitHubService service = new Wasp.Builder(this)
     .create(MyService.class);
 ```
 
-####And use it everwhere
+####And use it everywhere
 
 ```java
 service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
