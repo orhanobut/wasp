@@ -71,7 +71,7 @@ public interface GitHubService {
     );
 }</pre>
 
-
+<br>
      <h4>Initialize builder</h4>
      <p>Best approach would be to initialize it in the application class and use it as singleton.</p>
 <pre class='prettyprint'>
@@ -102,7 +102,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 });
 </pre>
 
-
+<br>
      <h4>Add Body</h4>
      <ul>
       <li>@Body can be used to add an object for request body. Object will be converted to json.</li>
@@ -137,7 +137,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     });
 </pre>
 
-
+<br>
      <h4>Add Query Params</h4>
      <ul>
       <li>@Query is used to add query params</li>
@@ -158,7 +158,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 </pre>
 
 
-
+<br>
      <h4>Add Headers</h4>
      <ul>
       <li>@Header is used to add headers by using params</li>
@@ -193,7 +193,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 </pre>
 
 
-
+<br>
      <h4>Request Interceptor</h4>
      <p>You can add static headers and query params to each service by using request interceptor</p>
 <pre class='prettyprint'>
@@ -217,7 +217,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         .create(MyService.class);   
 </pre>
 
-
+<br>
 <h4>TODO</h4>
 <p>Contribute to complete below todos</p>
   <ul>
