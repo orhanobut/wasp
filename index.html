@@ -103,6 +103,41 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 </pre>
 
 
+     <h4>Add Body</h4>
+     <ul>
+      <li>@Body can be used to add an object for request body. Object will be converted to json.</li>
+      <li>@BodyMap can be used to add a Map object instead of creating body class. It will be converted to json. You can use
+      @BodyMap for the simple operations which you don't want to create a class.</li>
+     </ul>
+<pre class='prettyprint'>
+    @POST("/repos}")
+    void addName(
+        @Body Repo repo,
+        CallBack<Repo> callBack
+    );
+    
+    service.addName(new Repo("3423",3),new CallBack<Repo>{
+        //
+    });
+    
+    or
+    
+    @POST("/repos}")
+    void addName(
+        @BodyMap Map map,
+        CallBack<Repo> callBack
+    );
+
+    Map<String,Object> map = new HashMap<>();
+    map.put("ip","324234234");
+    map.put("page",34);
+    
+    service.addName(map,new CallBack<Repo>{
+        //
+    });
+
+    //output url: <BASEURL>/users/repos?page=2&sort=asc
+</pre>
 
 
      <h4>Add Query Params</h4>
