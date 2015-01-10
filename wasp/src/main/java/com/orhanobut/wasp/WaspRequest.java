@@ -122,7 +122,12 @@ final class WaspRequest {
                     if (!(value instanceof Map)) {
                         throw new IllegalArgumentException("BodyMap accepts only Map instances");
                     }
-                    Map<String, Object> map = (Map<String, Object>) value;
+                    Map<String, Object> map;
+                    try {
+                        map = (Map<String, Object>) value;
+                    } catch (Exception e) {
+                        throw new ClassCastException("Map type should be Map<String,Object>");
+                    }
                     body = CollectionUtils.toJson(map);
                 }
             }
