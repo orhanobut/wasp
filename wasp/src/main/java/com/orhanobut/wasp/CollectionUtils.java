@@ -7,7 +7,7 @@ import java.util.Map;
  */
 public class CollectionUtils {
 
-    public static String convertToJson(Map<String, Object> map) {
+    public static String toJson(Map<String, Object> map) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         for (Map.Entry<String, Object> entry : map.entrySet()) {
