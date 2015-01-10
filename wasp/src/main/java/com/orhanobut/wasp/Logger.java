@@ -28,4 +28,8 @@ final class Logger {
     static void v(String message) {
         Log.v(TAG, message);
     }
+
+    static void wtf(String message) {
+        Log.wtf(TAG, message);
+    }
 }

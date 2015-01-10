@@ -1,6 +1,7 @@
 package com.orhanobut.wasp;
 
 import com.orhanobut.wasp.http.Body;
+import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
@@ -133,6 +134,7 @@ final class MethodInfo {
         List<String> pathParams = new ArrayList<>();
         List<String> queryParams = new ArrayList<>();
         List<String> headerParams = new ArrayList<>();
+        boolean isBodyAdded = false;
 
         int count = annotationArrays.length;
         for (int i = 0; i < count; i++) {
@@ -148,7 +150,16 @@ final class MethodInfo {
                     pathParams.add(value);
                 }
                 if (annotationType == Body.class) {
-                    //TODO validate
+                    if (isBodyAdded) {
+                        throw new IllegalArgumentException("Only one body/bodyMap can be added");
+                    }
+                    isBodyAdded = true;
+                }
+                if (annotationType == BodyMap.class) {
+                    if (isBodyAdded) {
+                        throw new IllegalArgumentException("Only one body/bodyMap can be added");
+                    }
+                    isBodyAdded = true;
                 }
                 if (annotationType == Query.class) {
                     //TODO validate
