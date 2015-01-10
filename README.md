@@ -60,3 +60,13 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 
 ####For more details, check the website
 http://orhanobut.github.io/wasp/
+
+###TODO
+* Volley retry policy
+* Mock data support (local file or dynamic)
+* Certificate pinning support
+* Trust-all certificate support for testing purposes
+* Optimize imageloader and make it easy in use.
+* Improve log
+* Improve error handling and error response
+* Improve the test coverage
