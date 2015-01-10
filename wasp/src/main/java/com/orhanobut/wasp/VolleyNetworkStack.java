@@ -3,14 +3,17 @@ package com.orhanobut.wasp;
 import android.content.Context;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.HttpStack;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -26,7 +29,8 @@ final class VolleyNetworkStack implements NetworkStack {
     private final RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, HttpStack stack) {
-        requestQueue = Volley.newRequestQueue(context, stack);
+        // requestQueue = Volley.newRequestQueue(context, stack);
+        requestQueue = Volley.newRequestQueue(context);
     }
 
     static VolleyNetworkStack newInstance(Context context, HttpStack stack) {
@@ -43,17 +47,12 @@ final class VolleyNetworkStack implements NetworkStack {
     private void addToQueue(final WaspRequest waspRequest, final CallBack callBack) {
         final String url = waspRequest.getUrl();
         int method = getMethod(waspRequest.getMethod());
-        VolleyResponse response = VolleyResponse.newInstance(callBack, url);
-        Request request = new StringRequest(method, url, response, response) {
+        VolleyListener response = VolleyListener.newInstance(callBack, url);
+        Request request = new VolleyRequest(method, url, waspRequest.getBody(), response) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                return waspRequest.getBodyAsBytes();
             }
         };
 
@@ -84,20 +83,20 @@ final class VolleyNetworkStack implements NetworkStack {
         addToQueue(waspRequest, callBack);
     }
 
-    private static class VolleyResponse<T> implements
+    private static class VolleyListener<T> implements
             Response.Listener<T>,
             Response.ErrorListener {
 
         private final CallBack callBack;
         private final String url;
 
-        private VolleyResponse(CallBack callBack, String url) {
+        private VolleyListener(CallBack callBack, String url) {
             this.callBack = callBack;
             this.url = url;
         }
 
-        public static VolleyResponse newInstance(CallBack callBack, String url) {
-            return new VolleyResponse(callBack, url);
+        public static VolleyListener newInstance(CallBack callBack, String url) {
+            return new VolleyListener(callBack, url);
         }
 
         @Override
@@ -120,6 +119,62 @@ final class VolleyNetworkStack implements NetworkStack {
                     error.getMessage(),
                     statusCode
             ));
+        }
+    }
+
+    private static class VolleyRequest<T> extends Request<T> {
+
+        /**
+         * Charset for request.
+         */
+        private static final String PROTOCOL_CHARSET = "utf-8";
+
+        /**
+         * Content type for request.
+         */
+        private static final String PROTOCOL_CONTENT_TYPE =
+                String.format("application/json; charset=%s", PROTOCOL_CHARSET);
+
+        private final VolleyListener<T> listener;
+        private final String requestBody;
+
+        public VolleyRequest(int method, String url, String requestBody, VolleyListener<T> listener) {
+            super(method, url, listener);
+            this.listener = listener;
+            this.requestBody = requestBody;
+        }
+
+        @Override
+        protected void deliverResponse(T response) {
+            listener.onResponse(response);
+        }
+
+        @Override
+        protected Response parseNetworkResponse(NetworkResponse response) {
+            try {
+                String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
+            } catch (UnsupportedEncodingException e) {
+                return Response.error(new ParseError(e));
+            }
+        }
+
+        @Override
+        public String getBodyContentType() {
+            return PROTOCOL_CONTENT_TYPE;
+        }
+
+        @Override
+        public byte[] getBody() {
+            try {
+                return requestBody == null ? null : requestBody.getBytes(PROTOCOL_CHARSET);
+            } catch (UnsupportedEncodingException uee) {
+                Logger.wtf("Unsupported Encoding while trying to get the bytes of %s using %s"
+                                + requestBody
+                                + PROTOCOL_CHARSET
+                );
+                return null;
+            }
         }
     }
 

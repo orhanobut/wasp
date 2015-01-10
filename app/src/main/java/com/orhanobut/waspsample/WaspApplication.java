@@ -17,7 +17,7 @@ public class WaspApplication extends Application {
         super.onCreate();
 
         service = new Wasp.Builder(this)
-                .setEndpoint("https://api.github.com")
+                .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
                 .build()
                 .create(MyService.class);
