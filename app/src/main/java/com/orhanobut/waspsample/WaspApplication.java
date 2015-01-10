@@ -2,11 +2,10 @@ package com.orhanobut.waspsample;
 
 import android.app.Application;
 
-import com.android.volley.toolbox.HttpClientStack;
 import com.orhanobut.wasp.LogLevel;
 import com.orhanobut.wasp.RequestInterceptor;
 import com.orhanobut.wasp.Wasp;
-import com.squareup.okhttp.OkHttpClient;
+import com.orhanobut.wasp.WaspRetryPolicy;
 
 import java.util.Map;
 
@@ -30,6 +29,11 @@ public class WaspApplication extends Application {
             @Override
             public Map<String, String> getQueryParams() {
                 return null;
+            }
+
+            @Override
+            public WaspRetryPolicy getRetryPolicy() {
+                return new WaspRetryPolicy(45000, 3, 1.5f);
             }
         };
 

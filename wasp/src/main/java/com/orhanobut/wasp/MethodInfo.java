@@ -7,6 +7,7 @@ import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RestMethod;
+import com.orhanobut.wasp.http.RetryPolicy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,6 +31,7 @@ final class MethodInfo {
 
     private String relativeUrl;
     private String httpMethod;
+    private WaspRetryPolicy retryPolicy;
     private Type responseObjectType;
     private Annotation[] methodAnnotations;
     private Map<String, String> headers;
@@ -61,6 +63,12 @@ final class MethodInfo {
                     throw new NullPointerException("HEAD value may not be null");
                 }
                 addHeaders(headers);
+                continue;
+            }
+
+            if (annotationType == RetryPolicy.class) {
+                final RetryPolicy rp = ((RetryPolicy) annotation);
+                retryPolicy = new WaspRetryPolicy(rp.initialTimeout(), rp.maxNumRetries(), rp.backoffMultiplier());
                 continue;
             }
 
@@ -206,8 +214,12 @@ final class MethodInfo {
         return relativeUrl;
     }
 
-    public String getHttpMethod() {
+    String getHttpMethod() {
         return httpMethod;
+    }
+
+    WaspRetryPolicy getRetryPolicy() {
+        return retryPolicy;
     }
 
     Type getResponseObjectType() {

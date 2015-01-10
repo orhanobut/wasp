@@ -5,12 +5,9 @@ import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.GET;
-import com.orhanobut.wasp.http.Header;
-import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
-import com.orhanobut.wasp.http.Path;
-import com.orhanobut.wasp.http.Query;
+import com.orhanobut.wasp.http.RetryPolicy;
 
 import java.util.Map;
 
@@ -41,6 +38,7 @@ public interface MyService {
             CallBack<Ip> callBack
     );
 
+    @RetryPolicy(initialTimeout = 1)
     @PUT("/put")
     void putFooMap(
             @BodyMap Map bodyMap,
