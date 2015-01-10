@@ -1,6 +1,7 @@
 package com.orhanobut.wasp;
 
 import com.orhanobut.wasp.http.Body;
+import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
@@ -117,6 +118,18 @@ final class WaspRequest {
                 if (annotationType == Body.class) {
                     body = getBody(value);
                 }
+                if (annotationType == BodyMap.class) {
+                    if (!(value instanceof Map)) {
+                        throw new IllegalArgumentException("BodyMap accepts only Map instances");
+                    }
+                    Map<String, Object> map;
+                    try {
+                        map = (Map<String, Object>) value;
+                    } catch (Exception e) {
+                        throw new ClassCastException("Map type should be Map<String,Object>");
+                    }
+                    body = CollectionUtils.toJson(map);
+                }
             }
         }
 
@@ -124,8 +137,6 @@ final class WaspRequest {
             this.requestInterceptor = interceptor;
             return this;
         }
-
-        //TODO need test here
 
         /**
          * Merges static and param headers and create a request.
