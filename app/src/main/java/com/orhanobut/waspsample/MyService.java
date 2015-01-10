@@ -1,41 +1,50 @@
 package com.orhanobut.waspsample;
 
+import com.orhanobut.wasp.CallBack;
 import com.orhanobut.wasp.http.Body;
+import com.orhanobut.wasp.http.BodyMap;
+import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.GET;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.POST;
+import com.orhanobut.wasp.http.PUT;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
+
+import java.util.Map;
 
 /**
  * @author Orhan Obut
  */
 public interface MyService {
 
-    @Headers("Accept:24242")
-    @GET("/repos/{user}/{repo}")
-    void fetchRepo(@Header("Accept:") String accept,
-                   @Path("user") String user,
-                   @Path("repo") String repo,
-                   RepoCallBack callBack
+    @GET("/ip")
+    void fetchIp(
+            CallBack<Ip> callBack
     );
 
-    @Headers({
-            "asdfasdf: asdfasdf",
-            "234 : as234234"
-    })
-    @GET("/users/{user}/repos")
-    void fetchRepoBySearch(@Path("user") String user,
-                           @Query("page") int pageNumber,
-                           @Query("sort") String sort,
-                           RepoSearchCallBack callBack
+    @POST("/post")
+    void postFoo(
+            @Body Ip ip,
+            CallBack<Ip> callBack
     );
 
-    @POST("/repos/{user}/{repo}")
-    void addName(@Path("user") String user,
-                 @Path("repo") String repo,
-                 @Body String body,
-                 RepoCallBack callBack
+    @PUT("/put")
+    void putFoo(
+            @Body Ip ip,
+            CallBack<Ip> callBack
     );
+
+    @DELETE("/delete")
+    void deleteFoo(
+            CallBack<Ip> callBack
+    );
+
+    @PUT("/put")
+    void putFooMap(
+            @BodyMap Map bodyMap,
+            CallBack<Ip> callBack
+    );
+
 }
