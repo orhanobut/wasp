@@ -1,6 +1,15 @@
 #Wasp
-Wasp is a wrapper for network libraries in order to make it simple. Currently volley is used as default current
-network stack. The idea is to get rid of request classes and gather them into one place and easy to access them. Is it customizable for every situation and you don't need to struggle with json converter as well.
+Wasp is a wrapper for network libraries in order to make it simple.
+Currently volley is used as default current network stack.
+The idea is to get rid of request classes and gather them into one place and easy to access them.
+It is customizable for every situation and you don't need to struggle with json converter as well.
+We try to implement the best practices and tools in order to make everything compact.
+You don't need to worry about to combine everything since we handled everything already.
+Following tools are used in the system:
+
+- Volley
+- Gson
+- OkHttp
 
 ###Add dependency
 ```groovy
