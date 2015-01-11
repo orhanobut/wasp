@@ -207,7 +207,12 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 
 <br>
      <h4>Request Interceptor</h4>
-     <p>You can add static headers and query params to each service by using request interceptor</p>
+     <p>By using request interceptor, you basically add the following additions to the each request call :</p>
+     <ul>
+       <li>Headers</li>
+       <li>Query params</li>
+       <li>Retry Policy</li>
+     </ul>
 <pre class='prettyprint'>
 
   RequestInterceptor interceptor = new RequestInterceptor() {
@@ -219,7 +224,12 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
       @Override                                              
       public Map<String, String> getQueryParams() {          
           return null;                                       
-      }                                                      
+      }
+
+      @Override
+      public WaspRetryPolicy getRetryPolicy() {
+          return new WaspRetryPolicy(45000, 3, 1.5f);
+      }
   };
 
   GitHubService service = new Wasp.Builder(this)    
@@ -229,7 +239,18 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         .create(MyService.class);   
 </pre>
 
-
+<br>
+     <h4>Retry Policy</h4>
+     <p>You can set retry policy for each call by using request interceptor or you can use annotation to add specific policy
+       for the calls. Annotation always override the request interceptor if both are used at the same time.
+     </p>
+<pre class='prettyprint'>
+    @RetryPolicy(initialTimeout = 1)
+    @GET("/users")
+    void fetchUsers2(
+          RepoCallBack<List<Repo> callBack
+    );
+</pre>
 
 <br>
      <h4>Http Stack</h4>
