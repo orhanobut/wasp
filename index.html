@@ -264,6 +264,34 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         .create(MyService.class);   
 </pre>
 
+
+<br>
+     <h4>Add different end points for different network calls</h4>
+     <p>You can add different end point url for some network calls, it will override the base url.</p>
+<pre class='prettyprint'>
+    @EndPoint("http://www.google.com")
+    @GET("/users")
+    void fetchUsers2(
+          RepoCallBack<List<Repo> callBack
+    );
+</pre>
+
+
+<br>
+     <h4>Mocking</h4>
+     <p>You can mock your network calls easily by using mock annotation. You can mock either success or fail easily.
+       Success response will return the appropriate objects with randomly created values.
+     </p>
+<pre class='prettyprint'>
+    @Mock(MockType.SUCCESS)
+    @GET("/users")
+    void fetchUsers2(
+          RepoCallBack<List<Repo> callBack
+    );
+    
+    //This will return List<Repo> object.
+</pre>
+
 <br>
 <h4>TODO</h4>
 <p>Contribute to complete below todos</p>
