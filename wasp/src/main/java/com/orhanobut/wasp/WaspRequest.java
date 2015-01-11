@@ -196,8 +196,17 @@ final class WaspRequest {
             return parser.toJson(body);
         }
 
+        /**
+         * If endpoint is set as annotation, it uses that endpoint for the call, otherwise it uses endpoint
+         *
+         * @return full url
+         */
         private String getUrl() {
-            return baseUrl + relativeUrl + getQueryString();
+            String endpoint = methodInfo.getBaseUrl();
+            if (endpoint == null) {
+                endpoint = baseUrl;
+            }
+            return endpoint + relativeUrl + getQueryString();
         }
 
         private String getQueryString() {
