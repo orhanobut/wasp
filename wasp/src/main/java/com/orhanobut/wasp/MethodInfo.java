@@ -2,6 +2,7 @@ package com.orhanobut.wasp;
 
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
+import com.orhanobut.wasp.http.EndPoint;
 import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
@@ -29,6 +30,7 @@ final class MethodInfo {
 
     private final Method method;
 
+    private String baseUrl;
     private String relativeUrl;
     private String httpMethod;
     private WaspRetryPolicy retryPolicy;
@@ -71,6 +73,12 @@ final class MethodInfo {
                 retryPolicy = new WaspRetryPolicy(
                         policy.initialTimeout(), policy.maxNumRetries(), policy.backoffMultiplier()
                 );
+                continue;
+            }
+
+            if (annotationType == EndPoint.class) {
+                EndPoint endPoint = (EndPoint) annotation;
+                baseUrl = endPoint.value();
                 continue;
             }
 
@@ -214,6 +222,10 @@ final class MethodInfo {
 
     String getRelativeUrl() {
         return relativeUrl;
+    }
+    
+    String getBaseUrl(){
+        return baseUrl;
     }
 
     String getHttpMethod() {

@@ -25,7 +25,7 @@ public class MainActivity extends BaseActivity {
 
         //  postFoo();
 
-          putFoo();
+        putFoo();
 
         putFooMap();
     }
