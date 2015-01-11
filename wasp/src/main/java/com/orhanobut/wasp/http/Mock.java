@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Sets end point url
+ * Enables the mocking for the network regarding to mock type
  *
  * @author Orhan Obut
  */

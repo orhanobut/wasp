@@ -139,11 +139,11 @@ class MockFactory implements NetworkStack {
             } else if (double.class.isAssignableFrom(cls) || Double.class.isAssignableFrom(cls)) {
                 map.put(field.getName(), 10);
             } else if (long.class.isAssignableFrom(cls) || Long.class.isAssignableFrom(cls)) {
-                map.put(field.getName(), 10);
+                map.put(field.getName(), 10L);
             } else if (boolean.class.isAssignableFrom(cls) || Boolean.class.isAssignableFrom(cls)) {
                 map.put(field.getName(), true);
             } else if (BigDecimal.class.isAssignableFrom(cls)) {
-                map.put(field.getName(), true);
+                map.put(field.getName(), 10);
             } else if (List.class.isAssignableFrom(field.getType())) {
                 Type[] genericTypes = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
                 Type genericType = genericTypes[0];
