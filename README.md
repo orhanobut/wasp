@@ -7,9 +7,20 @@ We try to implement the best practices and tools in order to make everything com
 You don't need to worry about to combine everything since we handled everything already.
 Following tools are used in the system:
 
+Wasp uses:
 - Volley
 - Gson
 - OkHttp
+
+Wasp provides:
+- Easy implementation
+- Mocking network calls
+- Request Interceptor to add attributes (query params, headers, retry policy) to each call
+- Call based headers
+- Call based endpoint url
+- Call based retry policy
+- Cookie management
+- Certicate management
 
 ###Add dependency
 ```groovy
