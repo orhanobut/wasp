@@ -91,8 +91,9 @@ final class NetworkHandler implements InvocationHandler {
         WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint, parser)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
-         Logger.d(waspRequest.toString());
-        networkStack.invokeRequest(waspRequest, new CallBack<String>() {
+        Logger.d(waspRequest.toString());
+
+        CallBack<String> responseCallBack = new CallBack<String>() {
             @Override
             public void onSuccess(String content) {
                 Logger.d("Response: " + content);
@@ -105,7 +106,14 @@ final class NetworkHandler implements InvocationHandler {
                 Logger.d(error.toString());
                 callBack.onError(error);
             }
-        });
+        };
+
+        if (methodInfo.isMocked()) {
+            MockFactory.getDefault().invokeRequest(waspRequest, responseCallBack);
+            return null;
+        }
+
+        networkStack.invokeRequest(waspRequest, responseCallBack);
         return null;
     }
 }

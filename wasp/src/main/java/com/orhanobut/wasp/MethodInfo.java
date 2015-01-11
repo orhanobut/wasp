@@ -5,6 +5,7 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.EndPoint;
 import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Header;
+import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RestMethod;
@@ -37,6 +38,7 @@ final class MethodInfo {
     private Type responseObjectType;
     private Annotation[] methodAnnotations;
     private Map<String, String> headers;
+    private MockType mockType;
 
     private MethodInfo(Method method) {
         this.method = method;
@@ -58,7 +60,6 @@ final class MethodInfo {
         for (Annotation annotation : annotations) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
 
-            // look for headers
             if (annotationType == Headers.class) {
                 String[] headers = ((Headers) annotation).value();
                 if (headers == null) {
@@ -79,6 +80,12 @@ final class MethodInfo {
             if (annotationType == EndPoint.class) {
                 EndPoint endPoint = (EndPoint) annotation;
                 baseUrl = endPoint.value();
+                continue;
+            }
+
+            if (annotationType == Mock.class) {
+                Mock mock = (Mock) annotation;
+                mockType = mock.value();
                 continue;
             }
 
@@ -223,13 +230,17 @@ final class MethodInfo {
     String getRelativeUrl() {
         return relativeUrl;
     }
-    
-    String getBaseUrl(){
+
+    String getBaseUrl() {
         return baseUrl;
     }
 
     String getHttpMethod() {
         return httpMethod;
+    }
+
+    boolean isMocked() {
+        return mockType != null;
     }
 
     WaspRetryPolicy getRetryPolicy() {
@@ -246,5 +257,9 @@ final class MethodInfo {
 
     Map<String, String> getHeaders() {
         return headers != null ? headers : Collections.<String, String>emptyMap();
+    }
+
+    public MockType getMockType() {
+        return mockType;
     }
 }
