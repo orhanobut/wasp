@@ -21,13 +21,17 @@ final class WaspRequest {
     private final Map<String, String> headers;
     private final String body;
     private final WaspRetryPolicy retryPolicy;
+    private final MockType mockType;
+    private final MethodInfo methodInfo;
 
-    private WaspRequest(String url, String method, Map<String, String> headers, String body, WaspRetryPolicy retryPolicy) {
-        this.url = url;
-        this.method = method;
-        this.headers = headers;
-        this.body = body;
-        this.retryPolicy = retryPolicy;
+    private WaspRequest(Builder builder) {
+        this.url = builder.getUrl();
+        this.method = builder.getHttpMethod();
+        this.headers = builder.getHeaders();
+        this.body = builder.getBody();
+        this.retryPolicy = builder.getRetryPolicy();
+        this.mockType = builder.getMockType();
+        this.methodInfo = builder.getMethodInfo();
     }
 
     String getUrl() {
@@ -46,15 +50,12 @@ final class WaspRequest {
         return body;
     }
 
-    WaspRetryPolicy getRetryPolicy() {
-        return retryPolicy;
+    MockType getMockType() {
+        return mockType;
     }
 
-    byte[] getBodyAsBytes() {
-        if (body == null) {
-            return null;
-        }
-        return body.getBytes();
+    WaspRetryPolicy getRetryPolicy() {
+        return retryPolicy;
     }
 
     @Override
@@ -68,6 +69,10 @@ final class WaspRequest {
             //TODO add header output
         }
         return builder.toString();
+    }
+
+    public MethodInfo getMethodInfo() {
+        return methodInfo;
     }
 
     static class Builder {
@@ -152,7 +157,7 @@ final class WaspRequest {
          */
         WaspRequest build() {
             postInit();
-            return new WaspRequest(getUrl(), methodInfo.getHttpMethod(), headers, body, retryPolicy);
+            return new WaspRequest(this);
         }
 
         /**
@@ -235,6 +240,30 @@ final class WaspRequest {
                 this.headers = headers = new LinkedHashMap<>();
             }
             headers.put(key, value);
+        }
+
+        public String getHttpMethod() {
+            return methodInfo.getHttpMethod();
+        }
+
+        public Map<String, String> getHeaders() {
+            return headers;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public WaspRetryPolicy getRetryPolicy() {
+            return retryPolicy;
+        }
+
+        public MockType getMockType() {
+            return methodInfo.getMockType();
+        }
+
+        public MethodInfo getMethodInfo() {
+            return methodInfo;
         }
     }
 }
