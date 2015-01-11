@@ -11,22 +11,22 @@ public class WaspRetryPolicy implements RetryPolicy {
     /**
      * The current timeout in milliseconds.
      */
-    private int mCurrentTimeoutMs;
+    private int currentTimeoutMs;
 
     /**
      * The current retry count.
      */
-    private int mCurrentRetryCount;
+    private int currentRetryCount;
 
     /**
      * The maximum number of attempts.
      */
-    private final int mMaxNumRetries;
+    private final int maxNumRetries;
 
     /**
      * The backoff multiplier for the policy.
      */
-    private final float mBackoffMultiplier;
+    private final float backoffMultiplier;
 
     /**
      * The default socket timeout in milliseconds
@@ -58,9 +58,9 @@ public class WaspRetryPolicy implements RetryPolicy {
      * @param backoffMultiplier Backoff multiplier for the policy.
      */
     public WaspRetryPolicy(int initialTimeoutMs, int maxNumRetries, float backoffMultiplier) {
-        mCurrentTimeoutMs = initialTimeoutMs;
-        mMaxNumRetries = maxNumRetries;
-        mBackoffMultiplier = backoffMultiplier;
+        currentTimeoutMs = initialTimeoutMs;
+        this.maxNumRetries = maxNumRetries;
+        this.backoffMultiplier = backoffMultiplier;
     }
 
     /**
@@ -68,7 +68,7 @@ public class WaspRetryPolicy implements RetryPolicy {
      */
     @Override
     public int getCurrentTimeout() {
-        return mCurrentTimeoutMs;
+        return currentTimeoutMs;
     }
 
     /**
@@ -76,14 +76,14 @@ public class WaspRetryPolicy implements RetryPolicy {
      */
     @Override
     public int getCurrentRetryCount() {
-        return mCurrentRetryCount;
+        return currentRetryCount;
     }
 
     /**
      * Returns the backoff multiplier for the policy.
      */
     public float getBackoffMultiplier() {
-        return mBackoffMultiplier;
+        return backoffMultiplier;
     }
 
     /**
@@ -93,8 +93,8 @@ public class WaspRetryPolicy implements RetryPolicy {
      */
     @Override
     public void retry(VolleyError error) throws VolleyError {
-        mCurrentRetryCount++;
-        mCurrentTimeoutMs += (mCurrentTimeoutMs * mBackoffMultiplier);
+        currentRetryCount++;
+        currentTimeoutMs += (currentTimeoutMs * backoffMultiplier);
         if (!hasAttemptRemaining()) {
             throw error;
         }
@@ -104,7 +104,7 @@ public class WaspRetryPolicy implements RetryPolicy {
      * Returns true if this policy has attempts remaining, false otherwise.
      */
     protected boolean hasAttemptRemaining() {
-        return mCurrentRetryCount <= mMaxNumRetries;
+        return currentRetryCount <= maxNumRetries;
     }
 
 }

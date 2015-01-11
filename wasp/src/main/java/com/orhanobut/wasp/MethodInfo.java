@@ -67,8 +67,10 @@ final class MethodInfo {
             }
 
             if (annotationType == RetryPolicy.class) {
-                final RetryPolicy rp = ((RetryPolicy) annotation);
-                retryPolicy = new WaspRetryPolicy(rp.initialTimeout(), rp.maxNumRetries(), rp.backoffMultiplier());
+                RetryPolicy policy = (RetryPolicy) annotation;
+                retryPolicy = new WaspRetryPolicy(
+                        policy.initialTimeout(), policy.maxNumRetries(), policy.backoffMultiplier()
+                );
                 continue;
             }
 
