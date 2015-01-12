@@ -1,5 +1,6 @@
 package com.orhanobut.wasp;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -10,18 +11,27 @@ public class CollectionUtils {
     public static String toJson(Map<String, Object> map) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
+        Iterator<Map.Entry<String, Object>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String, Object> entry = iterator.next();
             String key = entry.getKey();
-            String value = String.valueOf(entry.getValue());
+            Object value = entry.getValue();
 
             builder.append("\"")
                     .append(key)
                     .append("\":");
 
             if (value instanceof String) {
-                builder.append(StringUtils.wrap(value, "\""));
+                String temp = (String) value;
+                if (!temp.startsWith("[") && !temp.startsWith("{")){
+                    temp = StringUtils.wrap(temp,"\"" );
+                }
+                builder.append(temp);
             } else {
                 builder.append(entry.getValue());
+            }
+            if (iterator.hasNext()){
+                builder.append(",");
             }
         }
         builder.append("}");

@@ -40,6 +40,7 @@ public class WaspApplication extends Application {
         service = new Wasp.Builder(this)
                 .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
+               // .setRequestInterceptor(interceptor)
                 .build()
                 .create(MyService.class);
     }
