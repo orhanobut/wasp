@@ -1,7 +1,6 @@
 package com.orhanobut.waspsample;
 
 import com.orhanobut.wasp.CallBack;
-import com.orhanobut.wasp.MockType;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.DELETE;
@@ -10,7 +9,6 @@ import com.orhanobut.wasp.http.GET;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
-import com.orhanobut.wasp.http.RetryPolicy;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +18,7 @@ import java.util.Map;
  */
 public interface MyService {
 
-    @Mock(MockType.SUCCESS)
+    @Mock(path = "ips.json")
     @GET("/ip")
     void fetchIps(
             CallBack<List<Ip>> callBack
@@ -37,7 +35,7 @@ public interface MyService {
             CallBack<Ip> callBack
     );
 
-    @Mock(MockType.FAIL)
+    @Mock(statusCode = 300)
     @PUT("/put")
     void putFoo(
             @Body Ip ip,
