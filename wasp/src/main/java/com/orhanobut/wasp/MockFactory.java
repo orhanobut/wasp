@@ -1,6 +1,7 @@
 package com.orhanobut.wasp;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -27,7 +28,7 @@ class MockFactory implements NetworkStack {
         this.context = context;
     }
 
-    static MockFactory getDefault(final Context context) {
+    static MockFactory getDefault(Context context) {
         if (mockFactory == null) {
             mockFactory = new MockFactory(context);
         }
@@ -44,28 +45,33 @@ class MockFactory implements NetworkStack {
             return;
         }
 
-        String responseString = null;
+        MethodInfo methodInfo = waspRequest.getMethodInfo();
+        String responseString;
 
-        if (mock.getPath().equals("")) {
-
+        if (TextUtils.isEmpty(mock.getPath())) {
             //Create mock object and return
-            MethodInfo methodInfo = waspRequest.getMethodInfo();
             Type responseType = methodInfo.getResponseObjectType();
             responseString = createJsonString(responseType);
-
         } else {
-
             try {
                 responseString = IOUtils.readFileFromAssets(context, mock.getPath());
-            } catch (IOException e) {
-                callBack.onError(new WaspError("mock url", "Mocking failed due to file io error.",
-                        WaspError.INVALID_STATUS_CODE));
-            }
 
+                if (TextUtils.isEmpty(responseString) || !JsonUtil.validJson(responseString)) {
+
+                    throw new RuntimeException("Given file for \"" +
+                            methodInfo.getMethod().getDeclaringClass().getSimpleName() + "." +
+                            methodInfo.getMethod().getName() + "\" is either empty or contains an invalid json"
+                    );
+
+                }
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+
+            }
         }
 
         callBack.onSuccess((T) responseString);
-
     }
 
     /**

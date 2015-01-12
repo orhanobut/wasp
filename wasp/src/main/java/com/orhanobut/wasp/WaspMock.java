@@ -5,8 +5,8 @@ package com.orhanobut.wasp;
  */
 class WaspMock {
 
-    private int statusCode;
-    private String path;
+    private final int statusCode;
+    private final String path;
 
     WaspMock(int statusCode, String path) {
         this.statusCode = statusCode;

@@ -16,7 +16,19 @@ public class IOUtils {
         //no instance
     }
 
-    public static String readFileFromAssets(final Context context, final String filePath) throws IOException {
+    public static boolean assetsFileExists(Context context, String filePath) {
+
+        try {
+            InputStream inputStream = context.getAssets().open(filePath);
+            inputStream.close();
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static String readFileFromAssets(Context context, String filePath) throws IOException {
 
         StringBuilder builder = new StringBuilder();
 
@@ -31,7 +43,6 @@ public class IOUtils {
         reader.close();
 
         return builder.toString();
-
     }
 
 }
