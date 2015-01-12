@@ -13,13 +13,11 @@ public class JsonUtil {
     }
 
     public static boolean validJson(String jsonSource) {
-
         try {
             new JsonParser().parse(jsonSource);
             return true;
         } catch (JsonParseException e) {
             return false;
         }
-
     }
 }

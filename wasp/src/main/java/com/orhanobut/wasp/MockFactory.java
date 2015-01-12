@@ -55,19 +55,14 @@ class MockFactory implements NetworkStack {
         } else {
             try {
                 responseString = IOUtils.readFileFromAssets(context, mock.getPath());
-
                 if (TextUtils.isEmpty(responseString) || !JsonUtil.validJson(responseString)) {
-
                     throw new RuntimeException("Given file for \"" +
                             methodInfo.getMethod().getDeclaringClass().getSimpleName() + "." +
                             methodInfo.getMethod().getName() + "\" is either empty or contains an invalid json"
                     );
-
                 }
             } catch (IOException e) {
-
                 throw new RuntimeException(e);
-
             }
         }
 
@@ -120,7 +115,6 @@ class MockFactory implements NetworkStack {
      * @return json string
      */
     private String createJsonArrayString(Type type) {
-
         Class clazz = null;
         try {
             clazz = Class.forName(((Class) type).getName());
