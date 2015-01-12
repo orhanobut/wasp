@@ -1,5 +1,9 @@
 package com.orhanobut.wasp;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -17,30 +21,55 @@ class MockFactory implements NetworkStack {
 
     private static MockFactory mockFactory;
 
-    private MockFactory() {
+    private Context context;
+
+    private MockFactory(final Context context) {
         // no instance
+        this.context = context;
     }
 
-    static MockFactory getDefault() {
+    static MockFactory getDefault(Context context) {
         if (mockFactory == null) {
-            mockFactory = new MockFactory();
+            mockFactory = new MockFactory(context);
         }
         return mockFactory;
     }
 
     @Override
     public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
-        MockType mockType = waspRequest.getMockType();
+        WaspMock mock = waspRequest.getMock();
+        int statusCode = mock.getStatusCode();
 
-        if (mockType == MockType.FAIL) {
-            callBack.onError(new WaspError("mock url", "Mock test fail", 404));
+        if (statusCode < 200 || statusCode > 299) {
+            callBack.onError(new WaspError("mock url", "Mock test fail", statusCode));
             return;
         }
 
-        //Create mock object and return
         MethodInfo methodInfo = waspRequest.getMethodInfo();
-        Type responseType = methodInfo.getResponseObjectType();
-        String responseString = createJsonString(responseType);
+        String responseString;
+
+        if (TextUtils.isEmpty(mock.getPath())) {
+            //Create mock object and return
+            Type responseType = methodInfo.getResponseObjectType();
+            responseString = createJsonString(responseType);
+        } else {
+            try {
+                responseString = IOUtils.readFileFromAssets(context, mock.getPath());
+
+                if (TextUtils.isEmpty(responseString) || !JsonUtil.validJson(responseString)) {
+
+                    throw new RuntimeException("Given file for \"" +
+                            methodInfo.getMethod().getDeclaringClass().getSimpleName() + "." +
+                            methodInfo.getMethod().getName() + "\" is either empty or contains an invalid json"
+                    );
+
+                }
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+
+            }
+        }
 
         callBack.onSuccess((T) responseString);
     }
