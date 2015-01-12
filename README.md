@@ -81,11 +81,9 @@ service.fetchRepo("nr4bt","wasp",new RepoCallBack());
 ```
 
 ####TODO
-- Volley retry policy
-- mock data support (local file or dynamic)
+- mock data support for local json file
 - certificate pinning support
 - trust-all certificate support for testing purposes
-- auto body creation for simple jsons to prevent model implementation
 - Optimize imageloader and make it easy in use.
 - Improve log
 - Improve error handling and error response
