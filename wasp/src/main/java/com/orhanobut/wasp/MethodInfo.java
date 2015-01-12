@@ -1,11 +1,18 @@
 package com.orhanobut.wasp;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.orhanobut.wasp.http.Body;
-import com.orhanobut.wasp.http.Headers;
+import com.orhanobut.wasp.http.BodyMap;
+import com.orhanobut.wasp.http.EndPoint;
 import com.orhanobut.wasp.http.Header;
+import com.orhanobut.wasp.http.Headers;
+import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RestMethod;
+import com.orhanobut.wasp.http.RetryPolicy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -25,15 +32,20 @@ final class MethodInfo {
 
     private static final int HEAD_VALUE_LENGTH = 2;
 
+    private final Context context;
     private final Method method;
 
+    private String baseUrl;
     private String relativeUrl;
     private String httpMethod;
+    private WaspRetryPolicy retryPolicy;
     private Type responseObjectType;
     private Annotation[] methodAnnotations;
     private Map<String, String> headers;
+    private WaspMock mock;
 
-    private MethodInfo(Method method) {
+    private MethodInfo(Context context, Method method) {
+        this.context = context;
         this.method = method;
         init();
     }
@@ -44,8 +56,8 @@ final class MethodInfo {
         parseParamAnnotations();
     }
 
-    static MethodInfo newInstance(Method method) {
-        return new MethodInfo(method);
+    static MethodInfo newInstance(Context context, Method method) {
+        return new MethodInfo(context, method);
     }
 
     private void parseMethodAnnotations() {
@@ -53,13 +65,39 @@ final class MethodInfo {
         for (Annotation annotation : annotations) {
             Class<? extends Annotation> annotationType = annotation.annotationType();
 
-            // look for headers
             if (annotationType == Headers.class) {
                 String[] headers = ((Headers) annotation).value();
                 if (headers == null) {
                     throw new NullPointerException("HEAD value may not be null");
                 }
                 addHeaders(headers);
+                continue;
+            }
+
+            if (annotationType == RetryPolicy.class) {
+                RetryPolicy policy = (RetryPolicy) annotation;
+                retryPolicy = new WaspRetryPolicy(
+                        policy.initialTimeout(), policy.maxNumRetries(), policy.backoffMultiplier()
+                );
+                continue;
+            }
+
+            if (annotationType == EndPoint.class) {
+                EndPoint endPoint = (EndPoint) annotation;
+                baseUrl = endPoint.value();
+                continue;
+            }
+
+            if (annotationType == Mock.class) {
+                Mock mock = (Mock) annotation;
+
+                String path = mock.path();
+                if (!TextUtils.isEmpty(path) && !IOUtils.assetsFileExists(context, path)) {
+                    throw new RuntimeException("Could not find given file for \"" +
+                            method.getDeclaringClass().getSimpleName() + "." + method.getName() + "\""
+                    );
+                }
+                this.mock = new WaspMock(mock.statusCode(), path);
                 continue;
             }
 
@@ -133,6 +171,7 @@ final class MethodInfo {
         List<String> pathParams = new ArrayList<>();
         List<String> queryParams = new ArrayList<>();
         List<String> headerParams = new ArrayList<>();
+        boolean isBodyAdded = false;
 
         int count = annotationArrays.length;
         for (int i = 0; i < count; i++) {
@@ -148,7 +187,16 @@ final class MethodInfo {
                     pathParams.add(value);
                 }
                 if (annotationType == Body.class) {
-                    //TODO validate
+                    if (isBodyAdded) {
+                        throw new IllegalArgumentException("Only one body/bodyMap can be added");
+                    }
+                    isBodyAdded = true;
+                }
+                if (annotationType == BodyMap.class) {
+                    if (isBodyAdded) {
+                        throw new IllegalArgumentException("Only one body/bodyMap can be added");
+                    }
+                    isBodyAdded = true;
                 }
                 if (annotationType == Query.class) {
                     //TODO validate
@@ -191,12 +239,28 @@ final class MethodInfo {
                 method.getDeclaringClass().getSimpleName() + "." + method.getName() + ": " + message);
     }
 
+    public Method getMethod() {
+        return method;
+    }
+
     String getRelativeUrl() {
         return relativeUrl;
     }
 
-    public String getHttpMethod() {
+    String getBaseUrl() {
+        return baseUrl;
+    }
+
+    String getHttpMethod() {
         return httpMethod;
+    }
+
+    boolean isMocked() {
+        return mock != null;
+    }
+
+    WaspRetryPolicy getRetryPolicy() {
+        return retryPolicy;
     }
 
     Type getResponseObjectType() {
@@ -209,5 +273,9 @@ final class MethodInfo {
 
     Map<String, String> getHeaders() {
         return headers != null ? headers : Collections.<String, String>emptyMap();
+    }
+
+    public WaspMock getMock() {
+        return mock;
     }
 }

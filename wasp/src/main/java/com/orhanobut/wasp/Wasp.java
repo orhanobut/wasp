@@ -95,9 +95,6 @@ public class Wasp {
             if (logLevel == null) {
                 logLevel = LogLevel.ALL;
             }
-            if (endPointUrl == null) {
-                throw new NullPointerException("End point may not be null");
-            }
             if (httpStack == null) {
                 httpStack = new OkHttpStack();
             }
