@@ -1,10 +1,13 @@
 package com.orhanobut.wasp;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.EndPoint;
-import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Header;
+import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
@@ -29,6 +32,7 @@ final class MethodInfo {
 
     private static final int HEAD_VALUE_LENGTH = 2;
 
+    private final Context context;
     private final Method method;
 
     private String baseUrl;
@@ -38,9 +42,10 @@ final class MethodInfo {
     private Type responseObjectType;
     private Annotation[] methodAnnotations;
     private Map<String, String> headers;
-    private MockType mockType;
+    private WaspMock mock;
 
-    private MethodInfo(Method method) {
+    private MethodInfo(Context context, Method method) {
+        this.context = context;
         this.method = method;
         init();
     }
@@ -51,8 +56,8 @@ final class MethodInfo {
         parseParamAnnotations();
     }
 
-    static MethodInfo newInstance(Method method) {
-        return new MethodInfo(method);
+    static MethodInfo newInstance(Context context, Method method) {
+        return new MethodInfo(context, method);
     }
 
     private void parseMethodAnnotations() {
@@ -85,7 +90,14 @@ final class MethodInfo {
 
             if (annotationType == Mock.class) {
                 Mock mock = (Mock) annotation;
-                mockType = mock.value();
+
+                String path = mock.path();
+                if (!TextUtils.isEmpty(path) && !IOUtils.assetsFileExists(context, path)) {
+                    throw new RuntimeException("Could not find given file for \"" +
+                            method.getDeclaringClass().getSimpleName() + "." + method.getName() + "\""
+                    );
+                }
+                this.mock = new WaspMock(mock.statusCode(), path);
                 continue;
             }
 
@@ -227,6 +239,10 @@ final class MethodInfo {
                 method.getDeclaringClass().getSimpleName() + "." + method.getName() + ": " + message);
     }
 
+    public Method getMethod() {
+        return method;
+    }
+
     String getRelativeUrl() {
         return relativeUrl;
     }
@@ -240,7 +256,7 @@ final class MethodInfo {
     }
 
     boolean isMocked() {
-        return mockType != null;
+        return mock != null;
     }
 
     WaspRetryPolicy getRetryPolicy() {
@@ -259,7 +275,7 @@ final class MethodInfo {
         return headers != null ? headers : Collections.<String, String>emptyMap();
     }
 
-    public MockType getMockType() {
-        return mockType;
+    public WaspMock getMock() {
+        return mock;
     }
 }

@@ -21,7 +21,7 @@ final class WaspRequest {
     private final Map<String, String> headers;
     private final String body;
     private final WaspRetryPolicy retryPolicy;
-    private final MockType mockType;
+    private final WaspMock mock;
     private final MethodInfo methodInfo;
 
     private WaspRequest(Builder builder) {
@@ -30,7 +30,7 @@ final class WaspRequest {
         this.headers = builder.getHeaders();
         this.body = builder.getBody();
         this.retryPolicy = builder.getRetryPolicy();
-        this.mockType = builder.getMockType();
+        this.mock = builder.getMock();
         this.methodInfo = builder.getMethodInfo();
     }
 
@@ -50,8 +50,8 @@ final class WaspRequest {
         return body;
     }
 
-    MockType getMockType() {
-        return mockType;
+    WaspMock getMock() {
+        return mock;
     }
 
     WaspRetryPolicy getRetryPolicy() {
@@ -258,8 +258,8 @@ final class WaspRequest {
             return retryPolicy;
         }
 
-        public MockType getMockType() {
-            return methodInfo.getMockType();
+        public WaspMock getMock() {
+            return methodInfo.getMock();
         }
 
         public MethodInfo getMethodInfo() {

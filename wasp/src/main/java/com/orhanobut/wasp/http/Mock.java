@@ -1,7 +1,5 @@
 package com.orhanobut.wasp.http;
 
-import com.orhanobut.wasp.MockType;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -18,6 +16,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Mock {
-
-    MockType value();
+    int statusCode() default 200;
+    String path() default "";
 }
