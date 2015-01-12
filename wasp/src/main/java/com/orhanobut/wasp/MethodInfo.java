@@ -3,8 +3,8 @@ package com.orhanobut.wasp;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.EndPoint;
-import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Header;
+import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
@@ -38,7 +38,7 @@ final class MethodInfo {
     private Type responseObjectType;
     private Annotation[] methodAnnotations;
     private Map<String, String> headers;
-    private MockType mockType;
+    private WaspMock mock;
 
     private MethodInfo(Method method) {
         this.method = method;
@@ -85,7 +85,7 @@ final class MethodInfo {
 
             if (annotationType == Mock.class) {
                 Mock mock = (Mock) annotation;
-                mockType = mock.value();
+                this.mock = new WaspMock(mock.statusCode(), mock.path());
                 continue;
             }
 
@@ -240,7 +240,7 @@ final class MethodInfo {
     }
 
     boolean isMocked() {
-        return mockType != null;
+        return mock != null;
     }
 
     WaspRetryPolicy getRetryPolicy() {
@@ -259,7 +259,7 @@ final class MethodInfo {
         return headers != null ? headers : Collections.<String, String>emptyMap();
     }
 
-    public MockType getMockType() {
-        return mockType;
+    public WaspMock getMock() {
+        return mock;
     }
 }
