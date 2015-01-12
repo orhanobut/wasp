@@ -14,17 +14,13 @@ if (isReleaseBuild()) {
 def USERNAME = "";
 def PASSWORD = "";
 
-if (file('credential.properties').exists()) {
-
-    def Properties versionProps = new Properties()
-    versionProps.load(new FileInputStream('credential.properties'))
-    USERNAME = versionProps['USERNAME'];
-    PASSWORD = versionProps['PASSWORD'];
-
-}
-
 afterEvaluate { project ->
     uploadArchives {
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream('credential.properties'))
+        USERNAME = versionProps['USERNAME'];
+        PASSWORD = versionProps['PASSWORD'];
+        
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
