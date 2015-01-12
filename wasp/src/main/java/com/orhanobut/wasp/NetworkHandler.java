@@ -74,7 +74,7 @@ final class NetworkHandler implements InvocationHandler {
 
     private void fillMethods(List<Method> methods) {
         for (Method method : methods) {
-            MethodInfo methodInfo = MethodInfo.newInstance(method);
+            MethodInfo methodInfo = MethodInfo.newInstance(context, method);
             methodInfoCache.put(method.getName(), methodInfo);
         }
     }
