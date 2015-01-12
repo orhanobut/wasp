@@ -15,10 +15,17 @@ public interface RequestInterceptor {
     Map<String, String> getHeaders();
 
     /**
-     * For each request, these query params will be added*
+     * For each request, these query params will be added
      *
      * @return map which contains query params
      */
     Map<String, String> getQueryParams();
+
+    /**
+     * For each request, these retry policy will be set
+     *
+     * @return defaultRetryPolicy
+     */
+    WaspRetryPolicy getRetryPolicy();
 
 }

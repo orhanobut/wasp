@@ -6,7 +6,7 @@ package com.orhanobut.wasp;
 public class WaspError {
 
     public static final int INVALID_STATUS_CODE = -1;
-    
+
     private final String errorMessage;
     private final int statusCode;
     private final String url;
@@ -31,12 +31,12 @@ public class WaspError {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Wasp Error:");
+        builder.append("Wasp Error: ");
         if (errorMessage != null) {
             builder.append(", Message:").append(errorMessage);
         }
         builder.append("Status Code: ").append(statusCode)
-                .append(" for ").append(url);
+                .append("Url ").append(url);
         return builder.toString();
     }
 }

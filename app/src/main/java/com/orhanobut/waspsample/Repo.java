@@ -1,11 +1,15 @@
 package com.orhanobut.waspsample;
 
+import java.util.List;
+
 /**
  * @author Orhan Obut
  */
 public class Repo {
 
-    long id;
     String name;
-    Owner owner;
+    String url;
+
+    List<Owner> owners;
+
 }

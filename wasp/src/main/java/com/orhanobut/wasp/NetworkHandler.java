@@ -1,5 +1,7 @@
 package com.orhanobut.wasp;
 
+import android.content.Context;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -18,6 +20,7 @@ final class NetworkHandler implements InvocationHandler {
 
     private final Map<String, MethodInfo> methodInfoCache = new LinkedHashMap<>();
     private final Class<?> service;
+    private final Context context;
     private final NetworkStack networkStack;
     private final Parser parser;
     private final String endPoint;
@@ -26,6 +29,7 @@ final class NetworkHandler implements InvocationHandler {
 
     private NetworkHandler(Class<?> service, Wasp.Builder builder) {
         this.service = service;
+        this.context = builder.getContext();
         this.networkStack = builder.getNetworkStack();
         this.parser = builder.getParser();
         this.endPoint = builder.getEndPointUrl();
@@ -70,7 +74,7 @@ final class NetworkHandler implements InvocationHandler {
 
     private void fillMethods(List<Method> methods) {
         for (Method method : methods) {
-            MethodInfo methodInfo = MethodInfo.newInstance(method);
+            MethodInfo methodInfo = MethodInfo.newInstance(context, method);
             methodInfoCache.put(method.getName(), methodInfo);
         }
     }
@@ -92,7 +96,8 @@ final class NetworkHandler implements InvocationHandler {
                 .setRequestInterceptor(requestInterceptor)
                 .build();
         Logger.d(waspRequest.toString());
-        networkStack.invokeRequest(waspRequest, new CallBack<String>() {
+
+        CallBack<String> responseCallBack = new CallBack<String>() {
             @Override
             public void onSuccess(String content) {
                 Logger.d("Response: " + content);
@@ -105,7 +110,14 @@ final class NetworkHandler implements InvocationHandler {
                 Logger.d(error.toString());
                 callBack.onError(error);
             }
-        });
+        };
+
+        if (methodInfo.isMocked()) {
+            MockFactory.getDefault(context).invokeRequest(waspRequest, responseCallBack);
+            return null;
+        }
+
+        networkStack.invokeRequest(waspRequest, responseCallBack);
         return null;
     }
 }

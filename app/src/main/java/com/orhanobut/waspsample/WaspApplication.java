@@ -3,7 +3,11 @@ package com.orhanobut.waspsample;
 import android.app.Application;
 
 import com.orhanobut.wasp.LogLevel;
+import com.orhanobut.wasp.RequestInterceptor;
 import com.orhanobut.wasp.Wasp;
+import com.orhanobut.wasp.WaspRetryPolicy;
+
+import java.util.Map;
 
 /**
  * @author Orhan Obut
@@ -15,10 +19,28 @@ public class WaspApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        
+        RequestInterceptor interceptor = new RequestInterceptor() {
+            @Override
+            public Map<String, String> getHeaders() {
+                return null;
+            }
+
+            @Override
+            public Map<String, String> getQueryParams() {
+                return null;
+            }
+
+            @Override
+            public WaspRetryPolicy getRetryPolicy() {
+                return new WaspRetryPolicy(45000, 3, 1.5f);
+            }
+        };
 
         service = new Wasp.Builder(this)
-                .setEndpoint("https://api.github.com")
+                .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
+               // .setRequestInterceptor(interceptor)
                 .build()
                 .create(MyService.class);
     }
