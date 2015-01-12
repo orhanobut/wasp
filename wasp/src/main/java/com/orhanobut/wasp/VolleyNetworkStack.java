@@ -56,8 +56,9 @@ final class VolleyNetworkStack implements NetworkStack {
             }
         };
 
-        if (waspRequest.getRetryPolicy() != null) {
-            request.setRetryPolicy(waspRequest.getRetryPolicy());
+        WaspRetryPolicy policy = waspRequest.getRetryPolicy();
+        if (policy != null) {
+            request.setRetryPolicy(policy);
         }
 
         addToQueue(request);

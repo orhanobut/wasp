@@ -7,6 +7,7 @@ import com.orhanobut.wasp.CallBack;
 import com.orhanobut.wasp.WaspError;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -21,13 +22,13 @@ public class MainActivity extends BaseActivity {
 
         textView = (TextView) findViewById(R.id.text);
 
-        //  fetchIp();
+        fetchIps();
 
         //  postFoo();
 
-          putFoo();
+        //putFoo();
 
-        putFooMap();
+        //  putFooMap();
     }
 
     private void fetchIp() {
@@ -35,6 +36,20 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onSuccess(Ip ip) {
                 textView.setText(ip.toString());
+            }
+
+            @Override
+            public void onError(WaspError error) {
+                showToast(error.toString());
+            }
+        });
+    }
+
+    private void fetchIps() {
+        getService().fetchIps(new CallBack<List<Ip>>() {
+            @Override
+            public void onSuccess(List<Ip> ips) {
+                textView.setText(ips.toString());
             }
 
             @Override
