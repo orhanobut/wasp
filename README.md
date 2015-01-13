@@ -1,7 +1,26 @@
 #Wasp
-Wasp is a wrapper for network libraries in order to make it simple. Currently volley is used as default current
-network stack. The idea is to get rid of request classes and gather them into one place and easy to access with the
-maximum readability and easiness. The idea is the same with retrofit (Thanks).
+Wasp is a wrapper for network libraries in order to make it simple.
+Currently volley is used as default current network stack.
+The idea is to get rid of request classes and gather them into one place and easy to access them.
+It is customizable for every situation and you don't need to struggle with json converter as well.
+We try to implement the best practices and tools in order to make everything compact.
+You don't need to worry about to combine everything since we handled everything already.
+Following tools are used in the system:
+
+Wasp uses:
+- Volley
+- Gson
+- OkHttp
+
+Wasp provides:
+- Easy implementation
+- Mocking network calls
+- Request Interceptor to add attributes (query params, headers, retry policy) to each call
+- Call based headers
+- Call based endpoint url
+- Call based retry policy
+- Cookie management
+- Certicate management
 
 ###Add dependency
 ```groovy
@@ -13,13 +32,7 @@ dependencies {
 }
 ```
 
-###Usage
-Create a service interface. This will be used to make the network requests.You can use appropriate annotations to define the request. 
-
-- @GET,@DELETE,@POST,@PUT can be used for http method. 
-- @Path is used for replacement for specific words in the url. 
-- @Query is used to add query params
-- @Header is used to add headers.
+####Create a service interface.
 
 ```java
 public interface GitHubService {
@@ -28,16 +41,6 @@ public interface GitHubService {
     void fetchRepo(@Path("user") String user,
                    @Path("repo") String repo,
                    RepoCallBack callBack
-    );
-
-    /**
-    * query params will be added to url, ie : example.com/users/nr4bt/repos?page=1&sort=asc
-    **/
-    @GET("/users/{user}/repos")
-    void fetchRepoBySearch(@Path("user") String user,
-                           @Query("page") int pageNumber,
-                           @Query("sort") String sort,
-                           RepoSearchCallBack callBack
     );
 
     @POST("/repos/{user}/{repo}")
@@ -49,42 +52,39 @@ public interface GitHubService {
 }
 ```
 
-Add callback for the request response. Specify the response object type before using. Response object will be returned if the request is success. Gson is used as default parser.
+####Initialize the wasp
+
 ```java
-public class RepoCallBack implements CallBack<Repo> {
+GitHubService service = new Wasp.Builder(this)
+    .setEndpoint("https://api.github.com")
+    .build()
+    .create(MyService.class);
+```
 
+####And use it everywhere
+
+```java
+service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
+    
     @Override
-    public void onSuccess(Repo repo) {
-        //to do something
+    public void onSuccess(List<Repo> repos) {
+        // do something
     }
-
+    
     @Override
     public void onError(WaspError error) {
-        //to do something
+        // handle error
     }
-}
+});
 ```
 
-Initialize the service. The best approach is the initialize this in the Application class and use it everywhere.
-```java
-GitHubService service = new Wasp.Builder(this)    
-        .setEndpoint("https://api.github.com")   // Must be set
-        .setLogLevel(LogLevel.ALL)               // Optional, default ALL   
-        .setParser(new GsonParser())             // Optional, you can pass your gson object as parameter if needed
-        .build()                                 // Must be called
-        .create(MyService.class);                // Must be called in order to create object           
-```
+####For more details, check the website
+http://orhanobut.github.io/wasp/
 
-Make a network call by using service object. Request will be handled in the background and callback will be called.
-```java
-service.fetchRepo("nr4bt","wasp",new RepoCallBack());
-```
-
-####TODO
-- mock data support for local json file
-- certificate pinning support
-- trust-all certificate support for testing purposes
-- Optimize imageloader and make it easy in use.
-- Improve log
-- Improve error handling and error response
-- Improve the test coverage
+###TODO
+* Certificate pinning support
+* Trust-all certificate support for testing purposes
+* Optimize imageloader and make it easy in use.
+* Improve log
+* Improve error handling and error response
+* Improve the test coverage
