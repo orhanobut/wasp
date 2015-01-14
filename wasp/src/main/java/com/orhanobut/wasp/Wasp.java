@@ -2,7 +2,7 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
-import com.android.volley.toolbox.HttpStack;
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * @author Orhan Obut
@@ -32,9 +32,10 @@ public class Wasp {
         private LogLevel logLevel;
         private Context context;
         private Parser parser;
-        private HttpStack httpStack;
+        private WaspHttpStack waspHttpStack;
         private RequestInterceptor requestInterceptor;
         private NetworkStack networkStack;
+        private SSLSocketFactory sslSocketFactory;
 
         public Builder(Context context) {
             if (context == null) {
@@ -70,16 +71,37 @@ public class Wasp {
             return this;
         }
 
-        public Builder setHttpStack(HttpStack httpStack) {
-            if (httpStack == null) {
-                throw new NullPointerException("HttpStack may not be null");
+        public Builder setWaspHttpStack(WaspHttpStack waspHttpStack) {
+            if (waspHttpStack == null) {
+                throw new NullPointerException("WaspHttpStack may not be null");
             }
-            this.httpStack = httpStack;
+            if (waspHttpStack.getHttpStack() == null) {
+                throw new NullPointerException("WaspHttpStack.getHttpStack() may not return null");
+            }
+            this.waspHttpStack = waspHttpStack;
             return this;
         }
 
         public Builder setRequestInterceptor(RequestInterceptor interceptor) {
             this.requestInterceptor = interceptor;
+            return this;
+        }
+
+        public Builder trustCertificates() {
+            if (sslSocketFactory != null) {
+                throw new IllegalStateException("Only one type of trust certificate method can be used!");
+            }
+            this.sslSocketFactory = OkHttpStack.getTrustAllCertSslSocketFactory();
+            return this;
+        }
+
+        public Builder trustCertificates(int keyStoreRawResId, String keyStorePassword) {
+            if (sslSocketFactory != null) {
+                throw new IllegalStateException("Only one type of trust certificate method can be used!");
+            }
+            this.sslSocketFactory = OkHttpStack.getPinnedCertSslSocketFactory(
+                    context, keyStoreRawResId, keyStorePassword
+            );
             return this;
         }
 
@@ -95,10 +117,11 @@ public class Wasp {
             if (logLevel == null) {
                 logLevel = LogLevel.ALL;
             }
-            if (httpStack == null) {
-                httpStack = new OkHttpStack();
+            if (waspHttpStack == null) {
+                waspHttpStack = new OkHttpStack();
             }
-            networkStack = VolleyNetworkStack.newInstance(context, httpStack);
+            waspHttpStack.setSslSocketFactory(sslSocketFactory);
+            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
         public String getEndPointUrl() {
@@ -117,8 +140,8 @@ public class Wasp {
             return parser;
         }
 
-        public HttpStack getHttpStack() {
-            return httpStack;
+        public WaspHttpStack getWaspHttpStack() {
+            return waspHttpStack;
         }
 
         public RequestInterceptor getRequestInterceptor() {
