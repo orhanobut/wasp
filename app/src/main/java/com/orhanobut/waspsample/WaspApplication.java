@@ -19,7 +19,7 @@ public class WaspApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        
+
         RequestInterceptor interceptor = new RequestInterceptor() {
             @Override
             public Map<String, String> getHeaders() {
@@ -38,11 +38,13 @@ public class WaspApplication extends Application {
         };
 
         service = new Wasp.Builder(this)
-                .setEndpoint("http://httpbin.org")
+                .setEndpoint("https://test.bimnetworks.com/v1")
                 .setLogLevel(LogLevel.ALL)
-               // .setRequestInterceptor(interceptor)
+                //.setHttpStack(new OkHttpStack(CertificateUtil.getTrustAllCertHttpClient()))
+                //.setHttpStack(new OkHttpStack(CertificateUtil.getPinnedCertHttpClient(this, R.raw.mytruststore, "123456")))
                 .build()
                 .create(MyService.class);
+
     }
 
     public static MyService getService() {

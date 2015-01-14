@@ -29,8 +29,7 @@ final class VolleyNetworkStack implements NetworkStack {
     private final RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, HttpStack stack) {
-        // requestQueue = Volley.newRequestQueue(context, stack);
-        requestQueue = Volley.newRequestQueue(context);
+        requestQueue = Volley.newRequestQueue(context, stack);
     }
 
     static VolleyNetworkStack newInstance(Context context, HttpStack stack) {
