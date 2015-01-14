@@ -2,6 +2,7 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.HurlStack;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
@@ -23,9 +24,9 @@ import javax.net.ssl.X509TrustManager;
 /**
  * @author Emmar Kardeslik
  */
-public class OkHttpStack extends HurlStack {
+public class OkHttpStack extends HurlStack implements WaspHttpStack {
 
-    private final OkUrlFactory factory;
+    private final OkUrlFactory okUrlFactory;
 
     public OkHttpStack() {
         this(new OkHttpClient());
@@ -35,16 +36,22 @@ public class OkHttpStack extends HurlStack {
         if (client == null) {
             throw new NullPointerException("HttpClient may not be null.");
         }
-        this.factory = new OkUrlFactory(client);
+        okUrlFactory = new OkUrlFactory(client);
     }
 
     @Override
     protected HttpURLConnection createConnection(URL url) throws IOException {
-        return factory.open(url);
+        return okUrlFactory.open(url);
     }
 
-    void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        factory.client().setSslSocketFactory(sslSocketFactory);
+    @Override
+    public HttpStack getHttpStack() {
+        return this;
+    }
+
+    @Override
+    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+        okUrlFactory.client().setSslSocketFactory(sslSocketFactory);
     }
 
     static SSLSocketFactory getTrustAllCertSslSocketFactory() {
