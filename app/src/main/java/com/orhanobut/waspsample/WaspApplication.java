@@ -38,7 +38,7 @@ public class WaspApplication extends Application {
         };
 
         service = new Wasp.Builder(this)
-                .setEndpoint("https://test.bimnetworks.com/v1")
+                .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
                 //.setHttpStack(new OkHttpStack(CertificateUtil.getTrustAllCertHttpClient()))
                 //.setHttpStack(new OkHttpStack(CertificateUtil.getPinnedCertHttpClient(this, R.raw.mytruststore, "123456")))
