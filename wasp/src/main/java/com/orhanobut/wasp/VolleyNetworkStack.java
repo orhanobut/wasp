@@ -28,12 +28,11 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private static RequestQueue requestQueue;
 
-    private VolleyNetworkStack(Context context, HttpStack stack) {
-        // requestQueue = Volley.newRequestQueue(context, stack);
-        requestQueue = Volley.newRequestQueue(context);
+    private VolleyNetworkStack(Context context, WaspHttpStack stack) {
+        requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
     }
 
-    static VolleyNetworkStack newInstance(Context context, HttpStack stack) {
+    static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
         return new VolleyNetworkStack(context, stack);
     }
 
@@ -49,7 +48,6 @@ final class VolleyNetworkStack implements NetworkStack {
         int method = getMethod(waspRequest.getMethod());
         VolleyListener listener = VolleyListener.newInstance(callBack, url);
         Request request = new VolleyRequest(method, url, waspRequest.getBody(), listener) {
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();
