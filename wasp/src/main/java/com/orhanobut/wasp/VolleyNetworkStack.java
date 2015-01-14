@@ -10,6 +10,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
 
 import java.io.UnsupportedEncodingException;
@@ -28,7 +29,7 @@ final class VolleyNetworkStack implements NetworkStack {
     private final RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack) {
-        requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
+        requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
     }
 
     static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
@@ -47,7 +48,6 @@ final class VolleyNetworkStack implements NetworkStack {
         int method = getMethod(waspRequest.getMethod());
         VolleyListener listener = VolleyListener.newInstance(callBack, url);
         Request request = new VolleyRequest(method, url, waspRequest.getBody(), listener) {
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();
