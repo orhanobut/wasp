@@ -10,7 +10,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
 
 import java.io.UnsupportedEncodingException;
@@ -28,11 +27,11 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private final RequestQueue requestQueue;
 
-    private VolleyNetworkStack(Context context, HttpStack stack) {
-        requestQueue = Volley.newRequestQueue(context, stack);
+    private VolleyNetworkStack(Context context, WaspHttpStack stack) {
+        requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
     }
 
-    static VolleyNetworkStack newInstance(Context context, HttpStack stack) {
+    static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
         return new VolleyNetworkStack(context, stack);
     }
 

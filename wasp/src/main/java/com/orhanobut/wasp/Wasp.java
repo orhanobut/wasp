@@ -2,8 +2,6 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
-import com.android.volley.toolbox.HttpStack;
-
 import javax.net.ssl.SSLSocketFactory;
 
 /**
@@ -34,7 +32,7 @@ public class Wasp {
         private LogLevel logLevel;
         private Context context;
         private Parser parser;
-        private HttpStack httpStack;
+        private WaspHttpStack waspHttpStack;
         private RequestInterceptor requestInterceptor;
         private NetworkStack networkStack;
         private SSLSocketFactory sslSocketFactory;
@@ -73,11 +71,14 @@ public class Wasp {
             return this;
         }
 
-        public Builder setHttpStack(HttpStack httpStack) {
-            if (httpStack == null) {
-                throw new NullPointerException("HttpStack may not be null");
+        public Builder setWaspHttpStack(WaspHttpStack waspHttpStack) {
+            if (waspHttpStack == null) {
+                throw new NullPointerException("WaspHttpStack may not be null");
             }
-            this.httpStack = httpStack;
+            if (waspHttpStack.getHttpStack() == null) {
+                throw new NullPointerException("WaspHttpStack.getHttpStack() may not return null");
+            }
+            this.waspHttpStack = waspHttpStack;
             return this;
         }
 
@@ -116,17 +117,11 @@ public class Wasp {
             if (logLevel == null) {
                 logLevel = LogLevel.ALL;
             }
-            if (httpStack == null) {
-                httpStack = new OkHttpStack();
+            if (waspHttpStack == null) {
+                waspHttpStack = new OkHttpStack();
             }
-            if (sslSocketFactory != null) {
-                if (!(httpStack instanceof OkHttpStack)) {
-                    throw new IllegalStateException("Given HttpStack must be an instance of OkHttpStack to use " +
-                            "trust certificate feature!");
-                }
-                ((OkHttpStack) httpStack).setSslSocketFactory(sslSocketFactory);
-            }
-            networkStack = VolleyNetworkStack.newInstance(context, httpStack);
+            waspHttpStack.setSslSocketFactory(sslSocketFactory);
+            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
         public String getEndPointUrl() {
@@ -145,8 +140,8 @@ public class Wasp {
             return parser;
         }
 
-        public HttpStack getHttpStack() {
-            return httpStack;
+        public WaspHttpStack getWaspHttpStack() {
+            return waspHttpStack;
         }
 
         public RequestInterceptor getRequestInterceptor() {
