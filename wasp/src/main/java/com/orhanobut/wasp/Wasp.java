@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.android.volley.toolbox.HttpStack;
 
+import javax.net.ssl.SSLSocketFactory;
+
 /**
  * @author Orhan Obut
  */
@@ -35,6 +37,7 @@ public class Wasp {
         private HttpStack httpStack;
         private RequestInterceptor requestInterceptor;
         private NetworkStack networkStack;
+        private SSLSocketFactory sslSocketFactory;
 
         public Builder(Context context) {
             if (context == null) {
@@ -83,6 +86,24 @@ public class Wasp {
             return this;
         }
 
+        public Builder trustCertificates() {
+            if (sslSocketFactory != null) {
+                throw new IllegalStateException("Only one type of trust certificate method can be used!");
+            }
+            this.sslSocketFactory = OkHttpStack.getTrustAllCertSslSocketFactory();
+            return this;
+        }
+
+        public Builder trustCertificates(int keyStoreRawResId, String keyStorePassword) {
+            if (sslSocketFactory != null) {
+                throw new IllegalStateException("Only one type of trust certificate method can be used!");
+            }
+            this.sslSocketFactory = OkHttpStack.getPinnedCertSslSocketFactory(
+                    context, keyStoreRawResId, keyStorePassword
+            );
+            return this;
+        }
+
         public Wasp build() {
             init();
             return new Wasp(this);
@@ -97,6 +118,13 @@ public class Wasp {
             }
             if (httpStack == null) {
                 httpStack = new OkHttpStack();
+            }
+            if (sslSocketFactory != null) {
+                if (!(httpStack instanceof OkHttpStack)) {
+                    throw new IllegalStateException("Given HttpStack must be an instance of OkHttpStack to use " +
+                            "trust certificate feature!");
+                }
+                ((OkHttpStack) httpStack).setSslSocketFactory(sslSocketFactory);
             }
             networkStack = VolleyNetworkStack.newInstance(context, httpStack);
         }
