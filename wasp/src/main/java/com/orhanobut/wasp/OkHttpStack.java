@@ -24,7 +24,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * @author Emmar Kardeslik
  */
-public class OkHttpStack extends HurlStack implements WaspHttpStack {
+public class OkHttpStack extends HurlStack implements WaspHttpStack<HttpStack> {
 
     private final OkUrlFactory okUrlFactory;
 

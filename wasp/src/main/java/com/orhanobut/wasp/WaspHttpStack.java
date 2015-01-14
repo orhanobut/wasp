@@ -1,15 +1,13 @@
 package com.orhanobut.wasp;
 
-import com.android.volley.toolbox.HttpStack;
-
 import javax.net.ssl.SSLSocketFactory;
 
 /**
  * @author Emmar Kardeslik
  */
-public interface WaspHttpStack {
+public interface WaspHttpStack<T> {
 
-    public HttpStack getHttpStack();
+    public T getHttpStack();
 
     public void setSslSocketFactory(SSLSocketFactory sslSocketFactory);
 
