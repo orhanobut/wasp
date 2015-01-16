@@ -1,8 +1,9 @@
-package com.orhanobut.wasp;
+package com.orhanobut.wasp.toolbox;
 
 import android.graphics.Bitmap;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.orhanobut.wasp.WaspCache;
 
 /**
  * @author Orhan Obut
