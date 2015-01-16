@@ -82,9 +82,4 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 http://orhanobut.github.io/wasp/
 
 ###TODO
-* Certificate pinning support
-* Trust-all certificate support for testing purposes
-* Optimize imageloader and make it easy in use.
-* Improve log
-* Improve error handling and error response
-* Improve the test coverage
+Check wiki
