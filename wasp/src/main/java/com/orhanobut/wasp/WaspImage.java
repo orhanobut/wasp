@@ -1,5 +1,6 @@
 package com.orhanobut.wasp;
 
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 /**
@@ -76,11 +77,14 @@ final class WaspImage {
         /**
          * It is used to fetch the image from network
          *
-         * @param path is the full url
+         * @param url is the full url
          * @return Builder
          */
-        public Builder from(String path) {
-            this.url = path;
+        public Builder from(String url) {
+            if (TextUtils.isEmpty(url)) {
+                throw new IllegalArgumentException("Url cannot be empty or null");
+            }
+            this.url = url;
             return this;
         }
 
@@ -91,6 +95,9 @@ final class WaspImage {
          * @return Builder
          */
         public Builder to(ImageView imageView) {
+            if (imageView == null){
+                throw new NullPointerException("ImageView cannot be null");
+            }
             this.imageView = imageView;
             return this;
         }
@@ -117,16 +124,19 @@ final class WaspImage {
             return this;
         }
 
+        //TODO
         public Builder cropCenter() {
             this.cropCenter = true;
             return this;
         }
 
+        //TODO
         public Builder fit() {
             this.fit = true;
             return this;
         }
 
+        //TODO 
         public Builder resize(int width, int height) {
             this.size = new Size(width, height);
             return this;

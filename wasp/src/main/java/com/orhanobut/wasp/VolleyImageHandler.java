@@ -1,7 +1,7 @@
 package com.orhanobut.wasp;
 
-import android.text.TextUtils;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
@@ -36,17 +36,25 @@ class VolleyImageHandler implements ImageHandler {
 
     @Override
     public void load() {
-        loadImage();
+        final ImageView imageView = waspImage.getImageView();
+        final ViewTreeObserver observer = imageView.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                loadImage();
+                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
     }
 
-    public void loadImage() {
+    private void loadImage() {
         final ImageView imageView = waspImage.getImageView();
         final String url = waspImage.getUrl();
         final int defaultImage = waspImage.getDefaultImage();
-        final int errorImage = waspImage.getErrorImage();
 
-        int width = imageView.getWidth();
-        int height = imageView.getHeight();
+        int width = imageView.getMeasuredWidth();
+        int height = imageView.getMeasuredHeight();
 
         boolean wrapWidth = false;
         boolean wrapHeight = false;
@@ -59,17 +67,6 @@ class VolleyImageHandler implements ImageHandler {
         // view, hold off on loading the image.
         boolean isFullyWrapContent = wrapWidth && wrapHeight;
         if (width == 0 && height == 0 && !isFullyWrapContent) {
-            return;
-        }
-
-        // if the URL to be loaded in this view is empty, cancel any old requests and clear the
-        // currently loaded image.
-        if (TextUtils.isEmpty(url)) {
-            if (imageContainer != null) {
-                imageContainer.cancelRequest();
-                imageContainer = null;
-            }
-            setDefaultImage(defaultImage, imageView);
             return;
         }
 
@@ -89,44 +86,7 @@ class VolleyImageHandler implements ImageHandler {
         int maxWidth = wrapWidth ? 0 : width;
         int maxHeight = wrapHeight ? 0 : height;
 
-        // The pre-existing content of this view didn't match the current URL. Load the new image
-        // from the network.
-        imageLoader.get(
-                url,
-                new ImageLoader.ImageListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (errorImage != 0) {
-                            imageView.setImageResource(errorImage);
-                        }
-                    }
-
-                    @Override
-                    public void onResponse(final ImageLoader.ImageContainer response, boolean isImmediate) {
-                        // If this was an immediate response that was delivered inside of a layout
-                        // pass do not set the image immediately as it will trigger a requestLayout
-                        // inside of a layout. Instead, defer setting the image by posting back to
-                        // the main thread.
-                        if (isImmediate) {
-                            imageView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    onResponse(response, false);
-                                }
-                            });
-                            return;
-                        }
-
-                        if (response.getBitmap() != null) {
-                            imageView.setImageBitmap(response.getBitmap());
-                        } else if (waspImage.getDefaultImage() != 0) {
-                            imageView.setImageResource(defaultImage);
-                        }
-                    }
-                },
-                maxWidth,
-                maxHeight
-        );
+        imageContainer = imageLoader.get(url, new WaspImageListener(imageView, waspImage), maxWidth, maxHeight);
     }
 
     private void setDefaultImage(int placeHolder, ImageView imageView) {
@@ -135,6 +95,48 @@ class VolleyImageHandler implements ImageHandler {
             return;
         }
         imageView.setImageBitmap(null);
+    }
+
+    private static class WaspImageListener implements ImageLoader.ImageListener {
+
+        final ImageView imageView;
+        final WaspImage waspImage;
+
+        private WaspImageListener(ImageView imageView, WaspImage waspImage) {
+            this.imageView = imageView;
+            this.waspImage = waspImage;
+        }
+
+        @Override
+        public void onResponse(final ImageLoader.ImageContainer response, boolean isImmediate) {
+            // If this was an immediate response that was delivered inside of a layout
+            // pass do not set the image immediately as it will trigger a requestLayout
+            // inside of a layout. Instead, defer setting the image by posting back to
+            // the main thread.
+            if (isImmediate) {
+                imageView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onResponse(response, false);
+                    }
+                });
+                return;
+            }
+
+            if (response.getBitmap() != null) {
+                imageView.setImageBitmap(response.getBitmap());
+            } else if (waspImage.getDefaultImage() != 0) {
+                imageView.setImageResource(waspImage.getDefaultImage());
+            }
+        }
+
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            int errorImage = waspImage.getErrorImage();
+            if (errorImage != 0) {
+                imageView.setImageResource(errorImage);
+            }
+        }
     }
 
 }
