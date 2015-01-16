@@ -1,4 +1,4 @@
-package com.orhanobut.wasp;
+package com.orhanobut.wasp.utils;
 
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;

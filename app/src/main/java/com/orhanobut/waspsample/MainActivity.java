@@ -5,8 +5,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orhanobut.wasp.CallBack;
+import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspError;
-import com.orhanobut.wasp.WaspImage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -113,10 +113,15 @@ public class MainActivity extends BaseActivity {
 
 
     public void loadImage() {
-      WaspImage.from("http://developer.android.com/images/training/system-ui.png")
-              .to(imageView)
-              .load();
-
+        String url = "http://developer.android.com/images/training/system-ui.png";
+        int defaulImage = R.drawable.ic_launcher;
+        int errorImage = R.drawable.error;
+        Wasp.loadImage()
+                .from(url)
+                .to(imageView)
+                .setErrorResource(errorImage)
+                .setDefaultResource(defaulImage)
+                .load();
     }
 
 }

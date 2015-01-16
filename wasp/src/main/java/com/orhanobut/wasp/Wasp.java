@@ -2,6 +2,9 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
+import com.orhanobut.wasp.parsers.GsonParser;
+import com.orhanobut.wasp.parsers.Parser;
+
 import javax.net.ssl.SSLSocketFactory;
 
 /**
@@ -24,6 +27,10 @@ public class Wasp {
         }
         NetworkHandler handler = NetworkHandler.newInstance(service, builder);
         return (T) handler.getProxyClass();
+    }
+
+    public static WaspImage.Builder loadImage() {
+        return new WaspImage.Builder();
     }
 
     public static class Builder {
@@ -124,31 +131,31 @@ public class Wasp {
             networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
-        public String getEndPointUrl() {
+        String getEndPointUrl() {
             return endPointUrl;
         }
 
-        public LogLevel getLogLevel() {
+        LogLevel getLogLevel() {
             return logLevel;
         }
 
-        public Context getContext() {
+        Context getContext() {
             return context;
         }
 
-        public Parser getParser() {
+        Parser getParser() {
             return parser;
         }
 
-        public WaspHttpStack getWaspHttpStack() {
+        WaspHttpStack getWaspHttpStack() {
             return waspHttpStack;
         }
 
-        public RequestInterceptor getRequestInterceptor() {
+        RequestInterceptor getRequestInterceptor() {
             return requestInterceptor;
         }
 
-        public NetworkStack getNetworkStack() {
+        NetworkStack getNetworkStack() {
             return networkStack;
         }
     }

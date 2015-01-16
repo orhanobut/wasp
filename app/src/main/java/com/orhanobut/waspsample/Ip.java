@@ -1,7 +1,5 @@
 package com.orhanobut.waspsample;
 
-import java.util.List;
-
 /**
  * @author Orhan Obut
  */
