@@ -21,6 +21,7 @@ Wasp provides:
 - Call based retry policy
 - Cookie management
 - Certicate management
+- Image loading in an easy way
 
 ###Add dependency
 ```groovy
