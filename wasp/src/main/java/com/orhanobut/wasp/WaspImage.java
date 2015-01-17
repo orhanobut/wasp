@@ -155,8 +155,8 @@ final class WaspImage {
      * Immutable size data holder
      */
     static class Size {
-        private int width;
-        private int height;
+        private final int width;
+        private final int height;
 
         Size(int width, int height) {
             this.width = width;

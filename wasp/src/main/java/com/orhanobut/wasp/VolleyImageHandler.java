@@ -1,5 +1,7 @@
 package com.orhanobut.wasp;
 
+import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -64,15 +66,13 @@ class VolleyImageHandler implements ImageHandler {
         }
 
         // if there was an old request in this view, check if it needs to be canceled.
-        if (imageContainer != null && imageContainer.getRequestUrl() != null) {
-            if (imageContainer.getRequestUrl().equals(url)) {
-                // if the request is from the same URL, return.
+        if (imageContainer != null) {
+            String requestUrl = imageContainer.getRequestUrl();
+            if (TextUtils.equals(requestUrl, url)) {
                 return;
-            } else {
-                // if there is a pre-existing request, cancel it if it's fetching a different URL.
-                imageContainer.cancelRequest();
-                setDefaultImage(defaultImage, imageView);
             }
+            imageContainer.cancelRequest();
+            setDefaultImage(defaultImage, imageView);
         }
 
         // Calculate the max image width / height to use while ignoring WRAP_CONTENT dimens.
@@ -82,9 +82,9 @@ class VolleyImageHandler implements ImageHandler {
         imageContainer = imageLoader.get(url, new WaspImageListener(imageView, waspImage), maxWidth, maxHeight);
     }
 
-    private void setDefaultImage(int placeHolder, ImageView imageView) {
-        if (placeHolder != 0) {
-            imageView.setImageResource(placeHolder);
+    private void setDefaultImage(int defaultImage, ImageView imageView) {
+        if (defaultImage != 0) {
+            imageView.setImageResource(defaultImage);
             return;
         }
         imageView.setImageBitmap(null);
@@ -116,10 +116,15 @@ class VolleyImageHandler implements ImageHandler {
                 return;
             }
 
-            if (response.getBitmap() != null) {
-                imageView.setImageBitmap(response.getBitmap());
-            } else if (waspImage.getDefaultImage() != 0) {
-                imageView.setImageResource(waspImage.getDefaultImage());
+            Bitmap bitmap = response.getBitmap();
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+                return;
+            }
+            
+            int defaultImage = waspImage.getDefaultImage();
+            if (defaultImage != 0) {
+                imageView.setImageResource(defaultImage);
             }
         }
 
