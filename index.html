@@ -44,6 +44,7 @@
       <ul>
         <li>Easy implementation</li>
         <li>Mocking network calls</li>
+        <li>Easy-in-use image management</li>
         <li>Request Interceptor to add attributes (query params, headers, retry policy) to each call</li>
         <li>Call based headers</li>
         <li>Call based endpoint url</li>
@@ -329,6 +330,21 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         .enableCookies(CookiePolicy.ACCEPT_ALL)     
         .build()                        
         .create(MyService.class);
+</pre>
+
+<br>
+     <h4>Image Loading</h4>
+     <p>You can use Wasp to download and load images to image views easily.</p>
+<pre class='prettyprint'>
+        Wasp.loadImage()
+                .from(url)
+                .to(imageView)
+                .setErrorResource(errorImage)     // Optional
+                .setDefaultResource(defaulImage)  // Optional
+                .fit()                            // Optional, in TODO
+                .cropCenter()                     // Optional, in TODO
+                .resize(100,200)                  // Optional, in TODO
+                .load();
 </pre>
 
 <br>
