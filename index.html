@@ -335,6 +335,13 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 <br>
      <h4>Image Loading</h4>
      <p>You can use Wasp to download and load images to image views easily.</p>
+     
+     <p>Simple usage</p>
+<pre class='prettyprint'>
+        Wasp.loadImage().from(url).to(imageView).load();
+</pre>
+<br>
+     <p>Advanced options</p>
 <pre class='prettyprint'>
         Wasp.loadImage()
                 .from(url)
