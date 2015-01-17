@@ -37,13 +37,13 @@
       <section id="main_content" class="inner">
         <h2>Introduction</h2>
       <p>Wasp is a compact, complete, easy-in-use network library based on Volley currently.</p>
-      <p>Wasp uses:</p>
+      <p><br>Wasp uses:</br></p>
       <ul>
         <li>Volley</li>
         <li>Gson</li>
         <li>OkHttp</li>
       </ul>
-      <p>Wasp provides</p>
+      <p><br>Wasp provides</br></p>
       <ul>
         <li>Easy implementation</li>
         <li>Mocking network calls</li>
@@ -66,7 +66,7 @@ dependencies {
 }</pre>
 
      <h2>Usage</h2>
-
+<hr>
      <h4>Create your service class</h4>
      <p>Create a service interface and define all your network calls</p>
      <ul>
@@ -145,9 +145,10 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     service.addName(new Repo("3423",3),new CallBack<Repo>{
         //
     });
-    
-    or
-    
+</pre>
+<br>
+<p>or</p>
+<pre class='prettyprint'>
     @POST("/repos")
     void addName(
         @BodyMap Map map,
