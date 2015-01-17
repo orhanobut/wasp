@@ -248,9 +248,12 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 
 <br>
      <h4>Retry Policy</h4>
-     <p>You can set retry policy for each call by using request interceptor or you can use annotation to add specific policy
-       for the calls. Annotation always override the request interceptor if both are used at the same time.
-     </p>
+     <ul>
+       <li>ou can set retry policy for each call by using request interceptor</li>
+       <li>you can use annotation to add specific policy for the specific calls. 
+       Annotation always override the request interceptor if both are used at the same time
+       </li>
+     </ul>
 <pre class='prettyprint'>
     @RetryPolicy(initialTimeout = 1)
     @GET("/users")
@@ -313,6 +316,19 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     void fetchUsers2(
           RepoCallBack<List<Repo> callBack
     );
+</pre>
+
+<br>
+
+<br>
+     <h4>Cookie Management</h4>
+     <p>You can easily handle cookies</p>
+<pre class='prettyprint'>
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .enableCookies(CookiePolicy.ACCEPT_ALL)     
+        .build()                        
+        .create(MyService.class);
 </pre>
 
 <br>
