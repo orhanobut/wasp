@@ -82,9 +82,6 @@ public interface GitHubService {
           @Path("repo") String repo,
           CallBack<List<Repo>> callBack
     );
-    
-    service.fetchRepo("admin","wasp",callback);
-    //url will be ENDPOINT/repos/admin/wasp
 
     @POST("/repos/{user}/{repo}")
     void addName(
@@ -93,6 +90,10 @@ public interface GitHubService {
           CallBack<Repo> callBack
     );
 }</pre>
+<pre class='prettyprint'>
+    service.fetchRepo("admin","wasp",callback);
+    //url will be ENDPOINT/repos/admin/wasp
+</pre>
 
 <br>
      <h4>Initialize builder</h4>
@@ -108,7 +109,6 @@ public interface GitHubService {
         .build()                                 // Must be called
         .create(MyService.class);                // Must be called 
 </pre>
-
 
 <br>
      <h4>Use it everywhere</h4>
@@ -141,10 +141,9 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         @Body Repo repo,
         CallBack<Repo> callBack
     );
-    
-    service.addName(new Repo("3423",3),new CallBack<Repo>{
-        //
-    });
+</pre>
+<pre class='prettyprint'>
+    service.addName(new Repo("3423",3),callback);
 </pre>
 <br>
 <p>or</p>
@@ -154,14 +153,13 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
         @BodyMap Map map,
         CallBack<Repo> callBack
     );
-
+</pre>
+<pre class='prettyprint'>
     Map<String,Object> map = new HashMap<>();
     map.put("ip","324234234");
     map.put("page",34);
     
-    service.addName(map,new CallBack<Repo>{
-        //
-    });
+    service.addName(map, callback);
 </pre>
 
 <br>
@@ -176,14 +174,11 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
           @Query("sort") String sort,
           CallBack<List<Repo>> callBack
     );
-
-    service.fetchRepoBySearch(2,"asc",new CallBack<List<Repo>>{
-        //
-    });
-
-    //output url: <BASEURL>/users/repos?page=2&sort=asc
 </pre>
-
+<pre class='prettyprint'>
+    service.fetchRepoBySearch(2,"asc", callback);
+    //output url is ENDPOINT/users/repos?page=2&sort=asc
+</pre>
 
 <br>
      <h4>Add Headers</h4>
@@ -207,12 +202,12 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
           RepoCallBack<List<Repo> callBack
     );
 
-
     // Multiple static headers
     @Headers({
         "Accept-Language:en-En",
         "Content-type:application/json"
     })
+    
     @GET("/users")
     void fetchUsers2(
           RepoCallBack<List<Repo> callBack
@@ -229,7 +224,6 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
        <li>Retry Policy</li>
      </ul>
 <pre class='prettyprint'>
-
   RequestInterceptor interceptor = new RequestInterceptor() {
       @Override                                              
       public Map<String, String> getHeaders() {              
@@ -246,7 +240,8 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
           return new WaspRetryPolicy(45000, 3, 1.5f);
       }
   };
-
+  </pre>
+<pre class='prettyprint'>
   GitHubService service = new Wasp.Builder(this)    
         .setEndpoint("https://api.github.com")   
         .setRequestInterceptor(interceptor)        
@@ -274,7 +269,6 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
      <h4>Http Stack</h4>
      <p>You can set your custom http stack instead of default. Default is okhttp.</p>
 <pre class='prettyprint'>
-
   GitHubService service = new Wasp.Builder(this)    
         .setEndpoint("https://api.github.com")   
         .setHttpStack(new YourHttpStack());       
