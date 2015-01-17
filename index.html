@@ -64,7 +64,7 @@ dependencies {
      <h2>Usage</h2>
 
      <h4>Create your service class</h4>
-     <p>Create a service interface. This will be used to make the network requests.You can use appropriate annotations to define the request. All network methods should be inside this interface </p>
+     <p>Create a service interface and define all your network calls</p>
      <ul>
       <li>@GET,@DELETE,@POST,@PUT can be used for http method.</li>
       <li>@Path is used for replacement for specific words in the url. </li>
@@ -95,6 +95,9 @@ public interface GitHubService {
         .setEndpoint("https://api.github.com")   // Must be set
         .setLogLevel(LogLevel.ALL)               // Optional, default ALL   
         .setParser(new GsonParser())             // Optional, default Gson
+        .trustCertificates()                     // Optional
+        .enableCookies(CookiePolicy.ACCEPT_ALL)  // Optional
+        .setHttpStack(new OkHttpStack())         // Optional
         .build()                                 // Must be called
         .create(MyService.class);                // Must be called 
 </pre>
@@ -297,19 +300,6 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 </pre>
 
 <br>
-<h4>TODO</h4>
-<p>Contribute to complete below todos</p>
-  <ul>
-    <li>Volley retry policy</li>
-    <li>mock data support (local file or dynamic)</li>
-    <li>certificate pinning support</li>
-    <li>trust-all certificate support for testing purposes</li>
-    <li>Optimize imageloader and make it easy in use.</li>
-    <li>Improve log</li>
-    <li>Improve error handling and error response</li>
-    <li>Improve the test coverage</li>
-  </ul>     
-       
         </section>
     </div>
 
