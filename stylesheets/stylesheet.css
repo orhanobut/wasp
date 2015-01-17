@@ -307,13 +307,6 @@ Full-Width Styles
   background: none;
 }
 
-#social-share {
-display: block;
-position: absolute;
-top:10px;
-z-index: 10;
-}
-
 #downloads {
   position: absolute;
   width: 210px;
@@ -366,7 +359,20 @@ z-index: 10;
   background: #212121;
 }
 
+/*******************************************************************************
+Additional
+*******************************************************************************/
+#social-share {
+  display: block;
+  position: absolute;
+  top:10px;
+  z-index: 10;
+}
 
+pre.prettyprint {
+  padding: 10px !important;
+  border: solid 1px #C9C8C5 !important;
+}
 
 /*******************************************************************************
 Small Device Styles
