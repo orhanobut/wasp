@@ -26,20 +26,20 @@ final class VolleyNetworkStack implements NetworkStack {
     private static final String METHOD_POST = "POST";
     private static final String METHOD_DELETE = "DELETE";
 
-    private final RequestQueue requestQueue;
+    private static RequestQueue requestQueue;
 
-    private VolleyNetworkStack(Context context, HttpStack stack) {
-        // requestQueue = Volley.newRequestQueue(context, stack);
-        requestQueue = Volley.newRequestQueue(context);
+    private VolleyNetworkStack(Context context, WaspHttpStack stack) {
+        requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
+        //requestQueue = Volley.newRequestQueue(context);
     }
 
-    static VolleyNetworkStack newInstance(Context context, HttpStack stack) {
+    static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
         return new VolleyNetworkStack(context, stack);
     }
 
-    private RequestQueue getRequestQueue() {
+    static RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-            throw new NullPointerException("RequestQueue may not be null");
+            throw new NullPointerException("Wasp.Builder must be called");
         }
         return requestQueue;
     }
@@ -49,7 +49,6 @@ final class VolleyNetworkStack implements NetworkStack {
         int method = getMethod(waspRequest.getMethod());
         VolleyListener listener = VolleyListener.newInstance(callBack, url);
         Request request = new VolleyRequest(method, url, waspRequest.getBody(), listener) {
-
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();

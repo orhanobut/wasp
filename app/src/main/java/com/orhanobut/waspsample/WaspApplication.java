@@ -19,7 +19,7 @@ public class WaspApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        
+
         RequestInterceptor interceptor = new RequestInterceptor() {
             @Override
             public Map<String, String> getHeaders() {
@@ -40,9 +40,12 @@ public class WaspApplication extends Application {
         service = new Wasp.Builder(this)
                 .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
-               // .setRequestInterceptor(interceptor)
+                //.enableCookies(CookiePolicy.ACCEPT_ALL)
+                //.trustCertificates()
+                //.trustCertificates(R.raw.mytruststore, "123456")
                 .build()
                 .create(MyService.class);
+
     }
 
     public static MyService getService() {

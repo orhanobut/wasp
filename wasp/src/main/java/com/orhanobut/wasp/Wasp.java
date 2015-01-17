@@ -2,7 +2,15 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
-import com.android.volley.toolbox.HttpStack;
+import com.orhanobut.wasp.parsers.GsonParser;
+import com.orhanobut.wasp.parsers.Parser;
+
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
+
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * @author Orhan Obut
@@ -26,15 +34,21 @@ public class Wasp {
         return (T) handler.getProxyClass();
     }
 
+    public static WaspImage.Builder loadImage() {
+        return new WaspImage.Builder();
+    }
+
     public static class Builder {
 
         private String endPointUrl;
         private LogLevel logLevel;
         private Context context;
         private Parser parser;
-        private HttpStack httpStack;
+        private WaspHttpStack waspHttpStack;
         private RequestInterceptor requestInterceptor;
         private NetworkStack networkStack;
+        private SSLSocketFactory sslSocketFactory;
+        private CookieHandler cookieHandler;
 
         public Builder(Context context) {
             if (context == null) {
@@ -70,16 +84,49 @@ public class Wasp {
             return this;
         }
 
-        public Builder setHttpStack(HttpStack httpStack) {
-            if (httpStack == null) {
-                throw new NullPointerException("HttpStack may not be null");
+        public Builder setWaspHttpStack(WaspHttpStack waspHttpStack) {
+            if (waspHttpStack == null) {
+                throw new NullPointerException("WaspHttpStack may not be null");
             }
-            this.httpStack = httpStack;
+            if (waspHttpStack.getHttpStack() == null) {
+                throw new NullPointerException("WaspHttpStack.getHttpStack() may not return null");
+            }
+            this.waspHttpStack = waspHttpStack;
             return this;
         }
 
         public Builder setRequestInterceptor(RequestInterceptor interceptor) {
             this.requestInterceptor = interceptor;
+            return this;
+        }
+
+        public Builder trustCertificates() {
+            if (sslSocketFactory != null) {
+                throw new IllegalStateException("Only one type of trust certificate method can be used!");
+            }
+            this.sslSocketFactory = OkHttpStack.getTrustAllCertSslSocketFactory();
+            return this;
+        }
+
+        public Builder trustCertificates(int keyStoreRawResId, String keyStorePassword) {
+            if (sslSocketFactory != null) {
+                throw new IllegalStateException("Only one type of trust certificate method can be used!");
+            }
+            this.sslSocketFactory = OkHttpStack.getPinnedCertSslSocketFactory(
+                    context, keyStoreRawResId, keyStorePassword
+            );
+            return this;
+        }
+
+        public Builder enableCookies(CookiePolicy cookiePolicy) {
+            return enableCookies(null, cookiePolicy);
+        }
+
+        public Builder enableCookies(CookieStore cookieStore, CookiePolicy cookiePolicy) {
+            if (cookiePolicy == null) {
+                throw new NullPointerException("CookiePolicy may not be null");
+            }
+            this.cookieHandler = new CookieManager(cookieStore, cookiePolicy);
             return this;
         }
 
@@ -95,37 +142,39 @@ public class Wasp {
             if (logLevel == null) {
                 logLevel = LogLevel.ALL;
             }
-            if (httpStack == null) {
-                httpStack = new OkHttpStack();
+            if (waspHttpStack == null) {
+                waspHttpStack = new OkHttpStack();
             }
-            networkStack = VolleyNetworkStack.newInstance(context, httpStack);
+            waspHttpStack.setSslSocketFactory(sslSocketFactory);
+            waspHttpStack.setCookieHandler(cookieHandler);
+            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
-        public String getEndPointUrl() {
+        String getEndPointUrl() {
             return endPointUrl;
         }
 
-        public LogLevel getLogLevel() {
+        LogLevel getLogLevel() {
             return logLevel;
         }
 
-        public Context getContext() {
+        Context getContext() {
             return context;
         }
 
-        public Parser getParser() {
+        Parser getParser() {
             return parser;
         }
 
-        public HttpStack getHttpStack() {
-            return httpStack;
+        WaspHttpStack getWaspHttpStack() {
+            return waspHttpStack;
         }
 
-        public RequestInterceptor getRequestInterceptor() {
+        RequestInterceptor getRequestInterceptor() {
             return requestInterceptor;
         }
 
-        public NetworkStack getNetworkStack() {
+        NetworkStack getNetworkStack() {
             return networkStack;
         }
     }
