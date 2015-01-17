@@ -288,8 +288,12 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
      <h4>Mocking</h4>
      <p>You can mock your network calls easily by using mock annotation.</p>
      <ul>
-       <li>Use auto generate feature mock</li>
-       <li>Use local file to generate mock</li>
+       <li>@Mock :  Uses auto generate feature mock regarding to your response type</li>
+       <li>@Mock(path="users.json") : Uses local file to generate mock. Local files must be under assets folder.
+         This will return a response with the generated content by given path, with the status code 200
+       </li>
+       <li>@Mock(statusCode=404) : Returns a fail response with status code 404 </li>
+       <li>@Mock(statusCode=201) : Returns a success with the status code 201 and auto generated response</li>
      </ul>
 <pre class='prettyprint'>
     @Mock(path="users.json")
@@ -298,7 +302,17 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
           RepoCallBack<List<Repo> callBack
     );
     
-    //This will return List<Repo> object.
+    @Mock
+    @GET("/users")
+    void fetchUsers2(
+          RepoCallBack<List<Repo> callBack
+    );
+    
+    @Mock(path="users.json", statusCode=202)
+    @GET("/users")
+    void fetchUsers2(
+          RepoCallBack<List<Repo> callBack
+    );
 </pre>
 
 <br>
@@ -309,7 +323,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     <div id="footer_wrap" class="outer">
       <footer class="inner">
          <p class="copyright">Contributers: <a href="https://github.com/orhanobut">Orhan Obut</a> , 
-         <a href="https://github.com/emmar313">Emmar Kardeslik</a>
+         <a href="https://github.com/kardeslik">Emmar Kardeslik</a>
          </p>
       </footer>
     </div>
