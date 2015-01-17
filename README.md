@@ -44,6 +44,8 @@ public interface GitHubService {
                    RepoCallBack callBack
     );
 
+    @Mock
+    @Headers 
     @POST("/repos/{user}/{repo}")
     void addName(@Path("user") String user,
                  @Header("auth") String authToken,
@@ -58,6 +60,9 @@ public interface GitHubService {
 ```java
 GitHubService service = new Wasp.Builder(this)
     .setEndpoint("https://api.github.com")
+    .setRequestInterceptor                     // Optional
+    .trustCertificates                         // Optional
+    .setHttpStack                              // Optional
     .build()
     .create(MyService.class);
 ```
