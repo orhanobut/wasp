@@ -1,9 +1,11 @@
 package com.orhanobut.waspsample;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.orhanobut.wasp.CallBack;
+import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspError;
 
 import java.util.HashMap;
@@ -14,6 +16,8 @@ import java.util.Map;
 public class MainActivity extends BaseActivity {
 
     private TextView textView;
+    private ImageView imageView;
+    private Object image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         textView = (TextView) findViewById(R.id.text);
+        imageView = (ImageView) findViewById(R.id.image);
 
         fetchIps();
 
@@ -29,6 +34,7 @@ public class MainActivity extends BaseActivity {
         //putFoo();
 
         //  putFooMap();
+        loadImage();
     }
 
     private void fetchIp() {
@@ -105,5 +111,17 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+
+    public void loadImage() {
+        String url = "http://developer.android.com/images/training/system-ui.png";
+        int defaulImage = R.drawable.ic_launcher;
+        int errorImage = R.drawable.error;
+        Wasp.loadImage()
+                .from(url)
+                .to(imageView)
+                .setErrorResource(errorImage)
+                .setDefaultResource(defaulImage)
+                .load();
+    }
 
 }

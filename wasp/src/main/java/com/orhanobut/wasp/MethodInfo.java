@@ -13,6 +13,7 @@ import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RestMethod;
 import com.orhanobut.wasp.http.RetryPolicy;
+import com.orhanobut.wasp.utils.IOUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

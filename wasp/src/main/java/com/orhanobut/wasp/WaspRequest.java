@@ -5,6 +5,8 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
+import com.orhanobut.wasp.parsers.Parser;
+import com.orhanobut.wasp.utils.CollectionUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
