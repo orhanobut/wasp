@@ -286,11 +286,13 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 
 <br>
      <h4>Mocking</h4>
-     <p>You can mock your network calls easily by using mock annotation. You can mock either success or fail easily.
-       Success response will return the appropriate objects with randomly created values.
-     </p>
+     <p>You can mock your network calls easily by using mock annotation.</p>
+     <ul>
+       <li>Use auto generate feature mock</li>
+       <li>Use local file to generate mock</li>
+     </ul>
 <pre class='prettyprint'>
-    @Mock(MockType.SUCCESS)
+    @Mock(path="users.json")
     @GET("/users")
     void fetchUsers2(
           RepoCallBack<List<Repo> callBack
