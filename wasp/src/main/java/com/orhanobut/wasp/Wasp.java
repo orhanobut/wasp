@@ -118,11 +118,14 @@ public class Wasp {
             return this;
         }
 
-        public Builder enableCookieHandler(CookiePolicy cookiePolicy) {
-            return enableCookieHandler(null, cookiePolicy);
+        public Builder enableCookies(CookiePolicy cookiePolicy) {
+            return enableCookies(null, cookiePolicy);
         }
 
-        public Builder enableCookieHandler(CookieStore cookieStore, CookiePolicy cookiePolicy) {
+        public Builder enableCookies(CookieStore cookieStore, CookiePolicy cookiePolicy) {
+            if (cookiePolicy == null) {
+                throw new NullPointerException("CookiePolicy may not be null");
+            }
             this.cookieHandler = new CookieManager(cookieStore, cookiePolicy);
             return this;
         }
