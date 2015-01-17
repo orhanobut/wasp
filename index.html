@@ -79,6 +79,9 @@ public interface GitHubService {
           @Path("repo") String repo,
           CallBack<List<Repo>> callBack
     );
+    
+    service.fetchRepo("admin","wasp",callback);
+    //url will be ENDPOINT/repos/admin/wasp
 
     @POST("/repos/{user}/{repo}")
     void addName(
