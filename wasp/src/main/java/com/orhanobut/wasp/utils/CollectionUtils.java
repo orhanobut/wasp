@@ -7,6 +7,10 @@ import java.util.Map;
  * @author Orhan Obut
  */
 public class CollectionUtils {
+    
+    private CollectionUtils(){
+        // no instance
+    }
 
     public static String toJson(Map<String, Object> map) {
         StringBuilder builder = new StringBuilder();
