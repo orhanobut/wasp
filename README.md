@@ -1,11 +1,5 @@
 #Wasp
-Wasp is a wrapper for network libraries in order to make it simple.
-Currently volley is used as default current network stack.
-The idea is to get rid of request classes and gather them into one place and easy to access them.
-It is customizable for every situation and you don't need to struggle with json converter as well.
-We try to implement the best practices and tools in order to make everything compact.
-You don't need to worry about to combine everything since we handled everything already.
-Following tools are used in the system:
+Wasp is compact, complete, easy-in-use and simple network solution. 
 
 Wasp uses:
 - Volley
@@ -21,6 +15,7 @@ Wasp provides:
 - Call based retry policy
 - Cookie management
 - Certicate management
+- Image loading in an easy way
 
 ###Add dependency
 ```groovy
@@ -43,6 +38,8 @@ public interface GitHubService {
                    RepoCallBack callBack
     );
 
+    @Mock
+    @Headers 
     @POST("/repos/{user}/{repo}")
     void addName(@Path("user") String user,
                  @Header("auth") String authToken,
@@ -57,6 +54,9 @@ public interface GitHubService {
 ```java
 GitHubService service = new Wasp.Builder(this)
     .setEndpoint("https://api.github.com")
+    .setRequestInterceptor                     // Optional
+    .trustCertificates                         // Optional
+    .setHttpStack                              // Optional
     .build()
     .create(MyService.class);
 ```
@@ -82,9 +82,4 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 http://orhanobut.github.io/wasp/
 
 ###TODO
-* Certificate pinning support
-* Trust-all certificate support for testing purposes
-* Optimize imageloader and make it easy in use.
-* Improve log
-* Improve error handling and error response
-* Improve the test coverage
+Check wiki
