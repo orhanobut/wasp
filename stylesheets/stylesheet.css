@@ -307,6 +307,13 @@ Full-Width Styles
   background: none;
 }
 
+#social-share {
+display: block;
+position: absolute;
+top:10px;
+z-index: 10;
+}
+
 #downloads {
   position: absolute;
   width: 210px;
