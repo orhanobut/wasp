@@ -63,13 +63,6 @@ class VolleyImageHandler implements ImageHandler {
             wrapHeight = imageView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
-        // if the view's bounds aren't known yet, and this is not a wrap-content/wrap-content
-        // view, hold off on loading the image.
-        boolean isFullyWrapContent = wrapWidth && wrapHeight;
-        if (width == 0 && height == 0 && !isFullyWrapContent) {
-            return;
-        }
-
         // if there was an old request in this view, check if it needs to be canceled.
         if (imageContainer != null && imageContainer.getRequestUrl() != null) {
             if (imageContainer.getRequestUrl().equals(url)) {
