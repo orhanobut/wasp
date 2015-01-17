@@ -10,7 +10,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
 
 import java.io.UnsupportedEncodingException;
@@ -26,19 +25,20 @@ final class VolleyNetworkStack implements NetworkStack {
     private static final String METHOD_POST = "POST";
     private static final String METHOD_DELETE = "DELETE";
 
-    private final RequestQueue requestQueue;
+    private static RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack) {
-        requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
+      //  requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
+        requestQueue = Volley.newRequestQueue(context);
     }
 
     static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
         return new VolleyNetworkStack(context, stack);
     }
 
-    private RequestQueue getRequestQueue() {
+    static RequestQueue getRequestQueue() {
         if (requestQueue == null) {
-            throw new NullPointerException("RequestQueue may not be null");
+            throw new NullPointerException("Wasp.Builder must be called");
         }
         return requestQueue;
     }
