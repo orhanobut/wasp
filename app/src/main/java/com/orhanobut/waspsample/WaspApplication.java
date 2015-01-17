@@ -40,6 +40,7 @@ public class WaspApplication extends Application {
         service = new Wasp.Builder(this)
                 .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
+                //.enableCookieHandler(CookiePolicy.ACCEPT_ALL)
                 //.trustCertificates()
                 //.trustCertificates(R.raw.mytruststore, "123456")
                 .build()

@@ -5,6 +5,11 @@ import android.content.Context;
 import com.orhanobut.wasp.parsers.GsonParser;
 import com.orhanobut.wasp.parsers.Parser;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
+
 import javax.net.ssl.SSLSocketFactory;
 
 /**
@@ -43,6 +48,7 @@ public class Wasp {
         private RequestInterceptor requestInterceptor;
         private NetworkStack networkStack;
         private SSLSocketFactory sslSocketFactory;
+        private CookieHandler cookieHandler;
 
         public Builder(Context context) {
             if (context == null) {
@@ -112,6 +118,15 @@ public class Wasp {
             return this;
         }
 
+        public Builder enableCookieHandler(CookiePolicy cookiePolicy) {
+            return enableCookieHandler(null, cookiePolicy);
+        }
+
+        public Builder enableCookieHandler(CookieStore cookieStore, CookiePolicy cookiePolicy) {
+            this.cookieHandler = new CookieManager(cookieStore, cookiePolicy);
+            return this;
+        }
+
         public Wasp build() {
             init();
             return new Wasp(this);
@@ -128,6 +143,7 @@ public class Wasp {
                 waspHttpStack = new OkHttpStack();
             }
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
+            waspHttpStack.setCookieHandler(cookieHandler);
             networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 

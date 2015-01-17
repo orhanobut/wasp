@@ -9,6 +9,7 @@ import com.squareup.okhttp.OkUrlFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyStore;
@@ -52,6 +53,11 @@ public class OkHttpStack extends HurlStack implements WaspHttpStack<HttpStack> {
     @Override
     public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
         okUrlFactory.client().setSslSocketFactory(sslSocketFactory);
+    }
+
+    @Override
+    public void setCookieHandler(CookieHandler cookieHandler) {
+        okUrlFactory.client().setCookieHandler(cookieHandler);
     }
 
     static SSLSocketFactory getTrustAllCertSslSocketFactory() {
