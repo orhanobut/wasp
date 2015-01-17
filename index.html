@@ -80,7 +80,7 @@ public interface GitHubService {
     void fetchRepo(
           @Path("user") String user,
           @Path("repo") String repo,
-          CallBack<List<Repo>> callBack
+          <code>CallBack<List<Repo>></code> callBack
     );
 
     @POST("/repos/{user}/{repo}")
