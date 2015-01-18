@@ -43,6 +43,24 @@ public class WaspApplication extends Application {
         };
 
         RequestInterceptor interceptor1 = new SimpleInterceptor() {
+
+            @Override
+            public void onHeadersAdded(Map<String, String> headers) {
+                super.onHeadersAdded(headers);
+                headers.put("key","value");
+            }
+
+            @Override
+            public void onQueryParamsAdded(Map<String, Object> params) {
+                super.onQueryParamsAdded(params);
+                params.put("name","something");
+            }
+
+            @Override
+            public WaspRetryPolicy getRetryPolicy() {
+                return new WaspRetryPolicy(45000, 3, 1.5f);
+            }
+
             @Override
             public AuthToken getAuthToken() {
                 return new AuthToken("asdfad", true);

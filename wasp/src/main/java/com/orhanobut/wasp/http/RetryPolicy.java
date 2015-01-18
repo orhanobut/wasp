@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface RetryPolicy {
-    int initialTimeout() default WaspRetryPolicy.DEFAULT_TIMEOUT_MS;
+    int timeout() default WaspRetryPolicy.DEFAULT_TIMEOUT_MS;
 
     int maxNumRetries() default WaspRetryPolicy.DEFAULT_MAX_RETRIES;
 
