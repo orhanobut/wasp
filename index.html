@@ -185,6 +185,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <h4>Add Headers</h4>
      <ul>
       <li><b>@Header</b> is used to add headers by using params</li>
+<br>
 <pre class='prettyprint'>
     @GET("/repos")
     void fetchRepos(
@@ -192,6 +193,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;List&lt;Repo> callBack
     );
 </pre>
+<br>
       <li><b>@Headers</b> is used to add static headers by adding to method</li>
      </ul>
 <pre class='prettyprint'>
@@ -249,6 +251,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <h4>Retry Policy</h4>
      <ul>
        <li>You can set retry policy for each call by using request interceptor</li>
+<br>
 <pre class='prettyprint'>
   RequestInterceptor interceptor = new RequestInterceptor() {
       ...
@@ -262,6 +265,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
        <li>You can use annotation to add specific policy for the specific calls. 
        Annotation always override the request interceptor if both are used at the same time
        </li>
+<br>
 <pre class='prettyprint'>
     @RetryPolicy(initialTimeout = 1)
     @GET("/users")
@@ -300,6 +304,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <p>You can mock your network calls easily by using mock annotation.</p>
      <ul>
        <li><b>@Mock</b> :  Uses auto generate feature mock regarding to your response type</li>
+<br>
 <pre class='prettyprint'>
     @Mock
     @GET("/user")
@@ -311,6 +316,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
        <li><b>@Mock(path="users.json")</b> : Uses local file to generate mock. Local files must be under assets folder.
          This will return a response with the generated content by given path, with the status code 200
        </li>
+       <br>
 <pre class='prettyprint'>
     @Mock(path="user.json")
     @GET("/user")
@@ -320,6 +326,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 </pre>
 <br>
        <li><b>@Mock(statusCode=404)</b> : Returns a fail response with status code 404 </li>
+<br>
 <pre class='prettyprint'>
     @Mock(statusCode=404)
     @GET("/user")
@@ -329,6 +336,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 </pre>
 <br>
        <li><b>@Mock(statusCode=201)</b> : Returns a success with the status code 201 and auto generated response</li>
+<br>
 <pre class='prettyprint'>
     @Mock(statusCode=201)
     @GET("/user")
