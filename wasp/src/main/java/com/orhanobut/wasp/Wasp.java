@@ -1,9 +1,13 @@
 package com.orhanobut.wasp;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.orhanobut.wasp.parsers.GsonParser;
 import com.orhanobut.wasp.parsers.Parser;
+import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.RequestInterceptor;
+import com.orhanobut.wasp.utils.WaspHttpStack;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
@@ -34,10 +38,23 @@ public class Wasp {
         return (T) handler.getProxyClass();
     }
 
-    public static WaspImage.Builder loadImage() {
-        return new WaspImage.Builder();
+    /**
+     * Initiate download and load image process
+     */
+    public static class Image {
+
+        public static WaspImage.Builder from(String path) {
+            if (TextUtils.isEmpty(path)) {
+                throw new IllegalArgumentException("Path cannot be empty or null");
+            }
+            return new WaspImage.Builder().from(path);
+        }
+
     }
 
+    /**
+     * Initiate all required information for the wasp
+     */
     public static class Builder {
 
         private String endPointUrl;
@@ -49,6 +66,7 @@ public class Wasp {
         private NetworkStack networkStack;
         private SSLSocketFactory sslSocketFactory;
         private CookieHandler cookieHandler;
+        private boolean trustAllCertificates;
 
         public Builder(Context context) {
             if (context == null) {
@@ -105,6 +123,7 @@ public class Wasp {
                 throw new IllegalStateException("Only one type of trust certificate method can be used!");
             }
             this.sslSocketFactory = OkHttpStack.getTrustAllCertSslSocketFactory();
+            this.trustAllCertificates = true;
             return this;
         }
 
@@ -143,7 +162,7 @@ public class Wasp {
                 logLevel = LogLevel.ALL;
             }
             if (waspHttpStack == null) {
-                waspHttpStack = new OkHttpStack();
+                waspHttpStack = new OkHttpStack(trustAllCertificates);
             }
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
             waspHttpStack.setCookieHandler(cookieHandler);
