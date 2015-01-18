@@ -12,6 +12,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
+import com.orhanobut.wasp.utils.WaspHttpStack;
+import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;

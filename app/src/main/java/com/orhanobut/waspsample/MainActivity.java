@@ -29,12 +29,12 @@ public class MainActivity extends BaseActivity {
 
         fetchIps();
 
-        //  postFoo();
+         postFoo();
 
         //putFoo();
 
         //  putFooMap();
-        loadImage();
+       // loadImage();
     }
 
     private void fetchIp() {
@@ -119,8 +119,8 @@ public class MainActivity extends BaseActivity {
         Wasp.loadImage()
                 .from(url)
                 .to(imageView)
-                .setErrorResource(errorImage)
-                .setDefaultResource(defaulImage)
+                .setError(errorImage)
+                .setDefault(defaulImage)
                 .load();
     }
 

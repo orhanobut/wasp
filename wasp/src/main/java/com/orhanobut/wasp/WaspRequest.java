@@ -5,11 +5,16 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
+import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.parsers.Parser;
+import com.orhanobut.wasp.utils.AuthToken;
+import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.CollectionUtils;
+import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -78,6 +83,9 @@ final class WaspRequest {
     }
 
     static class Builder {
+
+        private static final String KEY_AUTH = "Authorization";
+
         private final MethodInfo methodInfo;
         private final String baseUrl;
         private final Object[] args;
@@ -181,21 +189,39 @@ final class WaspRequest {
                 return;
             }
 
-            if (requestInterceptor.getQueryParams() != null) {
-                //Add intercepted query params
-                for (Map.Entry<String, String> entry : requestInterceptor.getQueryParams().entrySet()) {
-                    addQueryParam(entry.getKey(), entry.getValue());
-                }
+            //Add intercepted query params
+            Map<String, Object> tempQueryParams = new HashMap<>();
+            requestInterceptor.onQueryParamsAdded(tempQueryParams);
+            for (Map.Entry<String, Object> entry : tempQueryParams.entrySet()) {
+                addQueryParam(entry.getKey(), entry.getValue());
             }
-            if (requestInterceptor.getHeaders() != null) {
-                //Add intercepted headers
-                for (Map.Entry<String, String> entry : requestInterceptor.getHeaders().entrySet()) {
-                    addHeaderParam(entry.getKey(), entry.getValue());
-                }
+
+            //Add intercepted headers
+            Map<String, String> tempHeaders = new HashMap<>();
+            requestInterceptor.onHeadersAdded(tempHeaders);
+            for (Map.Entry<String, String> entry : tempHeaders.entrySet()) {
+                addHeaderParam(entry.getKey(), entry.getValue());
             }
+
             //If retry policy is not already set via annotations than set it via requestInterceptor
-            if (retryPolicy == null && requestInterceptor.getRetryPolicy() != null) {
-                retryPolicy = requestInterceptor.getRetryPolicy();
+            WaspRetryPolicy waspRetryPolicy = requestInterceptor.getRetryPolicy();
+            if (retryPolicy == null && waspRetryPolicy != null) {
+                retryPolicy = waspRetryPolicy;
+            }
+
+            // If authToken is set, it will check if the filter is enabled
+            // it will add token to each request if the filter is not enabled
+            // If the filter is enabled, it will be added to request which has @Auth annotation
+            AuthToken authToken = requestInterceptor.getAuthToken();
+            if (authToken != null) {
+                String token = authToken.getToken();
+                if (!authToken.isFilterEnabled()) {
+                    addHeaderParam(KEY_AUTH, token);
+                    return;
+                }
+                if (methodInfo.isAuthTokenEnabled()) {
+                    addHeaderParam(KEY_AUTH, token);
+                }
             }
         }
 
@@ -244,27 +270,27 @@ final class WaspRequest {
             headers.put(key, value);
         }
 
-        public String getHttpMethod() {
+        String getHttpMethod() {
             return methodInfo.getHttpMethod();
         }
 
-        public Map<String, String> getHeaders() {
+        Map<String, String> getHeaders() {
             return headers;
         }
 
-        public String getBody() {
+        String getBody() {
             return body;
         }
 
-        public WaspRetryPolicy getRetryPolicy() {
+        WaspRetryPolicy getRetryPolicy() {
             return retryPolicy;
         }
 
-        public WaspMock getMock() {
+        WaspMock getMock() {
             return methodInfo.getMock();
         }
 
-        public MethodInfo getMethodInfo() {
+        MethodInfo getMethodInfo() {
             return methodInfo;
         }
     }
