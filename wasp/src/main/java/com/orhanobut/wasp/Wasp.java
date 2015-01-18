@@ -1,6 +1,7 @@
 package com.orhanobut.wasp;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.orhanobut.wasp.parsers.GsonParser;
 import com.orhanobut.wasp.parsers.Parser;
@@ -37,10 +38,23 @@ public class Wasp {
         return (T) handler.getProxyClass();
     }
 
-    public static WaspImage.Builder loadImage() {
-        return new WaspImage.Builder();
+    /**
+     * Initiate download and load image process
+     */
+    public static class Image {
+
+        public static WaspImage.Builder from(String path) {
+            if (TextUtils.isEmpty(path)) {
+                throw new IllegalArgumentException("Path cannot be empty or null");
+            }
+            return new WaspImage.Builder().from(path);
+        }
+
     }
 
+    /**
+     * Initiate all required information for the wasp
+     */
     public static class Builder {
 
         private String endPointUrl;
