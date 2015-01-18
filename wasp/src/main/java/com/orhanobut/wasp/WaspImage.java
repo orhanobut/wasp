@@ -108,7 +108,7 @@ final class WaspImage {
          * @param resId is the drawable id
          * @return Builder
          */
-        public Builder setDefaultResource(int resId) {
+        public Builder setDefault(int resId) {
             this.defaultImage = resId;
             return this;
         }
@@ -119,7 +119,7 @@ final class WaspImage {
          * @param resId is the drawable id
          * @return Builder itself
          */
-        public Builder setErrorResource(int resId) {
+        public Builder setError(int resId) {
             this.errorImage = resId;
             return this;
         }
