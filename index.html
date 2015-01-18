@@ -80,14 +80,14 @@ public interface GitHubService {
     void fetchRepo(
           @Path("user") String user,
           @Path("repo") String repo,
-          <code>CallBack<List<Repo>></code> callBack
+          CallBack&gt;List&gt;Repo>> callBack
     );
 
     @POST("/repos/{user}/{repo}")
     void addName(
           @Path("user") String user,
           @Body Repo repo,
-          CallBack<Repo> callBack
+          CallBack&gt;Repo> callBack
     );
 }</pre>
 <pre class='prettyprint'>
@@ -118,12 +118,10 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
       
       @Override
       public void onSuccess(List<Repo> repos) {
-          
       }
 
       @Override
       public void onError(WaspError error) {
-
       }
 });
 </pre>
@@ -139,7 +137,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @POST("/repos")
     void addName(
         @Body Repo repo,
-        CallBack<Repo> callBack
+        CallBack&gt;Repo> callBack
     );
 </pre>
 <pre class='prettyprint'>
@@ -151,7 +149,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @POST("/repos")
     void addName(
         @BodyMap Map map,
-        CallBack<Repo> callBack
+        CallBack&gt;Repo> callBack
     );
 </pre>
 <pre class='prettyprint'>
@@ -172,7 +170,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     void fetchRepoBySearch(
           @Query("page") int pageNumber,
           @Query("sort") String sort,
-          CallBack<List<Repo>> callBack
+          CallBack&gt;List&gt;Repo>> callBack
     );
 </pre>
 <pre class='prettyprint'>
@@ -192,14 +190,14 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @GET("/repos")
     void fetchRepos(
           @Header("auth") String authToken,
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;List&gt;Repo> callBack
     );
 
     //Single static header
     @Headers("Accept-Language:en-En")
     @GET("/users")
     void fetchUsers(
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;List&gt;Repo> callBack
     );
 
     // Multiple static headers
@@ -226,12 +224,12 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 <pre class='prettyprint'>
   RequestInterceptor interceptor = new RequestInterceptor() {
       @Override                                              
-      public Map<String, String> getHeaders() {              
+      public Map&gt;String, String> getHeaders() {              
           return null;                                       
       }                                                      
                                                            
       @Override                                              
-      public Map<String, String> getQueryParams() {          
+      public Map&gt;String, String> getQueryParams() {          
           return null;                                       
       }
 
@@ -261,7 +259,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @RetryPolicy(initialTimeout = 1)
     @GET("/users")
     void fetchUsers2(
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;List&gt;Repo> callBack
     );
 </pre>
 
@@ -284,7 +282,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @EndPoint("http://www.google.com")
     @GET("/users")
     void fetchUsers2(
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;List&gt;Repo> callBack
     );
 </pre>
 
@@ -304,19 +302,19 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @Mock(path="users.json")
     @GET("/users")
     void fetchUsers2(
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;Repo> callBack
     );
     
     @Mock
     @GET("/users")
     void fetchUsers2(
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;Repo> callBack
     );
     
     @Mock(path="users.json", statusCode=202)
     @GET("/users")
     void fetchUsers2(
-          RepoCallBack<List<Repo> callBack
+          RepoCallBack&gt;Repo> callBack
     );
 </pre>
 
