@@ -1,7 +1,7 @@
 package com.orhanobut.wasp.utils;
 
 /**
- * This class stores the token and attributes.
+ * This class stores the token and auth attributes.
  *
  * @author Orhan Obut
  */

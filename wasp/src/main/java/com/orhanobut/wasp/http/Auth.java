@@ -8,7 +8,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Enables the mocking for the network regarding to mock type
+ * Enables to use AuthToken if it is set.
  *
  * @author Orhan Obut
  */
