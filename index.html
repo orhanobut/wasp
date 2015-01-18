@@ -256,6 +256,17 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
        </li>
      </ul>
 <pre class='prettyprint'>
+  RequestInterceptor interceptor = new RequestInterceptor() {
+      ...
+      
+      @Override
+      public WaspRetryPolicy getRetryPolicy() {
+          return new WaspRetryPolicy(45000, 3, 1.5f);
+      }
+  };
+  </pre>
+  <br>
+<pre class='prettyprint'>
     @RetryPolicy(initialTimeout = 1)
     @GET("/users")
     void fetchUsers2(
