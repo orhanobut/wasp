@@ -1,5 +1,5 @@
 #Wasp
-Wasp is compact, complete, easy-in-use and simple network solution. 
+Wasp is compact, complete, easy-in-use and all-in-one network solution. 
 
 Wasp uses:
 - Volley
