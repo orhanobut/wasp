@@ -59,7 +59,7 @@ class MockFactory implements NetworkStack {
         } else {
             try {
                 responseString = IOUtils.readFileFromAssets(context, mock.getPath());
-                if (TextUtils.isEmpty(responseString) || !JsonUtil.validJson(responseString)) {
+                if (TextUtils.isEmpty(responseString) || !JsonUtil.isValid(responseString)) {
                     throw new RuntimeException("Given file for \"" +
                             methodInfo.getMethod().getDeclaringClass().getSimpleName() + "." +
                             methodInfo.getMethod().getName() + "\" is either empty or contains an invalid json"

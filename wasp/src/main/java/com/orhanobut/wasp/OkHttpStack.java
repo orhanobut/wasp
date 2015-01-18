@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.HurlStack;
+import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.OkUrlFactory;
 
