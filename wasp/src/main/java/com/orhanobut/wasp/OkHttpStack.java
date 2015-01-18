@@ -17,7 +17,9 @@ import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -31,7 +33,7 @@ public class OkHttpStack extends HurlStack implements WaspHttpStack<HttpStack> {
     private final OkUrlFactory okUrlFactory;
 
     public OkHttpStack() {
-        this(new OkHttpClient());
+        this(false);
     }
 
     public OkHttpStack(final OkHttpClient client) {
@@ -39,6 +41,13 @@ public class OkHttpStack extends HurlStack implements WaspHttpStack<HttpStack> {
             throw new NullPointerException("HttpClient may not be null.");
         }
         okUrlFactory = new OkUrlFactory(client);
+    }
+
+    public OkHttpStack(boolean trustAllCertificates) {
+        this(new OkHttpClient());
+        if (trustAllCertificates) {
+            setEmptyHostNameVerifier();
+        }
     }
 
     @Override
@@ -59,6 +68,15 @@ public class OkHttpStack extends HurlStack implements WaspHttpStack<HttpStack> {
     @Override
     public void setCookieHandler(CookieHandler cookieHandler) {
         okUrlFactory.client().setCookieHandler(cookieHandler);
+    }
+
+    private void setEmptyHostNameVerifier() {
+        okUrlFactory.client().setHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        });
     }
 
     static SSLSocketFactory getTrustAllCertSslSocketFactory() {
