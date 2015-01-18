@@ -221,6 +221,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
       }
   };
   </pre>
+  <p>Finally, set it to the builder</p>
 <pre class='prettyprint'>
   GitHubService service = new Wasp.Builder(this)    
         .setEndpoint("https://api.github.com")   
