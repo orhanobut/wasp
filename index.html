@@ -195,42 +195,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
     })
 </pre>
 
-
-     <h4>Request Interceptor</h4>
-     <p>By using request interceptor, you basically add the following additions to the each request call :</p>
-     <ul>
-       <li>Headers</li>
-       <li>Query params</li>
-       <li>Retry Policy</li>
-     </ul>
-<pre class='prettyprint'>
-  RequestInterceptor interceptor = new RequestInterceptor() {
-      @Override                                              
-      public Map&lt;String, String> getHeaders() {              
-          return null;                                       
-      }                                                      
-                                                           
-      @Override                                              
-      public Map&lt;String, String> getQueryParams() {          
-          return null;                                       
-      }
-
-      @Override
-      public WaspRetryPolicy getRetryPolicy() {
-          return new WaspRetryPolicy(45000, 3, 1.5f);
-      }
-  };
-  </pre>
-  <p>Finally, set it to the builder</p>
-<pre class='prettyprint'>
-  GitHubService service = new Wasp.Builder(this)    
-        .setEndpoint("https://api.github.com")   
-        .setRequestInterceptor(interceptor)        
-        .build()                        
-        .create(MyService.class);   
-</pre>
-
-
      <h4>Request Interceptor (Next release)</h4>
      <p>You can intercept each request and add some additional information. You can either implement RequestInterceptor
        interface or use the SimpleInterceptor class. Use SimpleInterceptor if you don't need to implement each feature.
@@ -294,15 +258,12 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <h4>Retry Policy</h4>
      <p>You can set retry policy for each call by using request interceptor</p>
 <pre class='prettyprint'>
-  RequestInterceptor interceptor = new RequestInterceptor() {
-      ...
-      
+  RequestInterceptor interceptor = new SimpleInterceptor() {
       @Override
       public WaspRetryPolicy getRetryPolicy() {
           return new WaspRetryPolicy(45000, 3, 1.5f);
-      }
-  };
-</pre>
+      }                                                      
+  }</pre>
        <p>You can use annotation to add specific policy for the specific calls. 
        Annotation always override the request interceptor if both are used at the same time
        </p>
@@ -421,19 +382,18 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      
      <p><b>Simple usage</b></p>
 <pre class='prettyprint'>
-Wasp.loadImage().from(url).to(imageView).load();
+Wasp.Image.from(url).to(imageView).load();
 </pre>
      <p><b>Advanced options</b></p>
 <pre class='prettyprint'>
-Wasp.loadImage()
-    .from(url)
-    .to(imageView)
-    .setErrorResource(errorImage)     // Optional
-    .setDefaultResource(defaulImage)  // Optional
-    .fit()                            // Optional, in TODO
-    .cropCenter()                     // Optional, in TODO
-    .resize(100,200)                  // Optional, in TODO
-    .load();
+Wasp.Image.from(url)
+      .to(imageView)
+      .setErrorResource(errorImage)     // Optional
+      .setDefaultResource(defaulImage)  // Optional
+      .fit()                            // Optional, in TODO
+      .cropCenter()                     // Optional, in TODO
+      .resize(100,200)                  // Optional, in TODO
+      .load();
 </pre>
 <br>
         </section>
