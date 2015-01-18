@@ -366,6 +366,8 @@ Additional
 pre.prettyprint {
   padding: 10px !important;
   border: solid 1px #C9C8C5 !important;
+  marginTop: 10px !important;
+  marginBottom: 10px !important;
 }
 
 /*******************************************************************************
