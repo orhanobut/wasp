@@ -54,6 +54,7 @@
         <li>Call based retry policy</li>
         <li>Cookie management</li>
         <li>Certificate management</li>
+        <li>Easy-in-use auth token management</li>
       </ul>
       
       <h2>Gradle</h2>
@@ -220,6 +221,66 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
       }
   };
   </pre>
+<pre class='prettyprint'>
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .setRequestInterceptor(interceptor)        
+        .build()                        
+        .create(MyService.class);   
+</pre>
+
+
+     <h4>Request Interceptor (Next release)</h4>
+     <p>You can intercept each request and add some additional information. You can either implement RequestInterceptor
+       interface or use the SimpleInterceptor class. Use SimpleInterceptor if you don't need to implement each feature.
+     </p>
+     <p>Add headers to each request</p>
+<pre class='prettyprint'>
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override                                                
+      public void onHeadersAdded(Map<String, String> headers) {
+          super.onHeadersAdded(headers);                       
+          headers.put("key","value");                          
+      }                                                        
+  }</pre>
+
+     <p>Add additional query parameters to the each request</p>
+<pre class='prettyprint'>
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public void onQueryParamsAdded(Map<String, Object> params) {
+          super.onQueryParamsAdded(params);
+          params.put("name","something");
+      }                                                       
+  }</pre>
+     <p>Add retry policy to the each request</p>
+<pre class='prettyprint'>
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public WaspRetryPolicy getRetryPolicy() {
+          return new WaspRetryPolicy(45000, 3, 1.5f);
+      }                                                      
+  }</pre>
+  
+    <p>Add auth token to the each request or filtered requests. Return a new AuthToken object which accepts
+      authtoken value and filter enabled. If you enabled the filter, all request which has @Auth annotation
+      will use the auth token in the header. If you disabled filter, each request will add the token.
+    </p>
+<pre class='prettyprint'>
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public AuthToken getAuthToken() {
+          return new AuthToken(token, true);
+      }                                                     
+  }</pre>
+  <p></p>
+<pre class='prettyprint'>
+    @Auth
+    @GET("/users")
+    void fetchUsers(
+          RepoCallBack&lt;List&lt;User> callBack
+    );
+</pre>
 <pre class='prettyprint'>
   GitHubService service = new Wasp.Builder(this)    
         .setEndpoint("https://api.github.com")   
