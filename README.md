@@ -1,5 +1,5 @@
 #Wasp
-Wasp is compact, complete, easy-in-use and simple network solution. 
+Wasp is compact, complete, easy-in-use and all-in-one network solution. 
 
 Wasp uses:
 - Volley
@@ -23,7 +23,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
 }
 dependencies {
-    compile 'com.orhanobut:wasp:1.0.0-SNAPSHOT@aar'
+    compile 'com.orhanobut:wasp:1.2-SNAPSHOT'
 }
 ```
 
@@ -57,6 +57,7 @@ GitHubService service = new Wasp.Builder(this)
     .setRequestInterceptor                     // Optional
     .trustCertificates                         // Optional
     .setHttpStack                              // Optional
+    .enableCookies                             // Optional
     .build()
     .create(MyService.class);
 ```
