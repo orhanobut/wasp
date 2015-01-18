@@ -84,7 +84,7 @@ public interface GitHubService {
     );
 
     @POST("/repos/{user}/{repo}")
-    void addName(
+    void addRepo(
           @Path("user") String user,
           @Path("repo") String repo,
           CallBack&lt;Repo> callBack
@@ -142,6 +142,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 <pre class='prettyprint'>
     service.addName(new Repo("3423",3),callback);
 </pre>
+<br>
       <li><b>@BodyMap</b> can be used to add a Map object instead of creating body class. It will be converted to json. You can use
       @BodyMap for the simple operations which you don't want to create a class.</li>
      </ul>
@@ -268,6 +269,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;List&lt;User>> callBack
     );
 </pre>
+<br>
      </ul>
 <br>
      <h4>Http Stack</h4>
@@ -305,6 +307,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
+<br>
        <li><b>@Mock(path="users.json")</b> : Uses local file to generate mock. Local files must be under assets folder.
          This will return a response with the generated content by given path, with the status code 200
        </li>
@@ -315,6 +318,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
+<br>
        <li><b>@Mock(statusCode=404)</b> : Returns a fail response with status code 404 </li>
 <pre class='prettyprint'>
     @Mock(statusCode=404)
@@ -323,6 +327,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
+<br>
        <li><b>@Mock(statusCode=201)</b> : Returns a success with the status code 201 and auto generated response</li>
 <pre class='prettyprint'>
     @Mock(statusCode=201)
