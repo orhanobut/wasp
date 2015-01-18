@@ -49,7 +49,7 @@ public interface MyService {
             CallBack<Ip> callBack
     );
 
-    //  @RetryPolicy(initialTimeout = 1)
+    //  @RetryPolicy(timeout = 1)
     @PUT("/put")
     void putFooMap(
             @BodyMap Map bodyMap,
