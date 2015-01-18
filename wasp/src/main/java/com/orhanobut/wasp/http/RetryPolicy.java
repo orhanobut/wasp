@@ -1,6 +1,6 @@
 package com.orhanobut.wasp.http;
 
-import com.orhanobut.wasp.WaspRetryPolicy;
+import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

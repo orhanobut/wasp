@@ -3,6 +3,7 @@ package com.orhanobut.wasp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.orhanobut.wasp.http.Auth;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.EndPoint;
@@ -14,6 +15,7 @@ import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RestMethod;
 import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.utils.IOUtils;
+import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -44,6 +46,7 @@ final class MethodInfo {
     private Annotation[] methodAnnotations;
     private Map<String, String> headers;
     private WaspMock mock;
+    private boolean isAuthTokenEnabled;
 
     private MethodInfo(Context context, Method method) {
         this.context = context;
@@ -86,6 +89,11 @@ final class MethodInfo {
             if (annotationType == EndPoint.class) {
                 EndPoint endPoint = (EndPoint) annotation;
                 baseUrl = endPoint.value();
+                continue;
+            }
+
+            if (annotationType == Auth.class) {
+                isAuthTokenEnabled = true;
                 continue;
             }
 
@@ -276,7 +284,11 @@ final class MethodInfo {
         return headers != null ? headers : Collections.<String, String>emptyMap();
     }
 
-    public WaspMock getMock() {
+    WaspMock getMock() {
         return mock;
+    }
+
+    boolean isAuthTokenEnabled() {
+        return isAuthTokenEnabled;
     }
 }

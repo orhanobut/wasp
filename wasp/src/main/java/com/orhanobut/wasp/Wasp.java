@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.orhanobut.wasp.parsers.GsonParser;
 import com.orhanobut.wasp.parsers.Parser;
+import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.RequestInterceptor;
+import com.orhanobut.wasp.utils.WaspHttpStack;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;

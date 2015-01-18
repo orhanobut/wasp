@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.orhanobut.wasp.toolbox.WaspBitmapCache;
+import com.orhanobut.wasp.utils.WaspBitmapCache;
 
 /**
  * @author Orhan Obut
