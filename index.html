@@ -88,13 +88,10 @@ public interface GitHubService {
           CallBack&lt;Repo> callBack
     );
 }</pre>
-<br>
 <pre class='prettyprint'>
     service.fetchRepo("admin","wasp",callback);
     //url will be ENDPOINT/repos/admin/wasp
 </pre>
-
-<br>
      <h4>Initialize builder</h4>
      <p>Best approach would be to initialize it in the application class and use it as singleton.</p>
 <pre class='prettyprint'>
@@ -109,7 +106,8 @@ public interface GitHubService {
         .create(MyService.class);                // Must be called 
 </pre>
 
-<br>
+
+
      <h4>Use it everywhere</h4>
      <p>Use the service instance to make network calls</p>
 <pre class='prettyprint'>
@@ -125,7 +123,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 });
 </pre>
 
-<br>
+
      <h4>Add Body</h4>
      <p><b>@Body</b> can be used to add an object for request body. Object will be converted to json.</p>
 <pre class='prettyprint'>
@@ -135,11 +133,9 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         CallBack&lt;Repo> callBack
     );
 </pre>
-<br>
 <pre class='prettyprint'>
     service.addName(new Repo("3423",3),callback);
 </pre>
-<br>
       <p><b>@BodyMap</b> can be used to add a Map object instead of creating body class. It will be converted to json. You can use
       @BodyMap for the simple operations which you don't want to create a class.</p>
 <pre class='prettyprint'>
@@ -149,7 +145,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         CallBack&lt;Repo> callBack
     );
 </pre>
-<br>
 <pre class='prettyprint'>
     Map<String,Object> map = new HashMap<>();
     map.put("ip","3423");
@@ -158,7 +153,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
     service.addName(map, callback);
 </pre>
 
-<br>
      <h4>Add Query Params</h4>
      <p><b>@Query</b> is used to add query params</p>
 <pre class='prettyprint'>
@@ -169,16 +163,14 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           CallBack&lt;Repo> callBack
     );
 </pre>
-<br>
 <pre class='prettyprint'>
     service.fetchRepoBySearch(2,"asc", callback);
     //output url is ENDPOINT/users/repos?page=2&sort=asc
 </pre>
 
-<br>
+
      <h4>Add Headers</h4>
      <p><b>@Header</b> is used to add headers by using params</p>
-<br>
 <pre class='prettyprint'>
     @GET("/repos")
     void fetchRepos(
@@ -186,7 +178,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;List&lt;Repo> callBack
     );
 </pre>
-<br>
       <p><b>@Headers</b> is used to add static headers by adding to method</p>
 <pre class='prettyprint'>
     //Single static header
@@ -204,7 +195,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 </pre>
 
 
-<br>
      <h4>Request Interceptor</h4>
      <p>By using request interceptor, you basically add the following additions to the each request call :</p>
      <ul>
@@ -230,7 +220,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
       }
   };
   </pre>
-  <br>
 <pre class='prettyprint'>
   GitHubService service = new Wasp.Builder(this)    
         .setEndpoint("https://api.github.com")   
@@ -239,10 +228,8 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         .create(MyService.class);   
 </pre>
 
-<br>
      <h4>Retry Policy</h4>
      <p>You can set retry policy for each call by using request interceptor</p>
-<br>
 <pre class='prettyprint'>
   RequestInterceptor interceptor = new RequestInterceptor() {
       ...
@@ -256,7 +243,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
        <p>You can use annotation to add specific policy for the specific calls. 
        Annotation always override the request interceptor if both are used at the same time
        </p>
-<br>
 <pre class='prettyprint'>
     @RetryPolicy(initialTimeout = 1)
     @GET("/users")
@@ -264,8 +250,8 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;List&lt;User>> callBack
     );
 </pre>
-<br>
-<br>
+
+
      <h4>Http Stack</h4>
      <p>You can set your custom http stack instead of default. Default is OkHttp.</p>
 <pre class='prettyprint'>
@@ -277,7 +263,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 </pre>
 
 
-<br>
      <h4>Add different end points for different network calls</h4>
      <p>You can add different end point url for some network calls, it will override the base url.</p>
 <pre class='prettyprint'>
@@ -289,11 +274,9 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 </pre>
 
 
-<br>
      <h4>Mocking</h4>
      <p>You can mock your network calls easily by using mock annotation.</p>
      <p><b>@Mock</b> :  Uses auto generate feature mock regarding to your response type</p>
-<br>
 <pre class='prettyprint'>
     @Mock
     @GET("/user")
@@ -301,7 +284,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
-<br>
        <p><b>@Mock(path="users.json")</b> : Uses local file to generate mock. Local files must be under assets folder.
          This will return a response with the generated content by given path, with the status code 200
        </p>
@@ -313,9 +295,8 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
-<br>
        <p><b>@Mock(statusCode=404)</b> : Returns a fail response with status code 404 </p>
-<br>
+
 <pre class='prettyprint'>
     @Mock(statusCode=404)
     @GET("/user")
@@ -323,9 +304,9 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
-<br>
+
        <p><b>@Mock(statusCode=201)</b> : Returns a success with the status code 201 and auto generated response</p>
-<br>
+
 <pre class='prettyprint'>
     @Mock(statusCode=201)
     @GET("/user")
@@ -333,9 +314,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           RepoCallBack&lt;User> callBack
     );
 </pre>
-<br>
 
-<br>
      <h4>Cookie Management</h4>
      <p>You can easily handle cookies in two ways:</p>
      <ul>
@@ -350,7 +329,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         .create(MyService.class);
 </pre>
 
-<br>
      <h4>Certificate Management</h4>
      <p>You can make use of this feature in two ways:</p>
      <p><b>Trust All Certificates:</b> Most of the time test servers do not use a certificate which is signed by a CA.
@@ -364,7 +342,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         .build()                        
         .create(MyService.class);
 </pre>
-<br>
       <p><b>Certificate Pinning:</b> Create a BKS file of your server certificate and put it under res/raw folder. Than,
          let Wasp use your certificate for SSL Handshake with the server by providing your raw resource id and keystore pasword.
        </p>
@@ -376,7 +353,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         .create(MyService.class);
 </pre>
 
-<br>
      <h4>Image Loading</h4>
      <p>You can use Wasp to download and load images to image views easily.</p>
      
@@ -384,7 +360,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 <pre class='prettyprint'>
 Wasp.loadImage().from(url).to(imageView).load();
 </pre>
-<br>
      <p><b>Advanced options</b></p>
 <pre class='prettyprint'>
 Wasp.loadImage()
@@ -397,7 +372,6 @@ Wasp.loadImage()
     .resize(100,200)                  // Optional, in TODO
     .load();
 </pre>
-
 <br>
         </section>
     </div>
