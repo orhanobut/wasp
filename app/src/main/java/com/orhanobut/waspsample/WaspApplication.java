@@ -2,10 +2,12 @@ package com.orhanobut.waspsample;
 
 import android.app.Application;
 
-import com.orhanobut.wasp.LogLevel;
-import com.orhanobut.wasp.RequestInterceptor;
+import com.orhanobut.wasp.utils.AuthToken;
+import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.Wasp;
-import com.orhanobut.wasp.WaspRetryPolicy;
+import com.orhanobut.wasp.utils.SimpleInterceptor;
+import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.util.Map;
 
@@ -22,27 +24,38 @@ public class WaspApplication extends Application {
 
         RequestInterceptor interceptor = new RequestInterceptor() {
             @Override
-            public Map<String, String> getHeaders() {
-                return null;
+            public void onHeadersAdded(Map<String, String> headers) {
             }
 
             @Override
-            public Map<String, String> getQueryParams() {
-                return null;
+            public void onQueryParamsAdded(Map<String, Object> params) {
             }
 
             @Override
             public WaspRetryPolicy getRetryPolicy() {
                 return new WaspRetryPolicy(45000, 3, 1.5f);
             }
+
+            @Override
+            public AuthToken getAuthToken() {
+                return null;
+            }
+        };
+
+        RequestInterceptor interceptor1 = new SimpleInterceptor() {
+            @Override
+            public AuthToken getAuthToken() {
+                return new AuthToken("asdfad", true);
+            }
         };
 
         service = new Wasp.Builder(this)
                 .setEndpoint("http://httpbin.org")
                 .setLogLevel(LogLevel.ALL)
-                //.enableCookies(CookiePolicy.ACCEPT_ALL)
-                //.trustCertificates()
-                //.trustCertificates(R.raw.mytruststore, "123456")
+                        //.enableCookies(CookiePolicy.ACCEPT_ALL)
+                        //.trustCertificates()
+                        //.trustCertificates(R.raw.mytruststore, "123456")
+                .setRequestInterceptor(interceptor1)
                 .build()
                 .create(MyService.class);
 

@@ -1,6 +1,7 @@
 package com.orhanobut.waspsample;
 
 import com.orhanobut.wasp.CallBack;
+import com.orhanobut.wasp.http.Auth;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.DELETE;
@@ -18,7 +19,7 @@ import java.util.Map;
  */
 public interface MyService {
 
-    @Mock(path = "ips.json")
+    @Auth
     @GET("/ip")
     void fetchIps(
             CallBack<List<Ip>> callBack

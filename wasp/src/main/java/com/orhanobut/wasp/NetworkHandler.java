@@ -3,6 +3,7 @@ package com.orhanobut.wasp;
 import android.content.Context;
 
 import com.orhanobut.wasp.parsers.Parser;
+import com.orhanobut.wasp.utils.RequestInterceptor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

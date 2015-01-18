@@ -29,12 +29,12 @@ public class MainActivity extends BaseActivity {
 
         fetchIps();
 
-        //  postFoo();
+         postFoo();
 
         //putFoo();
 
         //  putFooMap();
-        loadImage();
+       // loadImage();
     }
 
     private void fetchIp() {
