@@ -66,6 +66,7 @@ public class Wasp {
         private NetworkStack networkStack;
         private SSLSocketFactory sslSocketFactory;
         private CookieHandler cookieHandler;
+        private boolean trustAllCertificates;
 
         public Builder(Context context) {
             if (context == null) {
@@ -122,6 +123,7 @@ public class Wasp {
                 throw new IllegalStateException("Only one type of trust certificate method can be used!");
             }
             this.sslSocketFactory = OkHttpStack.getTrustAllCertSslSocketFactory();
+            this.trustAllCertificates = true;
             return this;
         }
 
@@ -160,7 +162,7 @@ public class Wasp {
                 logLevel = LogLevel.ALL;
             }
             if (waspHttpStack == null) {
-                waspHttpStack = new OkHttpStack();
+                waspHttpStack = new OkHttpStack(trustAllCertificates);
             }
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
             waspHttpStack.setCookieHandler(cookieHandler);
