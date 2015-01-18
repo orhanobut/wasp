@@ -131,9 +131,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <h4>Add Body</h4>
      <ul>
       <li><b>@Body</b> can be used to add an object for request body. Object will be converted to json.</li>
-      <li><b>@BodyMap</b> can be used to add a Map object instead of creating body class. It will be converted to json. You can use
-      @BodyMap for the simple operations which you don't want to create a class.</li>
-     </ul>
 <pre class='prettyprint'>
     @POST("/repos")
     void addName(
@@ -141,11 +138,13 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         CallBack&lt;Repo> callBack
     );
 </pre>
+<br>
 <pre class='prettyprint'>
     service.addName(new Repo("3423",3),callback);
 </pre>
-<br>
-<p>or</p>
+      <li><b>@BodyMap</b> can be used to add a Map object instead of creating body class. It will be converted to json. You can use
+      @BodyMap for the simple operations which you don't want to create a class.</li>
+     </ul>
 <pre class='prettyprint'>
     @POST("/repos")
     void addName(
@@ -185,17 +184,16 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <h4>Add Headers</h4>
      <ul>
       <li><b>@Header</b> is used to add headers by using params</li>
-      <li><b>@Headers</b> is used to add static headers by adding to method</li>
-     </ul>
 <pre class='prettyprint'>
-
-    //using parameter
     @GET("/repos")
     void fetchRepos(
           @Header("auth") String authToken,
           RepoCallBack&lt;List&lt;Repo> callBack
     );
-
+</pre>
+      <li><b>@Headers</b> is used to add static headers by adding to method</li>
+     </ul>
+<pre class='prettyprint'>
     //Single static header
     @Headers("Accept-Language:en-En")
     @GET("/users")
@@ -208,11 +206,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
         "Accept-Language:en-En",
         "Content-type:application/json"
     })
-    
-    @GET("/users")
-    void fetchUsers2(
-          RepoCallBack&lt;List&lt;Repo> callBack
-    );
 </pre>
 
 
@@ -255,10 +248,6 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <h4>Retry Policy</h4>
      <ul>
        <li>You can set retry policy for each call by using request interceptor</li>
-       <li>You can use annotation to add specific policy for the specific calls. 
-       Annotation always override the request interceptor if both are used at the same time
-       </li>
-     </ul>
 <pre class='prettyprint'>
   RequestInterceptor interceptor = new RequestInterceptor() {
       ...
@@ -268,16 +257,18 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
           return new WaspRetryPolicy(45000, 3, 1.5f);
       }
   };
-  </pre>
-  <br>
+</pre>
+       <li>You can use annotation to add specific policy for the specific calls. 
+       Annotation always override the request interceptor if both are used at the same time
+       </li>
 <pre class='prettyprint'>
     @RetryPolicy(initialTimeout = 1)
     @GET("/users")
-    void fetchUsers2(
+    void fetchUsers(
           RepoCallBack&lt;List&lt;User>> callBack
     );
 </pre>
-
+     </ul>
 <br>
      <h4>Http Stack</h4>
      <p>You can set your custom http stack instead of default. Default is OkHttp.</p>
@@ -296,7 +287,7 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
 <pre class='prettyprint'>
     @EndPoint("http://www.google.com")
     @GET("/users")
-    void fetchUsers2(
+    void fetchUsers(
           RepoCallBack&lt;List&lt;User>> callBack
     );
 </pre>
@@ -307,32 +298,40 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
      <p>You can mock your network calls easily by using mock annotation.</p>
      <ul>
        <li><b>@Mock</b> :  Uses auto generate feature mock regarding to your response type</li>
-       <li><b>@Mock(path="users.json")</b> : Uses local file to generate mock. Local files must be under assets folder.
-         This will return a response with the generated content by given path, with the status code 200
-       </li>
-       <li><b>@Mock(statusCode=404)</b> : Returns a fail response with status code 404 </li>
-       <li><b>@Mock(statusCode=201)</b> : Returns a success with the status code 201 and auto generated response</li>
-     </ul>
 <pre class='prettyprint'>
-    @Mock(path="users.json")
-    @GET("/users")
-    void fetchUsers2(
-          RepoCallBack&lt;User> callBack
-    );
-    
     @Mock
-    @GET("/users")
-    void fetchUsers2(
-          RepoCallBack&lt;User> callBack
-    );
-    
-    @Mock(path="users.json", statusCode=202)
-    @GET("/users")
-    void fetchUsers2(
+    @GET("/user")
+    void fetchUser(
           RepoCallBack&lt;User> callBack
     );
 </pre>
-
+       <li><b>@Mock(path="users.json")</b> : Uses local file to generate mock. Local files must be under assets folder.
+         This will return a response with the generated content by given path, with the status code 200
+       </li>
+<pre class='prettyprint'>
+    @Mock(path="user.json")
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack&lt;User> callBack
+    );
+</pre>
+       <li><b>@Mock(statusCode=404)</b> : Returns a fail response with status code 404 </li>
+<pre class='prettyprint'>
+    @Mock(statusCode=404)
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack&lt;User> callBack
+    );
+</pre>
+       <li><b>@Mock(statusCode=201)</b> : Returns a success with the status code 201 and auto generated response</li>
+<pre class='prettyprint'>
+    @Mock(statusCode=201)
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack&lt;User> callBack
+    );
+</pre>
+     </ul>
 <br>
 
 <br>
