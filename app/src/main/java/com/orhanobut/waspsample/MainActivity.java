@@ -27,14 +27,14 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        fetchIps();
+        //fetchIps();
 
-         postFoo();
+        // postFoo();
 
         //putFoo();
 
         //  putFooMap();
-       // loadImage();
+        loadImage();
     }
 
     private void fetchIp() {
@@ -114,13 +114,12 @@ public class MainActivity extends BaseActivity {
 
     public void loadImage() {
         String url = "http://developer.android.com/images/training/system-ui.png";
-        int defaulImage = R.drawable.ic_launcher;
+        int defaultImage = R.drawable.ic_launcher;
         int errorImage = R.drawable.error;
-        Wasp.loadImage()
-                .from(url)
+        Wasp.Image.from(url)
                 .to(imageView)
                 .setError(errorImage)
-                .setDefault(defaulImage)
+                .setDefault(defaultImage)
                 .load();
     }
 
