@@ -1,4 +1,4 @@
-package com.orhanobut.wasp;
+package com.orhanobut.wasp.utils;
 
 /**
  * @author Orhan Obut

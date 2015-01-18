@@ -1,4 +1,4 @@
-package com.orhanobut.wasp;
+package com.orhanobut.wasp.utils;
 
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;

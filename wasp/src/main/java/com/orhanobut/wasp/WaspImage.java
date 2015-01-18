@@ -80,10 +80,7 @@ final class WaspImage {
          * @param url is the full url
          * @return Builder
          */
-        public Builder from(String url) {
-            if (TextUtils.isEmpty(url)) {
-                throw new IllegalArgumentException("Url cannot be empty or null");
-            }
+        Builder from(String url) {
             this.url = url;
             return this;
         }
@@ -95,7 +92,7 @@ final class WaspImage {
          * @return Builder
          */
         public Builder to(ImageView imageView) {
-            if (imageView == null){
+            if (imageView == null) {
                 throw new NullPointerException("ImageView cannot be null");
             }
             this.imageView = imageView;
@@ -108,7 +105,7 @@ final class WaspImage {
          * @param resId is the drawable id
          * @return Builder
          */
-        public Builder setDefaultResource(int resId) {
+        public Builder setDefault(int resId) {
             this.defaultImage = resId;
             return this;
         }
@@ -119,7 +116,7 @@ final class WaspImage {
          * @param resId is the drawable id
          * @return Builder itself
          */
-        public Builder setErrorResource(int resId) {
+        public Builder setError(int resId) {
             this.errorImage = resId;
             return this;
         }

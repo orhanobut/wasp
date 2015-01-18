@@ -12,7 +12,7 @@ public class JsonUtil {
         //no instance
     }
 
-    public static boolean validJson(String jsonSource) {
+    public static boolean isValid(String jsonSource) {
         try {
             new JsonParser().parse(jsonSource);
             return true;
