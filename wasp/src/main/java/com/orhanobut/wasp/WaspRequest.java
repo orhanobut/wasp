@@ -1,15 +1,17 @@
 package com.orhanobut.wasp;
 
+import android.text.TextUtils;
+
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
-import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.AuthToken;
-import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.CollectionUtils;
+import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.lang.annotation.Annotation;
@@ -76,6 +78,21 @@ final class WaspRequest {
             //TODO add header output
         }
         return builder.toString();
+    }
+
+    public void logWaspRequest(LogLevel logLevel) {
+        switch (logLevel) {
+            case ALL:
+                Logger.d("---> REQUEST " + method + " " + url);
+                if (!headers.isEmpty()) {
+                    for (Map.Entry<String, String> entry : headers.entrySet()) {
+                        Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
+                    }
+                }
+                Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + body);
+                Logger.d("---> END");
+                break;
+        }
     }
 
     public MethodInfo getMethodInfo() {
