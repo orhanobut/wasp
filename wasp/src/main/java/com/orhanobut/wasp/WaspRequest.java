@@ -1,5 +1,6 @@
 package com.orhanobut.wasp;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.orhanobut.wasp.http.Body;
@@ -80,7 +81,7 @@ final class WaspRequest {
         return builder.toString();
     }
 
-    public void logWaspRequest(LogLevel logLevel) {
+    void logWaspRequest(LogLevel logLevel) {
         switch (logLevel) {
             case ALL:
                 Logger.d("---> REQUEST " + method + " " + url);
@@ -95,7 +96,7 @@ final class WaspRequest {
         }
     }
 
-    public MethodInfo getMethodInfo() {
+    MethodInfo getMethodInfo() {
         return methodInfo;
     }
 
@@ -112,7 +113,7 @@ final class WaspRequest {
         private String body;
         private String relativeUrl;
         private WaspRetryPolicy retryPolicy;
-        private StringBuilder queryParamBuilder;
+        private Uri.Builder queryParamBuilder;
         private Map<String, String> headers;
         private RequestInterceptor requestInterceptor;
 
@@ -267,24 +268,16 @@ final class WaspRequest {
             return queryParamBuilder.toString();
         }
 
+        //TODO we can also do something about value check
         private void addPathParam(String key, String value) {
             relativeUrl = relativeUrl.replace("{" + key + "}", value);
         }
 
         private void addQueryParam(String key, Object value) {
-            //Replace the space with ASCII code
-            String tempKey = key.replace(" ", ASCII_SPACE);
-            Object tempValue = value;
-            if (tempValue instanceof String) {
-                tempValue = ((String) tempValue).replace(" ", ASCII_SPACE);
-            }
-
-            StringBuilder builder = this.queryParamBuilder;
             if (queryParamBuilder == null) {
-                this.queryParamBuilder = builder = new StringBuilder();
+                queryParamBuilder = new Uri.Builder();
             }
-            builder.append(queryParamBuilder.length() == 0 ? "?" : "&");
-            builder.append(tempKey).append("=").append(tempValue);
+            queryParamBuilder.appendQueryParameter(key, String.valueOf(value));
         }
 
         private void addHeaderParam(String key, String value) {
