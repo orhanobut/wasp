@@ -8,7 +8,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Make a GET request to a REST path relative to base URL
+ * Define the path of the endpoint
  *
  * @author Orhan Obut
  */

@@ -7,6 +7,7 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
+import com.orhanobut.wasp.http.QueryMap;
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.AuthToken;
 import com.orhanobut.wasp.utils.CollectionUtils;
@@ -147,6 +148,21 @@ final class WaspRequest {
                 if (annotationType == Query.class) {
                     String key = ((Query) annotation).value();
                     addQueryParam(key, value);
+                    continue;
+                }
+                if (annotationType == QueryMap.class) {
+                    if (!(value instanceof Map)) {
+                        throw new IllegalArgumentException("QueryMap accepts only Map instances");
+                    }
+                    Map<String, String> map;
+                    try {
+                        map = (Map<String, String>) value;
+                    } catch (Exception e) {
+                        throw new ClassCastException("QueryMap type should be Map<String,String>");
+                    }
+                    for (Map.Entry<String, String> entry : map.entrySet()) {
+                        addQueryParam(entry.getKey(), entry.getValue());
+                    }
                     continue;
                 }
                 if (annotationType == Header.class) {
