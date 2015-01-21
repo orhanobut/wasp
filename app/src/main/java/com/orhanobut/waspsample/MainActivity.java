@@ -27,18 +27,20 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        //fetchIps();
+        fetchIp();
 
         // postFoo();
 
         //putFoo();
 
         //  putFooMap();
-        loadImage();
+//        loadImage();
     }
 
     private void fetchIp() {
-        getService().fetchIp(new CallBack<Ip>() {
+        Ip ip = new Ip("origin", "foo");
+
+        getService().fetchIp("ParamHeaderValue1", ip, new CallBack<Ip>() {
             @Override
             public void onSuccess(Ip ip) {
                 textView.setText(ip.toString());

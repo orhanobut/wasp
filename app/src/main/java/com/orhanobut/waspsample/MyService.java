@@ -7,6 +7,7 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.EndPoint;
 import com.orhanobut.wasp.http.GET;
+import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
@@ -27,6 +28,8 @@ public interface MyService {
 
     @GET("/ip")
     void fetchIp(
+            @Header("ParamHeaderKey") String paramHeader,
+            @Body Ip ip,
             CallBack<Ip> callBack
     );
 
