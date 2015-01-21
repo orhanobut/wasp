@@ -143,9 +143,11 @@ final class VolleyNetworkStack implements NetworkStack {
 
         private final VolleyListener<T> listener;
         private final String requestBody;
+        private final String url;
 
         public VolleyRequest(int method, String url, String requestBody, VolleyListener<T> listener) {
             super(method, url, listener);
+            this.url = url;
             this.listener = listener;
             this.requestBody = requestBody;
         }
@@ -158,8 +160,14 @@ final class VolleyNetworkStack implements NetworkStack {
         @Override
         protected Response parseNetworkResponse(NetworkResponse response) {
             try {
-                String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
+                byte[] data = response.data;
+                String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
+                int length = data.length;
+                long delay = response.networkTimeMs;
+                WaspResponse waspResponse = new WaspResponse(
+                        url, response.statusCode, response.headers, body, length, delay
+                );
+                return Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
             } catch (UnsupportedEncodingException e) {
                 return Response.error(new ParseError(e));
             }
