@@ -16,6 +16,7 @@ import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -113,17 +114,25 @@ final class VolleyNetworkStack implements NetworkStack {
         @Override
         public void onErrorResponse(VolleyError error) {
             int statusCode = WaspError.INVALID_STATUS_CODE;
+            byte[] body = new byte[0];
+            Map<String, String> headers = new HashMap<>();
+            long delay = 0;
             if (error == null) {
-                callBack.onError(new WaspError(url, "No message", statusCode));
+                callBack.onError(new WaspError(url, statusCode, headers, "No message", body, delay));
                 return;
             }
             if (error.networkResponse != null) {
                 statusCode = error.networkResponse.statusCode;
+                headers = error.networkResponse.headers;
+                body = error.networkResponse.data;
             }
             callBack.onError(new WaspError(
                     url,
+                    statusCode,
+                    headers,
                     error.getMessage(),
-                    statusCode
+                    body,
+                    delay
             ));
         }
     }

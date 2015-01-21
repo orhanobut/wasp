@@ -113,7 +113,7 @@ final class NetworkHandler implements InvocationHandler {
 
             @Override
             public void onError(WaspError error) {
-                Logger.d(error.toString());
+                error.logWaspError(logLevel);
                 callBack.onError(error);
             }
         };
