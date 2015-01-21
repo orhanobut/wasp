@@ -8,7 +8,6 @@ import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.EndPoint;
 import com.orhanobut.wasp.http.GET;
 import com.orhanobut.wasp.http.Header;
-import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
@@ -27,12 +26,7 @@ public interface MyService {
             CallBack<List<Ip>> callBack
     );
 
-    @EndPoint("http://demo4699913.mockable.io")
-    @Headers({
-            "StaticHeaderKey1: StaticHeaderValue1",
-            "StaticHeaderKey2: StaticHeaderValue2"
-    })
-    @GET("/test")
+    @GET("/ip")
     void fetchIp(
             @Header("ParamHeaderKey") String paramHeader,
             @Body Ip ip,
