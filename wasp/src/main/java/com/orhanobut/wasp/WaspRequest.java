@@ -84,7 +84,7 @@ final class WaspRequest {
         switch (logLevel) {
             case ALL:
                 Logger.d("---> REQUEST " + method + " " + url);
-                if (!headers.isEmpty()) {
+                if (!getHeaders().isEmpty()) {
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
                         Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
                     }
@@ -102,6 +102,7 @@ final class WaspRequest {
     static class Builder {
 
         private static final String KEY_AUTH = "Authorization";
+        private static final CharSequence ASCII_SPACE = "%20";
 
         private final MethodInfo methodInfo;
         private final String baseUrl;
@@ -271,12 +272,19 @@ final class WaspRequest {
         }
 
         private void addQueryParam(String key, Object value) {
+            //Replace the space with ASCII code
+            String tempKey = key.replace(" ", ASCII_SPACE);
+            Object tempValue = value;
+            if (tempValue instanceof String) {
+                tempValue = ((String) tempValue).replace(" ", ASCII_SPACE);
+            }
+
             StringBuilder builder = this.queryParamBuilder;
             if (queryParamBuilder == null) {
                 this.queryParamBuilder = builder = new StringBuilder();
             }
             builder.append(queryParamBuilder.length() == 0 ? "?" : "&");
-            builder.append(key).append("=").append(value);
+            builder.append(tempKey).append("=").append(tempValue);
         }
 
         private void addHeaderParam(String key, String value) {
