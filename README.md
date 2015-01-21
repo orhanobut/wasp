@@ -1,3 +1,5 @@
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Wasp-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1412)
+
 #Wasp
 Wasp is compact, complete, easy-in-use and all-in-one network solution. 
 
