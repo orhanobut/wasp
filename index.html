@@ -168,6 +168,21 @@ service.fetchRepo("github","wasp", new CallBack&lt;List&lt;Repo>>{
     service.fetchRepoBySearch(2,"asc", callback);
     //output url is ENDPOINT/users/repos?page=2&sort=asc
 </pre>
+     <p><b>@QueryMap</b> is used to add query params using a map</p>
+<pre class='prettyprint'>
+    @GET("/users/repos")
+    void fetchRepoBySearch(
+          @QueryMap() Map queryParamsMap,
+          CallBack&lt;Repo> callBack
+    );
+</pre>
+<pre class='prettyprint'>
+    Map<String,String> map = new HashMap<>();
+    map.put("sort","asc");
+    map.put("offset", "100");
+    
+    service.fetchRepoBySearch(map, callback);
+</pre>
 
 
      <h4>Add Headers</h4>
