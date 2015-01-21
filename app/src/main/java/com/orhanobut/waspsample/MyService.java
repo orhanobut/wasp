@@ -30,7 +30,7 @@ public interface MyService {
     @GET("/ip")
     void fetchIp(
             @Header("ParamHeaderKey") String paramHeader,
-            @QueryMap Map<String, String> queryParams,
+            @QueryMap Map queryParams,
             @Body Ip ip,
             CallBack<Ip> callBack
     );
