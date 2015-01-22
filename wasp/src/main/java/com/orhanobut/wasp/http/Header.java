@@ -8,7 +8,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Make a GET request to a REST path relative to base URL
+ * Used to define the an header for the request
  *
  * @author Orhan Obut
  */
