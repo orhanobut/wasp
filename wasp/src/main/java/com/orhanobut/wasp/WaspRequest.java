@@ -82,7 +82,9 @@ final class WaspRequest {
 
     public void logWaspRequest(LogLevel logLevel) {
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_REST_ONLY:
                 Logger.d("---> REQUEST " + method + " " + url);
                 if (!headers.isEmpty()) {
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -92,6 +94,8 @@ final class WaspRequest {
                 Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + body);
                 Logger.d("---> END");
                 break;
+            default:
+                // Method is called but log level is not meant to log anything
         }
     }
 

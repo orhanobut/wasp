@@ -56,7 +56,9 @@ public class WaspError {
 
     public void logWaspError(LogLevel logLevel) {
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_REST_ONLY:
                 Logger.d("<--- ERROR " + statusCode + " " + url);
                 Logger.d("Message - " + "[" + errorMessage + "]");
                 if (!headers.isEmpty()) {

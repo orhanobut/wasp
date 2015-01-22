@@ -19,7 +19,6 @@ final class WaspImage {
     private final int errorImage;
     private final boolean cropCenter;
     private final boolean fit;
-    private final LogLevel logLevel;
     private final Size size;
 
     /**
@@ -33,7 +32,6 @@ final class WaspImage {
         this.errorImage = builder.errorImage;
         this.cropCenter = builder.cropCenter;
         this.fit = builder.fit;
-        this.logLevel = builder.logLevel != null ? builder.logLevel : LogLevel.NONE;
         this.size = builder.size;
     }
 
@@ -70,9 +68,12 @@ final class WaspImage {
         imageHandler.load();
     }
 
-    public void logWaspImageRequest() {
+    public void logRequest() {
+        LogLevel logLevel = Wasp.getLogLevel();
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_IMAGE_ONLY:
                 Logger.d("---> IMAGE REQUEST " + url);
                 Logger.d("Crop - " + cropCenter);
                 Logger.d("Fit - " + fit);
@@ -81,28 +82,40 @@ final class WaspImage {
                 }
                 Logger.d("---> END");
                 break;
+            default:
+                // Method is called but log level is not meant to log anything
         }
     }
 
-    public void logWaspImageResponseSuccess(Bitmap bitmap) {
+    public void logSuccess(Bitmap bitmap) {
+        LogLevel logLevel = Wasp.getLogLevel();
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_IMAGE_ONLY:
                 Logger.d("<--- IMAGE RESPONSE " + url);
                 Logger.d("Size - Width: " + bitmap.getWidth() + " | Height: " + bitmap.getHeight());
                 Logger.d("ByteCount - " + getBitmapSize(bitmap) + " bytes");
                 Logger.d("<--- END");
                 break;
+            default:
+                // Method is called but log level is not meant to log anything
         }
     }
 
-    public void logWaspImageResponseError(String message, long networkTime) {
+    public void logError(String message, long networkTime) {
+        LogLevel logLevel = Wasp.getLogLevel();
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_IMAGE_ONLY:
                 Logger.d("<--- IMAGE RESPONSE " + url);
                 Logger.d("Error message - [ " + message + " ]");
                 Logger.d("Network time - " + networkTime);
                 Logger.d("<--- END");
                 break;
+            default:
+                // Method is called but log level is not meant to log anything
         }
     }
 
@@ -122,7 +135,6 @@ final class WaspImage {
         private int errorImage;
         private boolean cropCenter;
         private boolean fit;
-        private LogLevel logLevel;
         private Size size;
 
         /**
@@ -187,11 +199,6 @@ final class WaspImage {
         //TODO 
         public Builder resize(int width, int height) {
             this.size = new Size(width, height);
-            return this;
-        }
-
-        public Builder setLogLevel(LogLevel logLevel) {
-            this.logLevel = logLevel;
             return this;
         }
 
