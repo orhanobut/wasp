@@ -73,7 +73,7 @@ public class WaspApplication extends Application {
                         //.enableCookies(CookiePolicy.ACCEPT_ALL)
                         //.trustCertificates()
                         //.trustCertificates(R.raw.mytruststore, "123456")
-                .setRequestInterceptor(interceptor1)
+              //  .setRequestInterceptor(interceptor1)
                 .build()
                 .create(MyService.class);
 
