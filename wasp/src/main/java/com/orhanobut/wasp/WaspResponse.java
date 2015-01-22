@@ -38,7 +38,9 @@ final class WaspResponse {
 
     public void logWaspResponse(LogLevel logLevel) {
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_REST_ONLY:
                 Logger.d("<--- RESPONSE " + statusCode + " " + url);
                 if (!headers.isEmpty()) {
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -48,6 +50,8 @@ final class WaspResponse {
                 Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + getFormattedBody());
                 Logger.d("<--- END " + "(Size: " + length + " bytes - Network time: " + networkTime + " ms)");
                 break;
+            default:
+                // Method is called but log level is not meant to log anything
         }
     }
 }
