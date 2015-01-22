@@ -39,8 +39,11 @@ public class MainActivity extends BaseActivity {
 
     private void fetchIp() {
         Ip ip = new Ip("origin", "foo");
+        Map<String, String> map = new HashMap<>();
+        map.put("QueryMapKey1", "QueryMapValue1");
+        map.put("QueryMapKey2", "QueryMapValue2");
 
-        getService().fetchIp("ParamHeaderValue1", ip, new CallBack<Ip>() {
+        getService().fetchIp("ParamHeaderValue1", map, ip, new CallBack<Ip>() {
             @Override
             public void onSuccess(Ip ip) {
                 textView.setText(ip.toString());
