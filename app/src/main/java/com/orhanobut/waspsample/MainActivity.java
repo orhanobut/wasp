@@ -19,6 +19,8 @@ public class MainActivity extends BaseActivity {
     private ImageView imageView;
     private Object image;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,7 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        //fetchIps();
+        fetchIp();
 
         // postFoo();
 
@@ -37,8 +39,13 @@ public class MainActivity extends BaseActivity {
         loadImage();
     }
 
+    public void onDestroy() {
+        super.onDestroy();
+        getService().getNetworkStack().cancelRequest(TAG);
+    }
+
     private void fetchIp() {
-        getService().fetchIp(new CallBack<Ip>() {
+        getService().fetchIp(TAG, new CallBack<Ip>() {
             @Override
             public void onSuccess(Ip ip) {
                 textView.setText(ip.toString());
@@ -52,6 +59,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void fetchIps() {
+
         getService().fetchIps(new CallBack<List<Ip>>() {
             @Override
             public void onSuccess(List<Ip> ips) {

@@ -73,6 +73,11 @@ class MockFactory implements NetworkStack {
         callBack.onSuccess((T) responseString);
     }
 
+    @Override
+    public void cancelRequest(String tag) {
+
+    }
+
     /**
      * Create a json string for response. If the response object type contains parameterized types,
      * * it will recursively create these content as well.

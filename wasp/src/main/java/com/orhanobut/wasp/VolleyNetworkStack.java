@@ -57,6 +57,10 @@ final class VolleyNetworkStack implements NetworkStack {
             }
         };
 
+        if (waspRequest.getTag() != null) {
+            request.setTag(waspRequest.getTag());
+        }
+
         WaspRetryPolicy policy = waspRequest.getRetryPolicy();
         if (policy != null) {
             request.setRetryPolicy(policy);
@@ -87,6 +91,11 @@ final class VolleyNetworkStack implements NetworkStack {
     @Override
     public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
         addToQueue(waspRequest, callBack);
+    }
+
+    @Override
+    public void cancelRequest(String tag) {
+        requestQueue.cancelAll(tag);
     }
 
     private static class VolleyListener<T> implements

@@ -10,6 +10,8 @@ import com.orhanobut.wasp.http.GET;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
+import com.orhanobut.wasp.WaspService;
+import com.orhanobut.wasp.http.Tag;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,7 @@ import java.util.Map;
 /**
  * @author Orhan Obut
  */
-public interface MyService {
+public interface MyService extends WaspService {
 
     @Auth
     @GET("/ip")
@@ -27,6 +29,7 @@ public interface MyService {
 
     @GET("/ip")
     void fetchIp(
+            @Tag String tag,
             CallBack<Ip> callBack
     );
 
