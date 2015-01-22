@@ -82,7 +82,7 @@ final class WaspRequest {
         return builder.toString();
     }
 
-    void logWaspRequest(LogLevel logLevel) {
+    void log(LogLevel logLevel) {
         switch (logLevel) {
             case FULL:
                 // Fall Through

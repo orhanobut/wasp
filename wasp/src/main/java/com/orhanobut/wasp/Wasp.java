@@ -166,7 +166,7 @@ public class Wasp {
                 parser = new GsonParser();
             }
             if (logLevel == null) {
-                logLevel = LogLevel.FULL;
+                logLevel = LogLevel.NONE;
             }
             if (waspHttpStack == null) {
                 waspHttpStack = new OkHttpStack(trustAllCertificates);
