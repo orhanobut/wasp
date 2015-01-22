@@ -87,7 +87,6 @@ final class NetworkHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
-        Logger.d("Proxy method invoked");
         if (args.length == 0) {
             throw new IllegalArgumentException("Callback must be sent as param");
         }
