@@ -4,7 +4,23 @@ package com.orhanobut.wasp.utils;
  * @author Orhan Obut
  */
 public enum LogLevel {
+    /**
+     * No logs are printed
+     */
     NONE,
-    BASIC,
-    ALL
+
+    /**
+     * Print logs both for REST and Images request
+     */
+    FULL,
+
+    /**
+     * Print logs for REST
+     */
+    FULL_REST_ONLY,
+
+    /**
+     * Print logs for Images
+     */
+    FULL_IMAGE_ONLY
 }

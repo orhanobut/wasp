@@ -16,15 +16,16 @@ final class WaspResponse {
     private final Map<String, String> headers;
     private final String body;
     private final int length;
-    private final long delay;
+    private final long networkTime;
 
-    public WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length, long delay) {
+    public WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
+                        long networkTime) {
         this.url = url;
         this.statusCode = statusCode;
         this.headers = headers;
         this.body = body;
         this.length = length;
-        this.delay = delay;
+        this.networkTime = networkTime;
     }
 
     public String getBody() {
@@ -35,9 +36,11 @@ final class WaspResponse {
         return body.replace("\n", "").replace("\r", "").replace("\t", "");
     }
 
-    public void logWaspResponse(LogLevel logLevel) {
+    public void log(LogLevel logLevel) {
         switch (logLevel) {
-            case ALL:
+            case FULL:
+                // Fall Through
+            case FULL_REST_ONLY:
                 Logger.d("<--- RESPONSE " + statusCode + " " + url);
                 if (!headers.isEmpty()) {
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -45,8 +48,10 @@ final class WaspResponse {
                     }
                 }
                 Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + getFormattedBody());
-                Logger.d("<--- END " + "(Size: " + length + " bytes - Request time: " + delay + " ms)");
+                Logger.d("<--- END " + "(Size: " + length + " bytes - Network time: " + networkTime + " ms)");
                 break;
+            default:
+                // Method is called but log level is not meant to log anything
         }
     }
 }
