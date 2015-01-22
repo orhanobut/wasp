@@ -1,7 +1,10 @@
 package com.orhanobut.wasp;
 
-import android.text.TextUtils;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.widget.ImageView;
+
+import com.orhanobut.wasp.utils.LogLevel;
 
 /**
  * @author Orhan Obut
@@ -15,6 +18,7 @@ final class WaspImage {
     private final int errorImage;
     private final boolean cropCenter;
     private final boolean fit;
+    private final LogLevel logLevel;
     private final Size size;
 
     /**
@@ -28,6 +32,7 @@ final class WaspImage {
         this.errorImage = builder.errorImage;
         this.cropCenter = builder.cropCenter;
         this.fit = builder.fit;
+        this.logLevel = builder.logLevel != null ? builder.logLevel : LogLevel.NONE;
         this.size = builder.size;
     }
 
@@ -64,6 +69,50 @@ final class WaspImage {
         imageHandler.load();
     }
 
+    public void logWaspImageRequest() {
+        switch (logLevel) {
+            case ALL:
+                Logger.d("---> IMAGE REQUEST " + url);
+                Logger.d("Crop - " + cropCenter);
+                Logger.d("Fit - " + fit);
+                if (size != null) {
+                    Logger.d("Size - Width: " + size.getWidth() + " | Height: " + size.getHeight());
+                }
+                Logger.d("---> END");
+                break;
+        }
+    }
+
+    public void logWaspImageResponseSuccess(Bitmap bitmap) {
+        switch (logLevel) {
+            case ALL:
+                Logger.d("<--- IMAGE RESPONSE " + url);
+                Logger.d("Size - Width: " + bitmap.getWidth() + " | Height: " + bitmap.getHeight());
+                Logger.d("ByteCount - " + getBitmapSize(bitmap) + " bytes");
+                Logger.d("<--- END");
+                break;
+        }
+    }
+
+    public void logWaspImageResponseError(String message, long networkTime) {
+        switch (logLevel) {
+            case ALL:
+                Logger.d("<--- IMAGE RESPONSE " + url);
+                Logger.d("Error message - [ " + message + " ]");
+                Logger.d("Network time - " + networkTime);
+                Logger.d("<--- END");
+                break;
+        }
+    }
+
+    private int getBitmapSize(Bitmap bitmap) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        } else {
+            return bitmap.getByteCount();
+        }
+    }
+
     public static class Builder {
 
         private String url;
@@ -72,6 +121,7 @@ final class WaspImage {
         private int errorImage;
         private boolean cropCenter;
         private boolean fit;
+        private LogLevel logLevel;
         private Size size;
 
         /**
@@ -136,6 +186,11 @@ final class WaspImage {
         //TODO 
         public Builder resize(int width, int height) {
             this.size = new Size(width, height);
+            return this;
+        }
+
+        public Builder setLogLevel(LogLevel logLevel) {
+            this.logLevel = logLevel;
             return this;
         }
 

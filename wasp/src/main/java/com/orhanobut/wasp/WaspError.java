@@ -19,16 +19,16 @@ public class WaspError {
     private final Map<String, String> headers;
     private final String errorMessage;
     private final byte[] body;
-    private final long delay;
+    private final long networkTime;
 
     public WaspError(String url, int statusCode, Map<String, String> headers, String errorMessage, byte[] body,
-                     long delay) {
+                     long networkTime) {
         this.url = url;
         this.statusCode = statusCode;
         this.headers = headers;
         this.errorMessage = errorMessage;
         this.body = body;
-        this.delay = delay;
+        this.networkTime = networkTime;
     }
 
     public String getErrorMessage() {
@@ -72,7 +72,7 @@ public class WaspError {
                     bodyString = "Unable to parse error body!!!!!";
                 }
                 Logger.d(TextUtils.isEmpty(bodyString) ? "Body - no body" : "Body - " + bodyString);
-                Logger.d("<--- END " + "(Size: " + body.length + " bytes - Request time: " + delay + " ms)");
+                Logger.d("<--- END " + "(Size: " + body.length + " bytes - Network time: " + networkTime + " ms)");
                 break;
         }
     }
