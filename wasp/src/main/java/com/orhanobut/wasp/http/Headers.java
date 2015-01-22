@@ -8,7 +8,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Add a static header to request
+ * Add a static headers to request
  *
  * @author Orhan Obut
  */
