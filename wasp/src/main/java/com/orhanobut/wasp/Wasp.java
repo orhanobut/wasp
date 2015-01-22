@@ -27,7 +27,7 @@ public class Wasp {
         this.builder = builder;
     }
 
-    public <T> T create(Class<T> service) {
+    public <T extends WaspService> T create(Class<T> service) {
         if (service == null) {
             throw new NullPointerException("service param may not be null");
         }
