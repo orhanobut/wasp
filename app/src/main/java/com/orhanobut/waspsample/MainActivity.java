@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.orhanobut.wasp.CallBack;
 import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspError;
+import com.orhanobut.wasp.utils.LogLevel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,14 +28,14 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        fetchIp();
+//        fetchIp();
 
         // postFoo();
 
         //putFoo();
 
         //  putFooMap();
-//        loadImage();
+        loadImage();
     }
 
     private void fetchIp() {
@@ -122,6 +123,7 @@ public class MainActivity extends BaseActivity {
                 .to(imageView)
                 .setError(errorImage)
                 .setDefault(defaultImage)
+                .setLogLevel(LogLevel.ALL)
                 .load();
     }
 
