@@ -2,10 +2,10 @@ package com.orhanobut.waspsample;
 
 import android.app.Application;
 
+import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.utils.AuthToken;
 import com.orhanobut.wasp.utils.LogLevel;
 import com.orhanobut.wasp.utils.RequestInterceptor;
-import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.utils.SimpleInterceptor;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
@@ -47,7 +47,7 @@ public class WaspApplication extends Application {
             @Override
             public void onHeadersAdded(Map<String, String> headers) {
                 super.onHeadersAdded(headers);
-                headers.put("key","value");
+                headers.put("InterceptorHeaderKey", "InterceptorHeaderValue");
             }
 
             @Override
@@ -69,11 +69,11 @@ public class WaspApplication extends Application {
 
         service = new Wasp.Builder(this)
                 .setEndpoint("http://httpbin.org")
-                .setLogLevel(LogLevel.ALL)
+                .setLogLevel(LogLevel.FULL)
                         //.enableCookies(CookiePolicy.ACCEPT_ALL)
                         //.trustCertificates()
                         //.trustCertificates(R.raw.mytruststore, "123456")
-                .setRequestInterceptor(interceptor1)
+              //  .setRequestInterceptor(interceptor1)
                 .build()
                 .create(MyService.class);
 

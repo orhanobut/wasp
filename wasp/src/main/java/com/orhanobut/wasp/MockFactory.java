@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,13 @@ class MockFactory implements NetworkStack {
         int statusCode = mock.getStatusCode();
 
         if (statusCode < 200 || statusCode > 299) {
-            callBack.onError(new WaspError("mock url", "Mock test fail", statusCode));
+            callBack.onError(new WaspError(
+                    "mock url",
+                    statusCode,
+                    new HashMap<String, String>(),
+                    "Mock test fail",
+                    new byte[0],
+                    0));
             return;
         }
 
@@ -70,7 +77,11 @@ class MockFactory implements NetworkStack {
             }
         }
 
-        callBack.onSuccess((T) responseString);
+        WaspResponse waspResponse = new WaspResponse(
+                waspRequest.getUrl(), statusCode, Collections.EMPTY_MAP, responseString, responseString.length(), 0
+        );
+
+        callBack.onSuccess((T) waspResponse);
     }
 
     /**

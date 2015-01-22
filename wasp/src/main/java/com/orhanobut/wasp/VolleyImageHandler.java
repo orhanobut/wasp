@@ -80,6 +80,7 @@ class VolleyImageHandler implements ImageHandler {
         int maxHeight = wrapHeight ? 0 : height;
 
         imageContainer = imageLoader.get(url, new WaspImageListener(imageView, waspImage), maxWidth, maxHeight);
+        waspImage.logRequest();
     }
 
     private void setDefaultImage(int defaultImage, ImageView imageView) {
@@ -119,6 +120,7 @@ class VolleyImageHandler implements ImageHandler {
             Bitmap bitmap = response.getBitmap();
             if (bitmap != null) {
                 imageView.setImageBitmap(bitmap);
+                waspImage.logSuccess(bitmap);
                 return;
             }
             
@@ -130,6 +132,10 @@ class VolleyImageHandler implements ImageHandler {
 
         @Override
         public void onErrorResponse(VolleyError error) {
+            String message = error != null ? error.getMessage() : "Null error object receiver";
+            long delay = error != null ? error.getNetworkTimeMs() : 0;
+            waspImage.logError(message, delay);
+
             int errorImage = waspImage.getErrorImage();
             if (errorImage != 0) {
                 imageView.setImageResource(errorImage);

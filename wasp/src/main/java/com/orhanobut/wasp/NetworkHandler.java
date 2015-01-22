@@ -3,6 +3,7 @@ package com.orhanobut.wasp;
 import android.content.Context;
 
 import com.orhanobut.wasp.parsers.Parser;
+import com.orhanobut.wasp.utils.LogLevel;
 import com.orhanobut.wasp.utils.RequestInterceptor;
 
 import java.lang.reflect.InvocationHandler;
@@ -29,6 +30,7 @@ final class NetworkHandler implements InvocationHandler {
     private final String endPoint;
     private final ClassLoader classLoader;
     private final RequestInterceptor requestInterceptor;
+    private final LogLevel logLevel;
 
     private NetworkHandler(Class<?> service, Wasp.Builder builder) {
         this.service = service;
@@ -37,6 +39,7 @@ final class NetworkHandler implements InvocationHandler {
         this.parser = builder.getParser();
         this.endPoint = builder.getEndPointUrl();
         this.requestInterceptor = builder.getRequestInterceptor();
+        this.logLevel = builder.getLogLevel();
 
         ClassLoader loader = service.getClassLoader();
         this.classLoader = loader != null ? loader : ClassLoader.getSystemClassLoader();
@@ -84,7 +87,6 @@ final class NetworkHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
-        Logger.d("Proxy method invoked");
         if (args.length == 0) {
             throw new IllegalArgumentException("Callback must be sent as param");
         }
@@ -98,19 +100,19 @@ final class NetworkHandler implements InvocationHandler {
         WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint, parser)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
-        Logger.d(waspRequest.toString());
+        waspRequest.log(logLevel);
 
-        CallBack<String> responseCallBack = new CallBack<String>() {
+        CallBack<WaspResponse> responseCallBack = new CallBack<WaspResponse>() {
             @Override
-            public void onSuccess(String content) {
-                Logger.d("Response: " + content);
-                Object result = parser.fromJson(content, methodInfo.getResponseObjectType());
+            public void onSuccess(WaspResponse response) {
+                response.log(logLevel);
+                Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
                 new ResponseWrapper(callBack, result).submitResponse();
             }
 
             @Override
             public void onError(WaspError error) {
-                Logger.d(error.toString());
+                error.logWaspError(logLevel);
                 callBack.onError(error);
             }
         };
