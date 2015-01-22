@@ -124,7 +124,7 @@ final class WaspRequest {
                 Class<? extends Annotation> annotationType = annotation.annotationType();
                 if (annotationType == Path.class) {
                     String key = ((Path) annotation).value();
-                    addPathParam(key, (String) value);
+                    addPathParam(key, String.valueOf(value));
                     continue;
                 }
                 if (annotationType == Query.class) {
