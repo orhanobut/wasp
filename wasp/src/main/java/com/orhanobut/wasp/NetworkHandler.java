@@ -101,12 +101,12 @@ final class NetworkHandler implements InvocationHandler {
         WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint, parser)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
-        waspRequest.logWaspRequest(logLevel);
+        waspRequest.log(logLevel);
 
         CallBack<WaspResponse> responseCallBack = new CallBack<WaspResponse>() {
             @Override
             public void onSuccess(WaspResponse response) {
-                response.logWaspResponse(logLevel);
+                response.log(logLevel);
                 Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
                 new ResponseWrapper(callBack, result).submitResponse();
             }

@@ -38,7 +38,7 @@ public class MainActivity extends BaseActivity {
         //putFoo();
 
         //  putFooMap();
-//        loadImage();
+        loadImage();
 
         getFoo();
     }
