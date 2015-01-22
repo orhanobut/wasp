@@ -11,6 +11,8 @@ import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
+import com.orhanobut.wasp.http.QueryMap;
+import com.orhanobut.wasp.http.Query;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ public interface MyService {
     @GET("/ip")
     void fetchIp(
             @Header("ParamHeaderKey") String paramHeader,
+            @QueryMap Map queryParams,
             @Body Ip ip,
             CallBack<Ip> callBack
     );
@@ -57,6 +60,12 @@ public interface MyService {
     void putFooMap(
             @BodyMap Map bodyMap,
             CallBack<Ip> callBack
+    );
+
+    @GET("/get")
+    void get(
+            @Query("test test2") String value,
+            CallBack<Foo> callBack
     );
 
 }
