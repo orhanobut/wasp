@@ -1,6 +1,7 @@
 package com.orhanobut.waspsample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,9 +16,12 @@ import java.util.Map;
 
 public class MainActivity extends BaseActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private TextView textView;
     private ImageView imageView;
     private Object image;
+    private Object foo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +31,7 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        fetchIp();
+        // fetchIp();
 
         // postFoo();
 
@@ -35,6 +39,8 @@ public class MainActivity extends BaseActivity {
 
         //  putFooMap();
 //        loadImage();
+
+        getFoo();
     }
 
     private void fetchIp() {
@@ -128,4 +134,17 @@ public class MainActivity extends BaseActivity {
                 .load();
     }
 
+    public void getFoo() {
+        getService().get("Selam naber", new CallBack<Foo>() {
+            @Override
+            public void onSuccess(Foo foo) {
+                Log.d(TAG, foo.toString());
+            }
+
+            @Override
+            public void onError(WaspError error) {
+                Log.d(TAG, error.getErrorMessage());
+            }
+        });
+    }
 }
