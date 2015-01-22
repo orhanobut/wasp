@@ -1,7 +1,11 @@
 package com.orhanobut.wasp;
 
-import android.text.TextUtils;
+import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.widget.ImageView;
+
+import com.orhanobut.wasp.utils.LogLevel;
 
 /**
  * @author Orhan Obut
@@ -62,6 +66,65 @@ final class WaspImage {
     void load() {
         imageHandler.init(this);
         imageHandler.load();
+    }
+
+    public void logRequest() {
+        LogLevel logLevel = Wasp.getLogLevel();
+        switch (logLevel) {
+            case FULL:
+                // Fall Through
+            case FULL_IMAGE_ONLY:
+                Logger.d("---> IMAGE REQUEST " + url);
+                Logger.d("Crop - " + cropCenter);
+                Logger.d("Fit - " + fit);
+                if (size != null) {
+                    Logger.d("Size - Width: " + size.getWidth() + " | Height: " + size.getHeight());
+                }
+                Logger.d("---> END");
+                break;
+            default:
+                // Method is called but log level is not meant to log anything
+        }
+    }
+
+    public void logSuccess(Bitmap bitmap) {
+        LogLevel logLevel = Wasp.getLogLevel();
+        switch (logLevel) {
+            case FULL:
+                // Fall Through
+            case FULL_IMAGE_ONLY:
+                Logger.d("<--- IMAGE RESPONSE " + url);
+                Logger.d("Size - Width: " + bitmap.getWidth() + " | Height: " + bitmap.getHeight());
+                Logger.d("ByteCount - " + getBitmapSize(bitmap) + " bytes");
+                Logger.d("<--- END");
+                break;
+            default:
+                // Method is called but log level is not meant to log anything
+        }
+    }
+
+    public void logError(String message, long networkTime) {
+        LogLevel logLevel = Wasp.getLogLevel();
+        switch (logLevel) {
+            case FULL:
+                // Fall Through
+            case FULL_IMAGE_ONLY:
+                Logger.d("<--- IMAGE RESPONSE " + url);
+                Logger.d("Error message - [ " + message + " ]");
+                Logger.d("Network time - " + networkTime);
+                Logger.d("<--- END");
+                break;
+            default:
+                // Method is called but log level is not meant to log anything
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    private int getBitmapSize(Bitmap bitmap) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        }
+        return bitmap.getByteCount();
     }
 
     public static class Builder {
