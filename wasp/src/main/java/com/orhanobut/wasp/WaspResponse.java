@@ -36,7 +36,7 @@ final class WaspResponse {
         return body.replace("\n", "").replace("\r", "").replace("\t", "");
     }
 
-    public void logWaspResponse(LogLevel logLevel) {
+    public void log(LogLevel logLevel) {
         switch (logLevel) {
             case FULL:
                 // Fall Through
