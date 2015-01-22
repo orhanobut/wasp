@@ -21,10 +21,13 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class Wasp {
 
+    private static LogLevel logLevel;
+
     private final Builder builder;
 
     private Wasp(Builder builder) {
         this.builder = builder;
+        logLevel = builder.logLevel;
     }
 
     public <T extends WaspService> T create(Class<T> service) {
@@ -36,6 +39,10 @@ public class Wasp {
         }
         NetworkHandler handler = NetworkHandler.newInstance(service, builder);
         return (T) handler.getProxyClass();
+    }
+
+    public static LogLevel getLogLevel() {
+        return logLevel;
     }
 
     /**
@@ -159,7 +166,7 @@ public class Wasp {
                 parser = new GsonParser();
             }
             if (logLevel == null) {
-                logLevel = LogLevel.ALL;
+                logLevel = LogLevel.NONE;
             }
             if (waspHttpStack == null) {
                 waspHttpStack = new OkHttpStack(trustAllCertificates);

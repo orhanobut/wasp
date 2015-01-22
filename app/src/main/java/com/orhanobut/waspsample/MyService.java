@@ -7,11 +7,14 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.EndPoint;
 import com.orhanobut.wasp.http.GET;
+import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
 import com.orhanobut.wasp.WaspService;
 import com.orhanobut.wasp.http.Tag;
+import com.orhanobut.wasp.http.QueryMap;
+import com.orhanobut.wasp.http.Query;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,9 @@ public interface MyService extends WaspService {
 
     @GET("/ip")
     void fetchIp(
+            @Header("ParamHeaderKey") String paramHeader,
+            @QueryMap Map queryParams,
+            @Body Ip ip,
             @Tag String tag,
             CallBack<Ip> callBack
     );
@@ -57,6 +63,12 @@ public interface MyService extends WaspService {
     void putFooMap(
             @BodyMap Map bodyMap,
             CallBack<Ip> callBack
+    );
+
+    @GET("/get")
+    void get(
+            @Query("test test2") String value,
+            CallBack<Foo> callBack
     );
 
 }

@@ -45,7 +45,13 @@ class MockFactory implements NetworkStack {
         int statusCode = mock.getStatusCode();
 
         if (statusCode < 200 || statusCode > 299) {
-            callBack.onError(new WaspError("mock url", "Mock test fail", statusCode));
+            callBack.onError(new WaspError(
+                    "mock url",
+                    statusCode,
+                    new HashMap<String, String>(),
+                    "Mock test fail",
+                    new byte[0],
+                    0));
             return;
         }
 
