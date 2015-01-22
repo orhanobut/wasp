@@ -23,6 +23,10 @@ android {
         exclude 'NOTICE'
         exclude 'asm-license.txt'
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
