@@ -16,6 +16,7 @@ import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,7 +33,7 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack) {
         requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
-        //requestQueue = Volley.newRequestQueue(context);
+        //  requestQueue = Volley.newRequestQueue(context);
     }
 
     static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
@@ -122,17 +123,25 @@ final class VolleyNetworkStack implements NetworkStack {
         @Override
         public void onErrorResponse(VolleyError error) {
             int statusCode = WaspError.INVALID_STATUS_CODE;
+            byte[] body = new byte[0];
+            Map<String, String> headers = new HashMap<>();
+            long delay = 0;
             if (error == null) {
-                callBack.onError(new WaspError(url, "No message", statusCode));
+                callBack.onError(new WaspError(url, statusCode, headers, "No message", body, delay));
                 return;
             }
             if (error.networkResponse != null) {
                 statusCode = error.networkResponse.statusCode;
+                headers = error.networkResponse.headers;
+                body = error.networkResponse.data;
             }
             callBack.onError(new WaspError(
                     url,
+                    statusCode,
+                    headers,
                     error.getMessage(),
-                    statusCode
+                    body,
+                    delay
             ));
         }
     }
@@ -152,9 +161,11 @@ final class VolleyNetworkStack implements NetworkStack {
 
         private final VolleyListener<T> listener;
         private final String requestBody;
+        private final String url;
 
         public VolleyRequest(int method, String url, String requestBody, VolleyListener<T> listener) {
             super(method, url, listener);
+            this.url = url;
             this.listener = listener;
             this.requestBody = requestBody;
         }
@@ -167,8 +178,14 @@ final class VolleyNetworkStack implements NetworkStack {
         @Override
         protected Response parseNetworkResponse(NetworkResponse response) {
             try {
-                String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
+                byte[] data = response.data;
+                String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
+                int length = data.length;
+                long delay = response.networkTimeMs;
+                WaspResponse waspResponse = new WaspResponse(
+                        url, response.statusCode, response.headers, body, length, delay
+                );
+                return Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
             } catch (UnsupportedEncodingException e) {
                 return Response.error(new ParseError(e));
             }

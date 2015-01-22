@@ -1,5 +1,8 @@
 package com.orhanobut.wasp;
 
+import android.net.Uri;
+import android.text.TextUtils;
+
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
@@ -7,10 +10,12 @@ import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.http.Tag;
+import com.orhanobut.wasp.http.QueryMap;
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.AuthToken;
-import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.CollectionUtils;
+import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.lang.annotation.Annotation;
@@ -85,13 +90,33 @@ final class WaspRequest {
         return builder.toString();
     }
 
-    public MethodInfo getMethodInfo() {
+    void log(LogLevel logLevel) {
+        switch (logLevel) {
+            case FULL:
+                // Fall Through
+            case FULL_REST_ONLY:
+                Logger.d("---> REQUEST " + method + " " + url);
+                if (!getHeaders().isEmpty()) {
+                    for (Map.Entry<String, String> entry : headers.entrySet()) {
+                        Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
+                    }
+                }
+                Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + body);
+                Logger.d("---> END");
+                break;
+            default:
+                // Method is called but log level is not meant to log anything
+        }
+    }
+
+    MethodInfo getMethodInfo() {
         return methodInfo;
     }
 
     static class Builder {
 
         private static final String KEY_AUTH = "Authorization";
+        private static final CharSequence ASCII_SPACE = "%20";
 
         private final MethodInfo methodInfo;
         private final String baseUrl;
@@ -101,7 +126,7 @@ final class WaspRequest {
         private String body;
         private String relativeUrl;
         private WaspRetryPolicy retryPolicy;
-        private StringBuilder queryParamBuilder;
+        private Uri.Builder queryParamBuilder;
         private Map<String, String> headers;
         private RequestInterceptor requestInterceptor;
 
@@ -140,6 +165,21 @@ final class WaspRequest {
                 if (annotationType == Query.class) {
                     String key = ((Query) annotation).value();
                     addQueryParam(key, value);
+                    continue;
+                }
+                if (annotationType == QueryMap.class) {
+                    if (!(value instanceof Map)) {
+                        throw new IllegalArgumentException("QueryMap accepts only Map instances");
+                    }
+                    Map<String, String> map;
+                    try {
+                        map = (Map<String, String>) value;
+                    } catch (Exception e) {
+                        throw new ClassCastException("QueryMap type should be Map<String,String>");
+                    }
+                    for (Map.Entry<String, String> entry : map.entrySet()) {
+                        addQueryParam(entry.getKey(), entry.getValue());
+                    }
                     continue;
                 }
                 if (annotationType == Header.class) {
@@ -264,17 +304,16 @@ final class WaspRequest {
             return queryParamBuilder.toString();
         }
 
+        //TODO we can also do something about value check
         private void addPathParam(String key, String value) {
             relativeUrl = relativeUrl.replace("{" + key + "}", value);
         }
 
         private void addQueryParam(String key, Object value) {
-            StringBuilder builder = this.queryParamBuilder;
             if (queryParamBuilder == null) {
-                this.queryParamBuilder = builder = new StringBuilder();
+                queryParamBuilder = new Uri.Builder();
             }
-            builder.append(queryParamBuilder.length() == 0 ? "?" : "&");
-            builder.append(key).append("=").append(value);
+            queryParamBuilder.appendQueryParameter(key, String.valueOf(value));
         }
 
         private void addHeaderParam(String key, String value) {
