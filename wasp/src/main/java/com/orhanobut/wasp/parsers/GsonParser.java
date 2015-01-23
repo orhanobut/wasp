@@ -22,7 +22,7 @@ public class GsonParser implements Parser {
     }
 
     @Override
-    public <T> T fromJson(String content, Type type) {
+    public <T> T fromJson(String content, Type type) throws Exception {
         if (TextUtils.isEmpty(content)) {
             return null;
         }
