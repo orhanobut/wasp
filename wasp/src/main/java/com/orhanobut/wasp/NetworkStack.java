@@ -3,7 +3,10 @@ package com.orhanobut.wasp;
 /**
  * @author Orhan Obut
  */
-interface NetworkStack {
+public interface NetworkStack {
 
     <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack);
+
+    public void cancelRequest(String tag);
+
 }

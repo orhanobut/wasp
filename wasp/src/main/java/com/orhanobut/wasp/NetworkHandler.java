@@ -87,6 +87,14 @@ final class NetworkHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
+
+        Logger.d("Proxy method invoked");
+
+        if(method.getName().equals("getNetworkStack")){
+            Logger.d("getNetworkStack invoked");
+            return networkStack;
+        }
+
         if (args.length == 0) {
             throw new IllegalArgumentException("Callback must be sent as param");
         }
@@ -106,8 +114,12 @@ final class NetworkHandler implements InvocationHandler {
             @Override
             public void onSuccess(WaspResponse response) {
                 response.log(logLevel);
-                Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
-                new ResponseWrapper(callBack, result).submitResponse();
+                try {
+                    Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
+                    new ResponseWrapper(callBack, result).submitResponse();
+                } catch (Exception e) {
+                    callBack.onError(response.toWaspError(e.getMessage()));
+                }
             }
 
             @Override

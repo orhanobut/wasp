@@ -29,7 +29,7 @@ final class VolleyNetworkStack implements NetworkStack {
     private static final String METHOD_POST = "POST";
     private static final String METHOD_DELETE = "DELETE";
 
-    private static RequestQueue requestQueue;
+    private RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack) {
         requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
@@ -40,7 +40,7 @@ final class VolleyNetworkStack implements NetworkStack {
         return new VolleyNetworkStack(context, stack);
     }
 
-    static RequestQueue getRequestQueue() {
+    public RequestQueue getRequestQueue() {
         if (requestQueue == null) {
             throw new NullPointerException("Wasp.Builder must be called");
         }
@@ -57,6 +57,10 @@ final class VolleyNetworkStack implements NetworkStack {
                 return waspRequest.getHeaders();
             }
         };
+
+        if (waspRequest.getTag() != null) {
+            request.setTag(waspRequest.getTag());
+        }
 
         WaspRetryPolicy policy = waspRequest.getRetryPolicy();
         if (policy != null) {
@@ -88,6 +92,11 @@ final class VolleyNetworkStack implements NetworkStack {
     @Override
     public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
         addToQueue(waspRequest, callBack);
+    }
+
+    @Override
+    public void cancelRequest(String tag) {
+        requestQueue.cancelAll(tag);
     }
 
     private static class VolleyListener<T> implements

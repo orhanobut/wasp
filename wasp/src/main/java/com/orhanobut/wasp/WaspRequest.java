@@ -8,6 +8,8 @@ import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
+import com.orhanobut.wasp.http.RetryPolicy;
+import com.orhanobut.wasp.http.Tag;
 import com.orhanobut.wasp.http.QueryMap;
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.AuthToken;
@@ -34,6 +36,7 @@ final class WaspRequest {
     private final WaspRetryPolicy retryPolicy;
     private final WaspMock mock;
     private final MethodInfo methodInfo;
+    private final String tag;
 
     private WaspRequest(Builder builder) {
         this.url = builder.getUrl();
@@ -43,6 +46,7 @@ final class WaspRequest {
         this.retryPolicy = builder.getRetryPolicy();
         this.mock = builder.getMock();
         this.methodInfo = builder.getMethodInfo();
+        this.tag = builder.getTag();
     }
 
     String getUrl() {
@@ -67,6 +71,10 @@ final class WaspRequest {
 
     WaspRetryPolicy getRetryPolicy() {
         return retryPolicy;
+    }
+
+    String getTag() {
+        return tag;
     }
 
     @Override
@@ -122,12 +130,15 @@ final class WaspRequest {
         private Map<String, String> headers;
         private RequestInterceptor requestInterceptor;
 
+        private String tag;
+
         Builder(MethodInfo methodInfo, Object[] args, String baseUrl, Parser parser) {
             this.methodInfo = methodInfo;
             this.baseUrl = baseUrl;
             this.args = args;
             this.parser = parser;
             this.relativeUrl = methodInfo.getRelativeUrl();
+            this.tag = null;
 
             initParams();
         }
@@ -179,6 +190,11 @@ final class WaspRequest {
                 if (annotationType == Body.class) {
                     body = getBody(value);
                 }
+
+                if (annotationType == Tag.class) {
+                    tag = (String) value;
+                }
+
                 if (annotationType == BodyMap.class) {
                     if (!(value instanceof Map)) {
                         throw new IllegalArgumentException("BodyMap accepts only Map instances");
@@ -330,6 +346,10 @@ final class WaspRequest {
 
         MethodInfo getMethodInfo() {
             return methodInfo;
+        }
+
+        public String getTag() {
+            return tag;
         }
     }
 }

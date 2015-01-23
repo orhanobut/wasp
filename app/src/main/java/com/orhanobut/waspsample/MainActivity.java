@@ -31,16 +31,21 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        // fetchIp();
+        fetchIp();
 
         // postFoo();
 
         //putFoo();
 
         //  putFooMap();
-        loadImage();
+        //loadImage();
 
         getFoo();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        getService().getNetworkStack().cancelRequest(TAG);
     }
 
     private void fetchIp() {
@@ -49,7 +54,7 @@ public class MainActivity extends BaseActivity {
         map.put("QueryMapKey1", "QueryMapValue1");
         map.put("QueryMapKey2", "QueryMapValue2");
 
-        getService().fetchIp("ParamHeaderValue1", map, ip, new CallBack<Ip>() {
+        getService().fetchIp("ParamHeaderValue1", map, ip,TAG, new CallBack<Ip>() {
             @Override
             public void onSuccess(Ip ip) {
                 textView.setText(ip.toString());
@@ -63,6 +68,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void fetchIps() {
+
         getService().fetchIps(new CallBack<List<Ip>>() {
             @Override
             public void onSuccess(List<Ip> ips) {

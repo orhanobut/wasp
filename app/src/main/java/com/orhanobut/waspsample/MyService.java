@@ -11,6 +11,8 @@ import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
+import com.orhanobut.wasp.WaspService;
+import com.orhanobut.wasp.http.Tag;
 import com.orhanobut.wasp.http.QueryMap;
 import com.orhanobut.wasp.http.Query;
 
@@ -20,7 +22,7 @@ import java.util.Map;
 /**
  * @author Orhan Obut
  */
-public interface MyService {
+public interface MyService extends WaspService {
 
     @Auth
     @GET("/ip")
@@ -33,6 +35,7 @@ public interface MyService {
             @Header("ParamHeaderKey") String paramHeader,
             @QueryMap Map queryParams,
             @Body Ip ip,
+            @Tag String tag,
             CallBack<Ip> callBack
     );
 

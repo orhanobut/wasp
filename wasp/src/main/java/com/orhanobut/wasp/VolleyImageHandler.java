@@ -25,14 +25,21 @@ class VolleyImageHandler implements ImageHandler {
      */
     private ImageLoader.ImageContainer imageContainer;
 
-    @Override
-    public void init(WaspImage waspImage) {
-        this.waspImage = waspImage;
+
+    public void init(VolleyNetworkStack volleyNetworkStack) {
         if (bitmapCache == null) {
             bitmapCache = new WaspBitmapCache();
         }
         if (imageLoader == null) {
-            imageLoader = new ImageLoader(VolleyNetworkStack.getRequestQueue(), bitmapCache);
+            imageLoader = new ImageLoader(volleyNetworkStack.getRequestQueue(), bitmapCache);
+        }
+    }
+
+    @Override
+    public void init(WaspImage waspImage) {
+        this.waspImage = waspImage;
+        if (imageLoader == null) {
+            throw new RuntimeException("Please set ImageLoader");
         }
     }
 
@@ -123,7 +130,7 @@ class VolleyImageHandler implements ImageHandler {
                 waspImage.logSuccess(bitmap);
                 return;
             }
-            
+
             int defaultImage = waspImage.getDefaultImage();
             if (defaultImage != 0) {
                 imageView.setImageResource(defaultImage);
