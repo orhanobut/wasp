@@ -87,6 +87,7 @@ final class NetworkHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
+
         Logger.d("Proxy method invoked");
 
         if(method.getName().equals("getNetworkStack")){

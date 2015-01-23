@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,11 @@ class MockFactory implements NetworkStack {
             }
         }
 
-        callBack.onSuccess((T) responseString);
+        WaspResponse waspResponse = new WaspResponse(
+                waspRequest.getUrl(), statusCode, Collections.EMPTY_MAP, responseString, responseString.length(), 0
+        );
+
+        callBack.onSuccess((T) waspResponse);
     }
 
     @Override
