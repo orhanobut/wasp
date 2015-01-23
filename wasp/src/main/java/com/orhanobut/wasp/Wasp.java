@@ -156,6 +156,11 @@ public class Wasp {
             return this;
         }
 
+        public Builder setNetworkStack(NetworkStack networkStack) {
+            this.networkStack = networkStack;
+            return this;
+        }
+
         public Wasp build() {
             init();
             return new Wasp(this);
@@ -168,12 +173,15 @@ public class Wasp {
             if (logLevel == null) {
                 logLevel = LogLevel.NONE;
             }
-            if (waspHttpStack == null) {
-                waspHttpStack = new OkHttpStack(trustAllCertificates);
+
+            if(networkStack==null) {
+                if (waspHttpStack == null) {
+                    waspHttpStack = new OkHttpStack(trustAllCertificates);
+                }
+                waspHttpStack.setSslSocketFactory(sslSocketFactory);
+                waspHttpStack.setCookieHandler(cookieHandler);
+                networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
             }
-            waspHttpStack.setSslSocketFactory(sslSocketFactory);
-            waspHttpStack.setCookieHandler(cookieHandler);
-            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
         String getEndPointUrl() {
