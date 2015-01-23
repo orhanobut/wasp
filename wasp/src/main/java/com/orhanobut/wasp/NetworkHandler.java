@@ -106,8 +106,12 @@ final class NetworkHandler implements InvocationHandler {
             @Override
             public void onSuccess(WaspResponse response) {
                 response.log(logLevel);
-                Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
-                new ResponseWrapper(callBack, result).submitResponse();
+                try {
+                    Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
+                    new ResponseWrapper(callBack, result).submitResponse();
+                } catch (Exception e) {
+                    callBack.onError(response.toWaspError(e.getMessage()));
+                }
             }
 
             @Override
