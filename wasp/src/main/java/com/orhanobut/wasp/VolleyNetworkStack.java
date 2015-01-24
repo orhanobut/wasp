@@ -29,18 +29,18 @@ final class VolleyNetworkStack implements NetworkStack {
     private static final String METHOD_POST = "POST";
     private static final String METHOD_DELETE = "DELETE";
 
-    private static RequestQueue requestQueue;
+    private RequestQueue requestQueue;
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack) {
         requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
-        //  requestQueue = Volley.newRequestQueue(context);
+        // requestQueue = Volley.newRequestQueue(context);
     }
 
     static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
         return new VolleyNetworkStack(context, stack);
     }
 
-    static RequestQueue getRequestQueue() {
+    synchronized RequestQueue getRequestQueue() {
         if (requestQueue == null) {
             throw new NullPointerException("Wasp.Builder must be called");
         }
