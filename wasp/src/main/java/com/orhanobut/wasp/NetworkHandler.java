@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.RequestInterceptor;
 
 import java.lang.reflect.InvocationHandler;
@@ -31,6 +32,7 @@ final class NetworkHandler implements InvocationHandler {
     private final ClassLoader classLoader;
     private final RequestInterceptor requestInterceptor;
     private final LogLevel logLevel;
+    private final NetworkMode networkMode;
 
     private NetworkHandler(Class<?> service, Wasp.Builder builder) {
         this.service = service;
@@ -40,6 +42,7 @@ final class NetworkHandler implements InvocationHandler {
         this.endPoint = builder.getEndPointUrl();
         this.requestInterceptor = builder.getRequestInterceptor();
         this.logLevel = builder.getLogLevel();
+        this.networkMode = builder.getNetworkMode();
 
         ClassLoader loader = service.getClassLoader();
         this.classLoader = loader != null ? loader : ClassLoader.getSystemClassLoader();
@@ -117,7 +120,7 @@ final class NetworkHandler implements InvocationHandler {
             }
         };
 
-        if (methodInfo.isMocked()) {
+        if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
             MockFactory.getDefault(context).invokeRequest(waspRequest, responseCallBack);
             return null;
         }
