@@ -141,16 +141,6 @@ final class WaspImage {
         private LogLevel logLevel;
         private ImageHandler imageHandler;
 
-        Builder setLogLevel(LogLevel logLevel) {
-            this.logLevel = logLevel;
-            return this;
-        }
-
-        Builder setImageHandler(ImageHandler imageHandler) {
-            this.imageHandler = imageHandler;
-            return this;
-        }
-
         /**
          * It is used to fetch the image from network
          *
@@ -213,6 +203,27 @@ final class WaspImage {
         //TODO 
         public Builder resize(int width, int height) {
             this.size = new Size(width, height);
+            return this;
+        }
+
+        /**
+         * It is used to print logs
+         * @param logLevel is used to determine which information will be printed
+         * @return Builder
+         */
+        Builder setLogLevel(LogLevel logLevel) {
+            this.logLevel = logLevel;
+            return this;
+        }
+
+        /**
+         * It is used to download and load the image
+         *
+         * @param imageHandler is injected as dependency
+         * @return Builder
+         */
+        Builder setImageHandler(ImageHandler imageHandler) {
+            this.imageHandler = imageHandler;
             return this;
         }
 
