@@ -54,4 +54,8 @@ final class WaspResponse {
                 // Method is called but log level is not meant to log anything
         }
     }
+
+    public WaspError toWaspError(String errorMsg) {
+        return new WaspError(url, statusCode, headers, errorMsg, body.getBytes(), networkTime);
+    }
 }
