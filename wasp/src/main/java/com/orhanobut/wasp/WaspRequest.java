@@ -160,13 +160,13 @@ final class WaspRequest {
                     if (!(value instanceof Map)) {
                         throw new IllegalArgumentException("QueryMap accepts only Map instances");
                     }
-                    Map<String, Object> map;
+                    Map<String, ?> map;
                     try {
-                        map = (Map<String, Object>) value;
+                        map = (Map<String, ?>) value;
                     } catch (Exception e) {
-                        throw new ClassCastException("QueryMap type should be Map<String,Object>");
+                        throw new ClassCastException("QueryMap type should be Map<String, ?>");
                     }
-                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    for (Map.Entry<String, ?> entry : map.entrySet()) {
                         addQueryParam(entry.getKey(), entry.getValue());
                     }
                     continue;
