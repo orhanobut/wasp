@@ -96,6 +96,29 @@ Wasp.Image.from(url)
       .load();
 ```
 
+####ProGuard
+
+If you are using ProGuard you should add the following options to your configuration file:
+Note: Other than following options you may also need to keep your network related model classes.
+
+```
+#Wasp
+-keepattributes *Annotation*
+-keep class com.orhanobut.wasp.** { *; }
+-keepclassmembernames interface * {
+    @com.orhanobut.wasp.http.* <methods>;
+}
+
+#Gson
+-keep class com.google.gson.** { *; }
+-keepattributes Signature
+
+#OkHttp
+-dontwarn com.squareup.okhttp.**
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+```
+
 ####For more details, check the website
 http://orhanobut.github.io/wasp/
 
