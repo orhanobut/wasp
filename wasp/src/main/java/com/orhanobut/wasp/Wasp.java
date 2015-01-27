@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.orhanobut.wasp.parsers.GsonParser;
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 
@@ -80,6 +81,7 @@ public class Wasp {
 
         private String endPointUrl;
         private LogLevel logLevel;
+        private NetworkMode networkMode;
         private Context context;
         private Parser parser;
         private WaspHttpStack waspHttpStack;
@@ -165,6 +167,9 @@ public class Wasp {
             if (logLevel == null) {
                 logLevel = LogLevel.NONE;
             }
+            if (networkMode == null) {
+                networkMode = NetworkMode.LIVE;
+            }
             if (waspHttpStack == null) {
                 waspHttpStack = new OkHttpStack(trustAllCertificates);
             }
@@ -186,6 +191,18 @@ public class Wasp {
                 throw new NullPointerException("Log level should not be null");
             }
             this.logLevel = logLevel;
+            return this;
+        }
+
+        NetworkMode getNetworkMode() {
+            return networkMode;
+        }
+
+        public Builder setNetworkMode(NetworkMode networkMode) {
+            if (networkMode == null) {
+                throw new NullPointerException("NetworkMode should not be null");
+            }
+            this.networkMode = networkMode;
             return this;
         }
 
