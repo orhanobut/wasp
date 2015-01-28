@@ -3,6 +3,8 @@
 #Wasp
 Wasp is compact, complete, easy-in-use and all-in-one network solution. 
 
+<img src='https://github.com/orhanobut/wasp/blob/master/images/logo_wasp.png' width='128' height='128'/>
+
 Wasp uses:
 - Volley
 - Gson
