@@ -11,12 +11,12 @@ import java.util.Map;
  */
 final class WaspResponse {
 
-    private final String url;
-    private final int statusCode;
-    private final Map<String, String> headers;
-    private final String body;
-    private final int length;
-    private final long networkTime;
+    final String url;
+    final int statusCode;
+    final Map<String, String> headers;
+    final String body;
+    final int length;
+    final long networkTime;
 
     public WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
                         long networkTime) {
@@ -28,15 +28,15 @@ final class WaspResponse {
         this.networkTime = networkTime;
     }
 
-    public String getBody() {
+    String getBody() {
         return body;
     }
 
-    private String getFormattedBody() {
+    String getFormattedBody() {
         return body.replace("\n", "").replace("\r", "").replace("\t", "");
     }
 
-    public void log(LogLevel logLevel) {
+    void log(LogLevel logLevel) {
         switch (logLevel) {
             case FULL:
                 // Fall Through

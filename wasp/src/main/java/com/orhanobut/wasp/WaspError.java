@@ -2,9 +2,10 @@ package com.orhanobut.wasp;
 
 import android.text.TextUtils;
 
+import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
 
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -14,21 +15,14 @@ public class WaspError {
 
     public static final int INVALID_STATUS_CODE = -1;
 
-    private final String url;
-    private final int statusCode;
-    private final Map<String, String> headers;
+    private final Parser parser;
+    private final WaspResponse response;
     private final String errorMessage;
-    private final byte[] body;
-    private final long networkTime;
 
-    public WaspError(String url, int statusCode, Map<String, String> headers, String errorMessage, byte[] body,
-                     long networkTime) {
-        this.url = url;
-        this.statusCode = statusCode;
-        this.headers = headers;
+    public WaspError(Parser parser, WaspResponse response, String errorMessage) {
+        this.parser = parser;
+        this.response = response;
         this.errorMessage = errorMessage;
-        this.body = body;
-        this.networkTime = networkTime;
     }
 
     public String getErrorMessage() {
@@ -39,7 +33,26 @@ public class WaspError {
     }
 
     public int getStatusCode() {
-        return statusCode;
+        return response.statusCode;
+    }
+
+    public String getBody() {
+        return response.body;
+    }
+
+    public Object getBodyAs(Type type) {
+        if (response == null) {
+            return null;
+        }
+        String body = response.getBody();
+        if (TextUtils.isEmpty(body)) {
+            return null;
+        }
+        try {
+            return parser.fromJson(response.body, type);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -47,10 +60,10 @@ public class WaspError {
         StringBuilder builder = new StringBuilder();
         builder.append("Wasp Error: ");
         if (errorMessage != null) {
-            builder.append(", Message:").append(errorMessage);
+            builder.append("Message: ").append(errorMessage);
         }
-        builder.append("Status Code: ").append(statusCode)
-                .append("Url ").append(url);
+        builder.append(" Status Code: ").append(response.statusCode)
+                .append(" Url ").append(response.url);
         return builder.toString();
     }
 
@@ -59,22 +72,17 @@ public class WaspError {
             case FULL:
                 // Fall Through
             case FULL_REST_ONLY:
-                Logger.d("<--- ERROR " + statusCode + " " + url);
+                Logger.d("<--- ERROR " + response.statusCode + " " + response.url);
                 Logger.d("Message - " + "[" + errorMessage + "]");
-                if (!headers.isEmpty()) {
-                    for (Map.Entry<String, String> entry : headers.entrySet()) {
+                if (!response.headers.isEmpty()) {
+                    for (Map.Entry<String, String> entry : response.headers.entrySet()) {
                         Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
                     }
                 }
 
-                String bodyString = "";
-                try {
-                    bodyString = new String(body, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    bodyString = "Unable to parse error body!!!!!";
-                }
-                Logger.d(TextUtils.isEmpty(bodyString) ? "Body - no body" : "Body - " + bodyString);
-                Logger.d("<--- END " + "(Size: " + body.length + " bytes - Network time: " + networkTime + " ms)");
+                Logger.d(TextUtils.isEmpty(response.body) ? "Body - no body" : "Body - " + response.body);
+                Logger.d("<--- END " + "(Size: " + response.length + " bytes - Network time: " +
+                        response.networkTime + " ms)");
                 break;
         }
     }

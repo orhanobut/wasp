@@ -109,8 +109,12 @@ final class NetworkHandler implements InvocationHandler {
             @Override
             public void onSuccess(WaspResponse response) {
                 response.log(logLevel);
-                Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
-                new ResponseWrapper(callBack, result).submitResponse();
+                try {
+                    Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
+                    new ResponseWrapper(callBack, result).submitResponse();
+                } catch (Exception e) {
+                    callBack.onError(new WaspError(parser, response, e.getMessage()));
+                }
             }
 
             @Override
@@ -121,11 +125,11 @@ final class NetworkHandler implements InvocationHandler {
         };
 
         if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
-            MockFactory.getDefault(context).invokeRequest(waspRequest, responseCallBack);
+            MockFactory.getDefault(context).invokeRequest(waspRequest, callBack, parser);
             return null;
         }
 
-        networkStack.invokeRequest(waspRequest, responseCallBack);
+        networkStack.invokeRequest(waspRequest, responseCallBack, parser);
         return null;
     }
 }
