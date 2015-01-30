@@ -125,7 +125,7 @@ final class NetworkHandler implements InvocationHandler {
         };
 
         if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
-            MockFactory.getDefault(context).invokeRequest(waspRequest, callBack, parser);
+            MockFactory.getDefault(context).invokeRequest(waspRequest, responseCallBack, parser);
             return null;
         }
 

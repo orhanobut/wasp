@@ -6,7 +6,6 @@ import android.util.Log;
  * @author Orhan Obut
  */
 final class Logger {
-
     private static final int CHUNK_SIZE = 4000;
     private static final String TAG = "Wasp";
 
@@ -38,11 +37,12 @@ final class Logger {
         int length = message.length();
         if (length <= CHUNK_SIZE) {
             logChunk(logType, message);
-        } else {
-            for (int i = 0; i < length; i += CHUNK_SIZE) {
-                int end = Math.min(length, i + CHUNK_SIZE);
-                logChunk(logType, message.substring(i, end));
-            }
+            return;
+        }
+
+        for (int i = 0; i < length; i += CHUNK_SIZE) {
+            int end = Math.min(length, i + CHUNK_SIZE);
+            logChunk(logType, message.substring(i, end));
         }
     }
 
@@ -69,6 +69,5 @@ final class Logger {
                 Log.d(TAG, chunk);
                 break;
         }
-
     }
 }
