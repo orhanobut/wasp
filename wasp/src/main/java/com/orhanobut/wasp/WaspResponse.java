@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.orhanobut.wasp.utils.LogLevel;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -11,28 +12,66 @@ import java.util.Map;
  */
 final class WaspResponse {
 
-    final String url;
-    final int statusCode;
-    final Map<String, String> headers;
-    final String body;
-    final int length;
-    final long networkTime;
+    private final String url;
+    private final int statusCode;
+    private final Map<String, String> headers;
+    private final String body;
+    private final int length;
+    private final long networkTime;
 
     public WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
                         long networkTime) {
         this.url = url;
         this.statusCode = statusCode;
-        this.headers = headers;
+        this.headers = Collections.unmodifiableMap(headers);
         this.body = body;
         this.length = length;
         this.networkTime = networkTime;
     }
 
-    String getBody() {
+    /**
+     * Request URL.
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * HTTP status code.
+     */
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    /**
+     * An unmodifiable map of headers.
+     */
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    /**
+     * Response body. May be {@code null}.
+     */
+    public String getBody() {
         return body;
     }
 
-    String getFormattedBody() {
+    /**
+     * Response body length.
+     */
+    public int getLength() {
+        return length;
+    }
+
+    /**
+     * Network time elapsed for request to be completed.
+     */
+    public long getNetworkTime() {
+        return networkTime;
+    }
+
+    private String getFormattedBody() {
         return body.replace("\n", "").replace("\r", "").replace("\t", "");
     }
 

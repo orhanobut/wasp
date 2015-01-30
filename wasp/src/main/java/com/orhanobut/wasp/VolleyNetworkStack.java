@@ -48,7 +48,7 @@ final class VolleyNetworkStack implements NetworkStack {
         return requestQueue;
     }
 
-    private void addToQueue(final WaspRequest waspRequest, final CallBack callBack, final Parser parser) {
+    private void addToQueue(final WaspRequest waspRequest, CallBack callBack, Parser parser) {
         String url = waspRequest.getUrl();
         int method = getMethod(waspRequest.getMethod());
         VolleyListener listener = VolleyListener.newInstance(callBack, url, parser);
@@ -123,8 +123,8 @@ final class VolleyNetworkStack implements NetworkStack {
             long delay = 0;
             if (error == null) {
                 callBack.onError(new WaspError(
-                        parser, new WaspResponse(url, statusCode, headers, body, length, delay), "No message")
-                );
+                        parser, new WaspResponse(url, statusCode, headers, body, length, delay), "No message"
+                ));
                 return;
             }
             if (error.networkResponse != null) {

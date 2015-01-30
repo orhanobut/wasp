@@ -6,7 +6,6 @@ import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * @author Orhan Obut
@@ -25,6 +24,9 @@ public class WaspError {
         this.errorMessage = errorMessage;
     }
 
+    /**
+     * Error message coming from network layer.
+     */
     public String getErrorMessage() {
         if (errorMessage == null) {
             return "";
@@ -32,14 +34,18 @@ public class WaspError {
         return errorMessage;
     }
 
-    public int getStatusCode() {
-        return response.statusCode;
+    /**
+     * Response object containing status code, headers, body, etc.
+     */
+    public WaspResponse getRespone() {
+        return response;
     }
 
-    public String getBody() {
-        return response.body;
-    }
-
+    /**
+     * HTTP response body parsed via provided {@code type}. {@code null} if there is no response or no body.
+     *
+     * @throws RuntimeException if unable to convert the body to the provided {@code type}.
+     */
     public Object getBodyAs(Type type) {
         if (response == null) {
             return null;
@@ -49,7 +55,7 @@ public class WaspError {
             return null;
         }
         try {
-            return parser.fromJson(response.body, type);
+            return parser.fromJson(response.getBody(), type);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -62,27 +68,19 @@ public class WaspError {
         if (errorMessage != null) {
             builder.append("Message: ").append(errorMessage);
         }
-        builder.append(" Status Code: ").append(response.statusCode)
-                .append(" Url ").append(response.url);
+        builder.append(" Status Code: ").append(response.getStatusCode())
+                .append(" Url ").append(response.getUrl());
         return builder.toString();
     }
 
-    public void logWaspError(LogLevel logLevel) {
+    void log(LogLevel logLevel) {
         switch (logLevel) {
             case FULL:
                 // Fall Through
             case FULL_REST_ONLY:
-                Logger.d("<--- ERROR " + response.statusCode + " " + response.url);
+                Logger.d("<--- ERROR");
                 Logger.d("Message - " + "[" + errorMessage + "]");
-                if (!response.headers.isEmpty()) {
-                    for (Map.Entry<String, String> entry : response.headers.entrySet()) {
-                        Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
-                    }
-                }
-
-                Logger.d(TextUtils.isEmpty(response.body) ? "Body - no body" : "Body - " + response.body);
-                Logger.d("<--- END " + "(Size: " + response.length + " bytes - Network time: " +
-                        response.networkTime + " ms)");
+                response.log(logLevel);
                 break;
         }
     }
