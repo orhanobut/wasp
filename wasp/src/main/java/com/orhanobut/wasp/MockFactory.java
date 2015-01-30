@@ -46,15 +46,6 @@ class MockFactory implements NetworkStack {
         WaspMock mock = waspRequest.getMock();
         int statusCode = mock.getStatusCode();
 
-        if (statusCode < 200 || statusCode > 299) {
-            callBack.onError(new WaspError(
-                    parser,
-                    new WaspResponse("mock url", statusCode, Collections.EMPTY_MAP, "Mock test fail", 0, 0),
-                    null
-            ));
-            return;
-        }
-
         MethodInfo methodInfo = waspRequest.getMethodInfo();
         String responseString;
 
@@ -79,6 +70,15 @@ class MockFactory implements NetworkStack {
         WaspResponse waspResponse = new WaspResponse(
                 waspRequest.getUrl(), statusCode, Collections.EMPTY_MAP, responseString, responseString.length(), 0
         );
+
+        if (statusCode < 200 || statusCode > 299) {
+            callBack.onError(new WaspError(
+                    parser,
+                    waspResponse,
+                    "Mock error message!"
+            ));
+            return;
+        }
 
         callBack.onSuccess((T) waspResponse);
     }
