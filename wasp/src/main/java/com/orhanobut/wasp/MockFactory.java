@@ -3,6 +3,7 @@ package com.orhanobut.wasp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.CollectionUtils;
 import com.orhanobut.wasp.utils.IOUtils;
 import com.orhanobut.wasp.utils.JsonUtil;
@@ -41,18 +42,16 @@ class MockFactory implements NetworkStack {
     }
 
     @Override
-    public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
+    public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack, Parser parser) {
         WaspMock mock = waspRequest.getMock();
         int statusCode = mock.getStatusCode();
 
         if (statusCode < 200 || statusCode > 299) {
             callBack.onError(new WaspError(
-                    "mock url",
-                    statusCode,
-                    new HashMap<String, String>(),
-                    "Mock test fail",
-                    new byte[0],
-                    0));
+                    parser,
+                    new WaspResponse("mock url", statusCode, Collections.EMPTY_MAP, "Mock test fail", 0, 0),
+                    null
+            ));
             return;
         }
 

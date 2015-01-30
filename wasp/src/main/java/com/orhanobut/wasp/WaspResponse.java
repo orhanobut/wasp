@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.orhanobut.wasp.utils.LogLevel;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -22,21 +23,59 @@ final class WaspResponse {
                         long networkTime) {
         this.url = url;
         this.statusCode = statusCode;
-        this.headers = headers;
+        this.headers = Collections.unmodifiableMap(headers);
         this.body = body;
         this.length = length;
         this.networkTime = networkTime;
     }
 
+    /**
+     * Request URL.
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * HTTP status code.
+     */
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    /**
+     * An unmodifiable map of headers.
+     */
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    /**
+     * Response body. May be {@code null}.
+     */
     public String getBody() {
         return body;
+    }
+
+    /**
+     * Response body length.
+     */
+    public int getLength() {
+        return length;
+    }
+
+    /**
+     * Network time elapsed for request to be completed.
+     */
+    public long getNetworkTime() {
+        return networkTime;
     }
 
     private String getFormattedBody() {
         return body.replace("\n", "").replace("\r", "").replace("\t", "");
     }
 
-    public void log(LogLevel logLevel) {
+    void log(LogLevel logLevel) {
         switch (logLevel) {
             case FULL:
                 // Fall Through
