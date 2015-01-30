@@ -2,10 +2,10 @@ package com.orhanobut.wasp;
 
 import android.text.TextUtils;
 
+import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
+import java.lang.reflect.Type;
 
 /**
  * @author Orhan Obut
@@ -14,23 +14,19 @@ public class WaspError {
 
     public static final int INVALID_STATUS_CODE = -1;
 
-    private final String url;
-    private final int statusCode;
-    private final Map<String, String> headers;
+    private final Parser parser;
+    private final WaspResponse response;
     private final String errorMessage;
-    private final byte[] body;
-    private final long networkTime;
 
-    public WaspError(String url, int statusCode, Map<String, String> headers, String errorMessage, byte[] body,
-                     long networkTime) {
-        this.url = url;
-        this.statusCode = statusCode;
-        this.headers = headers;
+    public WaspError(Parser parser, WaspResponse response, String errorMessage) {
+        this.parser = parser;
+        this.response = response;
         this.errorMessage = errorMessage;
-        this.body = body;
-        this.networkTime = networkTime;
     }
 
+    /**
+     * Error message coming from network layer.
+     */
     public String getErrorMessage() {
         if (errorMessage == null) {
             return "";
@@ -38,8 +34,31 @@ public class WaspError {
         return errorMessage;
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    /**
+     * Response object containing status code, headers, body, etc.
+     */
+    public WaspResponse getRespone() {
+        return response;
+    }
+
+    /**
+     * HTTP response body parsed via provided {@code type}. {@code null} if there is no response or no body.
+     *
+     * @throws RuntimeException if unable to convert the body to the provided {@code type}.
+     */
+    public Object getBodyAs(Type type) {
+        if (response == null) {
+            return null;
+        }
+        String body = response.getBody();
+        if (TextUtils.isEmpty(body)) {
+            return null;
+        }
+        try {
+            return parser.fromJson(response.getBody(), type);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -47,34 +66,21 @@ public class WaspError {
         StringBuilder builder = new StringBuilder();
         builder.append("Wasp Error: ");
         if (errorMessage != null) {
-            builder.append(", Message:").append(errorMessage);
+            builder.append("Message: ").append(errorMessage);
         }
-        builder.append("Status Code: ").append(statusCode)
-                .append("Url ").append(url);
+        builder.append(" Status Code: ").append(response.getStatusCode())
+                .append(" Url ").append(response.getUrl());
         return builder.toString();
     }
 
-    public void logWaspError(LogLevel logLevel) {
+    void log(LogLevel logLevel) {
         switch (logLevel) {
             case FULL:
                 // Fall Through
             case FULL_REST_ONLY:
-                Logger.d("<--- ERROR " + statusCode + " " + url);
+                Logger.d("<--- ERROR");
                 Logger.d("Message - " + "[" + errorMessage + "]");
-                if (!headers.isEmpty()) {
-                    for (Map.Entry<String, String> entry : headers.entrySet()) {
-                        Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
-                    }
-                }
-
-                String bodyString = "";
-                try {
-                    bodyString = new String(body, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    bodyString = "Unable to parse error body!!!!!";
-                }
-                Logger.d(TextUtils.isEmpty(bodyString) ? "Body - no body" : "Body - " + bodyString);
-                Logger.d("<--- END " + "(Size: " + body.length + " bytes - Network time: " + networkTime + " ms)");
+                response.log(logLevel);
                 break;
         }
     }

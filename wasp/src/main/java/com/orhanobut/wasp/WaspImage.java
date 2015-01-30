@@ -20,12 +20,13 @@ final class WaspImage {
     private final boolean cropCenter;
     private final boolean fit;
     private final Size size;
+    private final LogLevel logLevel;
 
     /**
      * For now, we will use Volley ImageLoader for the image handling
      */
     private WaspImage(Builder builder) {
-        this.imageHandler = new VolleyImageHandler();
+        this.imageHandler = builder.imageHandler;
         this.url = builder.url;
         this.imageView = builder.imageView;
         this.defaultImage = builder.defaultImage;
@@ -33,6 +34,7 @@ final class WaspImage {
         this.cropCenter = builder.cropCenter;
         this.fit = builder.fit;
         this.size = builder.size;
+        this.logLevel = builder.logLevel;
     }
 
     String getUrl() {
@@ -51,14 +53,17 @@ final class WaspImage {
         return errorImage;
     }
 
+    @SuppressWarnings("unused")
     boolean isCropCenter() {
         return cropCenter;
     }
 
+    @SuppressWarnings("unused")
     boolean isFit() {
         return fit;
     }
 
+    @SuppressWarnings("unused")
     Size getSize() {
         return size;
     }
@@ -69,7 +74,6 @@ final class WaspImage {
     }
 
     public void logRequest() {
-        LogLevel logLevel = Wasp.getLogLevel();
         switch (logLevel) {
             case FULL:
                 // Fall Through
@@ -88,7 +92,6 @@ final class WaspImage {
     }
 
     public void logSuccess(Bitmap bitmap) {
-        LogLevel logLevel = Wasp.getLogLevel();
         switch (logLevel) {
             case FULL:
                 // Fall Through
@@ -104,7 +107,6 @@ final class WaspImage {
     }
 
     public void logError(String message, long networkTime) {
-        LogLevel logLevel = Wasp.getLogLevel();
         switch (logLevel) {
             case FULL:
                 // Fall Through
@@ -136,6 +138,8 @@ final class WaspImage {
         private boolean cropCenter;
         private boolean fit;
         private Size size;
+        private LogLevel logLevel;
+        private ImageHandler imageHandler;
 
         /**
          * It is used to fetch the image from network
@@ -199,6 +203,27 @@ final class WaspImage {
         //TODO 
         public Builder resize(int width, int height) {
             this.size = new Size(width, height);
+            return this;
+        }
+
+        /**
+         * It is used to print logs
+         * @param logLevel is used to determine which information will be printed
+         * @return Builder
+         */
+        Builder setLogLevel(LogLevel logLevel) {
+            this.logLevel = logLevel;
+            return this;
+        }
+
+        /**
+         * It is used to download and load the image
+         *
+         * @param imageHandler is injected as dependency
+         * @return Builder
+         */
+        Builder setImageHandler(ImageHandler imageHandler) {
+            this.imageHandler = imageHandler;
             return this;
         }
 

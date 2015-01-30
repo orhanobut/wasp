@@ -1,5 +1,6 @@
 package com.orhanobut.wasp;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.utils.WaspBitmapCache;
 
 /**
@@ -15,9 +17,7 @@ import com.orhanobut.wasp.utils.WaspBitmapCache;
  */
 class VolleyImageHandler implements ImageHandler {
 
-    private static WaspBitmapCache bitmapCache;
-    private static ImageLoader imageLoader;
-
+    private ImageLoader imageLoader;
     private WaspImage waspImage;
 
     /**
@@ -25,15 +25,16 @@ class VolleyImageHandler implements ImageHandler {
      */
     private ImageLoader.ImageContainer imageContainer;
 
+    VolleyImageHandler(Context context) {
+        this.imageLoader = new ImageLoader(
+                Volley.newRequestQueue(context),
+                new WaspBitmapCache()
+        );
+    }
+
     @Override
     public void init(WaspImage waspImage) {
         this.waspImage = waspImage;
-        if (bitmapCache == null) {
-            bitmapCache = new WaspBitmapCache();
-        }
-        if (imageLoader == null) {
-            imageLoader = new ImageLoader(VolleyNetworkStack.getRequestQueue(), bitmapCache);
-        }
     }
 
     @Override
@@ -123,7 +124,7 @@ class VolleyImageHandler implements ImageHandler {
                 waspImage.logSuccess(bitmap);
                 return;
             }
-            
+
             int defaultImage = waspImage.getDefaultImage();
             if (defaultImage != 0) {
                 imageView.setImageResource(defaultImage);
