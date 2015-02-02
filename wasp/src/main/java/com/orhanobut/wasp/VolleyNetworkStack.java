@@ -17,6 +17,7 @@ import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ final class VolleyNetworkStack implements NetworkStack {
         String url = waspRequest.getUrl();
         int method = getMethod(waspRequest.getMethod());
         VolleyListener listener = VolleyListener.newInstance(callBack, url, parser);
-        Request request = new VolleyRequest(method, url, waspRequest.getBody(), listener) {
+        Request request = new VolleyRequest(method, url, waspRequest, listener) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();
@@ -168,12 +169,14 @@ final class VolleyNetworkStack implements NetworkStack {
         private final VolleyListener<T> listener;
         private final String requestBody;
         private final String url;
+        private final Type responseObjectType;
 
-        public VolleyRequest(int method, String url, String requestBody, VolleyListener<T> listener) {
+        public VolleyRequest(int method, String url, WaspRequest request, VolleyListener<T> listener) {
             super(method, url, listener);
             this.url = url;
             this.listener = listener;
-            this.requestBody = requestBody;
+            this.requestBody = request.getBody();
+            this.responseObjectType = request.getMethodInfo().getResponseObjectType();
         }
 
         @Override
@@ -186,6 +189,8 @@ final class VolleyNetworkStack implements NetworkStack {
             try {
                 byte[] data = response.data;
                 String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
+
+
                 WaspResponse waspResponse = new WaspResponse.Builder()
                         .setUrl(url)
                         .setStatusCode(response.statusCode)

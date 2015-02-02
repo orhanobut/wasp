@@ -12,21 +12,24 @@ import java.util.Map;
  */
 public final class WaspResponse {
 
-    private final String url;
     private final int statusCode;
-    private final Map<String, String> headers;
-    private final String body;
     private final int length;
     private final long networkTime;
 
+    private final Object responseObject;
+    private final Map<String, String> headers;
+    private final String body;
+    private final String url;
+
     private WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
-                         long networkTime) {
+                         long networkTime, Object responseObject) {
         this.url = url;
         this.statusCode = statusCode;
         this.headers = Collections.unmodifiableMap(headers);
         this.body = body;
         this.length = length;
         this.networkTime = networkTime;
+        this.responseObject = responseObject;
     }
 
     /**
@@ -104,6 +107,7 @@ public final class WaspResponse {
         private String url;
         private Map<String, String> headers;
         private String body;
+        private Object responseObject;
 
         private int statusCode;
         private int length;
@@ -142,8 +146,13 @@ public final class WaspResponse {
             return this;
         }
 
+        Builder setResponseObject(Object object) {
+            this.responseObject = object;
+            return this;
+        }
+
         WaspResponse build() {
-            return new WaspResponse(url, statusCode, headers, body, length, networkTime);
+            return new WaspResponse(url, statusCode, headers, body, length, networkTime, responseObject);
         }
 
     }
