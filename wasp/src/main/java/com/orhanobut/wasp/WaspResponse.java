@@ -21,15 +21,14 @@ public final class WaspResponse {
     private final String body;
     private final String url;
 
-    private WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
-                         long networkTime, Object responseObject) {
-        this.url = url;
-        this.statusCode = statusCode;
-        this.headers = Collections.unmodifiableMap(headers);
-        this.body = body;
-        this.length = length;
-        this.networkTime = networkTime;
-        this.responseObject = responseObject;
+    private WaspResponse(Builder builder) {
+        this.url = builder.getUrl();
+        this.statusCode = builder.getStatusCode();
+        this.headers = builder.getHeaders();
+        this.body = builder.getBody();
+        this.length = builder.getLength();
+        this.networkTime = builder.getNetworkTime();
+        this.responseObject = builder.getResponseObject();
     }
 
     /**
@@ -68,6 +67,10 @@ public final class WaspResponse {
     @SuppressWarnings("unused")
     public int getLength() {
         return length;
+    }
+
+    Object getResponseObject() {
+        return responseObject;
     }
 
     /**
@@ -113,22 +116,21 @@ public final class WaspResponse {
         private int length;
         private long networkTime;
 
+        WaspResponse build() {
+            return new WaspResponse(this);
+        }
+
+        String getUrl() {
+            return url;
+        }
+
         Builder setUrl(String url) {
             this.url = url;
             return this;
         }
 
-        Builder setHeaders(Map<String, String> headers) {
-            if (headers == null) {
-                this.headers = Collections.emptyMap();
-            }
-            this.headers = headers;
-            return this;
-        }
-
-        Builder setBody(String body) {
-            this.body = body;
-            return this;
+        int getStatusCode() {
+            return statusCode;
         }
 
         Builder setStatusCode(int statusCode) {
@@ -136,9 +138,35 @@ public final class WaspResponse {
             return this;
         }
 
+        Map<String, String> getHeaders() {
+            return headers != null ? headers : Collections.<String, String>emptyMap();
+        }
+
+        Builder setHeaders(Map<String, String> headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        String getBody() {
+            return body;
+        }
+
+        Builder setBody(String body) {
+            this.body = body;
+            return this;
+        }
+
+        int getLength() {
+            return length;
+        }
+
         Builder setLength(int length) {
             this.length = length;
             return this;
+        }
+
+        long getNetworkTime() {
+            return networkTime;
         }
 
         Builder setNetworkTime(long networkTime) {
@@ -146,14 +174,13 @@ public final class WaspResponse {
             return this;
         }
 
+        Object getResponseObject() {
+            return responseObject;
+        }
+
         Builder setResponseObject(Object object) {
             this.responseObject = object;
             return this;
         }
-
-        WaspResponse build() {
-            return new WaspResponse(url, statusCode, headers, body, length, networkTime, responseObject);
-        }
-
     }
 }

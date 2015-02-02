@@ -28,21 +28,23 @@ class MockFactory implements NetworkStack {
     private static MockFactory mockFactory;
 
     private Context context;
+    private Parser parser;
 
-    private MockFactory(final Context context) {
-        // no instance
+    private MockFactory(Context context, Parser parser) {
         this.context = context;
+        this.parser = parser;
     }
 
-    static MockFactory getDefault(Context context) {
+    static MockFactory getDefault(Context context, Parser parser) {
         if (mockFactory == null) {
-            mockFactory = new MockFactory(context);
+            mockFactory = new MockFactory(context, parser);
         }
         return mockFactory;
     }
 
     @Override
-    public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack, Parser parser) {
+    @SuppressWarnings("unchecked")
+    public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
         WaspMock mock = waspRequest.getMock();
         int statusCode = mock.getStatusCode();
 
