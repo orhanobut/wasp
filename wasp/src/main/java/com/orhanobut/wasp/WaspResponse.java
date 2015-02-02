@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author alessandro.balocco
  */
-final class WaspResponse {
+public final class WaspResponse {
 
     private final String url;
     private final int statusCode;
@@ -19,8 +19,8 @@ final class WaspResponse {
     private final int length;
     private final long networkTime;
 
-    public WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
-                        long networkTime) {
+    private WaspResponse(String url, int statusCode, Map<String, String> headers, String body, int length,
+                         long networkTime) {
         this.url = url;
         this.statusCode = statusCode;
         this.headers = Collections.unmodifiableMap(headers);
@@ -46,6 +46,7 @@ final class WaspResponse {
     /**
      * An unmodifiable map of headers.
      */
+    @SuppressWarnings("unused")
     public Map<String, String> getHeaders() {
         return headers;
     }
@@ -53,6 +54,7 @@ final class WaspResponse {
     /**
      * Response body. May be {@code null}.
      */
+    @SuppressWarnings("unused")
     public String getBody() {
         return body;
     }
@@ -60,6 +62,7 @@ final class WaspResponse {
     /**
      * Response body length.
      */
+    @SuppressWarnings("unused")
     public int getLength() {
         return length;
     }
@@ -67,6 +70,7 @@ final class WaspResponse {
     /**
      * Network time elapsed for request to be completed.
      */
+    @SuppressWarnings("unused")
     public long getNetworkTime() {
         return networkTime;
     }
@@ -92,5 +96,55 @@ final class WaspResponse {
             default:
                 // Method is called but log level is not meant to log anything
         }
+    }
+
+
+    static class Builder {
+
+        private String url;
+        private Map<String, String> headers;
+        private String body;
+
+        private int statusCode;
+        private int length;
+        private long networkTime;
+
+        Builder setUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        Builder setHeaders(Map<String, String> headers) {
+            if (headers == null) {
+                this.headers = Collections.emptyMap();
+            }
+            this.headers = headers;
+            return this;
+        }
+
+        Builder setBody(String body) {
+            this.body = body;
+            return this;
+        }
+
+        Builder setStatusCode(int statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        Builder setLength(int length) {
+            this.length = length;
+            return this;
+        }
+
+        Builder setNetworkTime(long networkTime) {
+            this.networkTime = networkTime;
+            return this;
+        }
+
+        WaspResponse build() {
+            return new WaspResponse(url, statusCode, headers, body, length, networkTime);
+        }
+
     }
 }

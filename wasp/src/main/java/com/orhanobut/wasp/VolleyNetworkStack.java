@@ -17,7 +17,7 @@ import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -116,30 +116,39 @@ final class VolleyNetworkStack implements NetworkStack {
 
         @Override
         public void onErrorResponse(VolleyError error) {
-            int statusCode = WaspError.INVALID_STATUS_CODE;
-            String body = "";
-            int length = 0;
-            Map<String, String> headers = new HashMap<>();
-            long delay = 0;
+            WaspResponse.Builder builder = new WaspResponse.Builder();
+            String errorMessage = null;
+
             if (error == null) {
-                callBack.onError(new WaspError(
-                        parser, new WaspResponse(url, statusCode, headers, body, length, delay), "No message"
-                ));
-                return;
+                builder.setUrl(url)
+                        .setStatusCode(WaspError.INVALID_STATUS_CODE)
+                        .setHeaders(Collections.<String, String>emptyMap())
+                        .setBody(null)
+                        .setLength(0)
+                        .setNetworkTime(0)
+                        .build();
+                errorMessage = "No message";
             }
-            if (error.networkResponse != null) {
-                statusCode = error.networkResponse.statusCode;
-                headers = error.networkResponse.headers;
-                length = error.networkResponse.data.length;
+
+            if (error != null && error.networkResponse != null) {
+                NetworkResponse response = error.networkResponse;
+                String body;
                 try {
-                    body = new String(error.networkResponse.data, HttpHeaderParser.parseCharset(headers));
+                    body = new String(error.networkResponse.data, HttpHeaderParser.parseCharset(response.headers));
                 } catch (UnsupportedEncodingException e) {
                     body = "Unable to parse error body!!!!!";
                 }
+                builder.setUrl(url)
+                        .setStatusCode(response.statusCode)
+                        .setHeaders(response.headers)
+                        .setBody(body)
+                        .setLength(response.data.length)
+                        .setNetworkTime(0)
+                        .build();
+                errorMessage = error.getMessage();
             }
-            callBack.onError(new WaspError(
-                    parser, new WaspResponse(url, statusCode, headers, body, length, delay), error.getMessage()
-            ));
+
+            callBack.onError(new WaspError(parser, builder.build(), errorMessage));
         }
     }
 
@@ -177,11 +186,15 @@ final class VolleyNetworkStack implements NetworkStack {
             try {
                 byte[] data = response.data;
                 String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
-                int length = data.length;
-                long delay = response.networkTimeMs;
-                WaspResponse waspResponse = new WaspResponse(
-                        url, response.statusCode, response.headers, body, length, delay
-                );
+                WaspResponse waspResponse = new WaspResponse.Builder()
+                        .setUrl(url)
+                        .setStatusCode(response.statusCode)
+                        .setHeaders(response.headers)
+                        .setBody(body)
+                        .setLength(data.length)
+                        .setNetworkTime(response.networkTimeMs)
+                        .build();
+
                 return Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
             } catch (UnsupportedEncodingException e) {
                 return Response.error(new ParseError(e));

@@ -67,9 +67,14 @@ class MockFactory implements NetworkStack {
             }
         }
 
-        WaspResponse waspResponse = new WaspResponse(
-                waspRequest.getUrl(), statusCode, Collections.EMPTY_MAP, responseString, responseString.length(), 0
-        );
+        WaspResponse waspResponse = new WaspResponse.Builder()
+                .setUrl(waspRequest.getUrl())
+                .setStatusCode(statusCode)
+                .setHeaders(Collections.<String, String>emptyMap())
+                .setBody(responseString)
+                .setLength(responseString.length())
+                .setNetworkTime(0)
+                .build();
 
         if (statusCode < 200 || statusCode > 299) {
             callBack.onError(new WaspError(
@@ -162,6 +167,9 @@ class MockFactory implements NetworkStack {
             clazz = Class.forName(((Class) type).getName());
         } catch (ClassNotFoundException e) {
             Logger.e(e.getMessage());
+        }
+        if (clazz == null) {
+            throw new NullPointerException("Type cannot be null");
         }
 
         Map<String, Object> map = new HashMap<>();
