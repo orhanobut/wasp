@@ -3,6 +3,8 @@
 #Wasp
 Wasp is compact, complete, easy-in-use and all-in-one network solution. 
 
+<img src='https://github.com/orhanobut/wasp/blob/master/images/logo_wasp.png' width='128' height='128'/>
+
 Wasp uses:
 - Volley
 - Gson
@@ -25,7 +27,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
 }
 dependencies {
-    compile 'com.orhanobut:wasp:1.4-SNAPSHOT'
+    compile 'com.orhanobut:wasp:1.5-SNAPSHOT'
 }
 ```
 
@@ -94,6 +96,29 @@ Wasp.Image.from(url)
       .cropCenter()                     // Optional, in TODO
       .resize(100,200)                  // Optional, in TODO
       .load();
+```
+
+####ProGuard
+
+If you are using ProGuard you should add the following options to your configuration file:
+Note: Other than following options you may also need to keep your network related model classes.
+
+```
+#Wasp
+-keepattributes *Annotation*
+-keep class com.orhanobut.wasp.** { *; }
+-keepclassmembernames interface * {
+    @com.orhanobut.wasp.http.* <methods>;
+}
+
+#Gson
+-keep class com.google.gson.** { *; }
+-keepattributes Signature
+
+#OkHttp
+-dontwarn com.squareup.okhttp.**
+-dontwarn java.nio.file.*
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 ```
 
 ####For more details, check the website
