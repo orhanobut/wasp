@@ -27,7 +27,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
 }
 dependencies {
-    compile 'com.orhanobut:wasp:1.5-SNAPSHOT'
+    compile 'com.orhanobut:wasp:1.6-SNAPSHOT'
 }
 ```
 
