@@ -51,26 +51,21 @@ public class Wasp {
      */
     public static class Image {
 
-        private static ImageHandler imageHandler;
-
         public static WaspImage.Builder from(String path) {
             if (TextUtils.isEmpty(path)) {
                 throw new IllegalArgumentException("Path cannot be empty or null");
             }
             return new WaspImage.Builder()
-                    .setImageHandler(getImageHandler())
+                    .setImageHandler(newImageHandler())
                     .setLogLevel(logLevel)
                     .from(path);
         }
 
-        private static ImageHandler getImageHandler() {
+        private static ImageHandler newImageHandler() {
             if (context == null) {
                 throw new NullPointerException("Wasp.Builder should be instantiated first");
             }
-            if (imageHandler == null) {
-                imageHandler = new VolleyImageHandler(context);
-            }
-            return imageHandler;
+            return new VolleyImageHandler(context);
         }
 
     }

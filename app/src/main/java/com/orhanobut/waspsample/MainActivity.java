@@ -14,14 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 
+@SuppressWarnings("unused")
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView textView;
     private ImageView imageView;
-    private Object image;
-    private Object foo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +37,21 @@ public class MainActivity extends BaseActivity {
         //putFoo();
 
         //  putFooMap();
-        loadImage();
+        //  loadImage();
 
-        getFoo();
+        // getFoo();
+
+        //   startRecyclerViewActivity();
+        startListViewActivity();
+
+    }
+
+    private void startListViewActivity() {
+        startActivity(ListViewActivity.newIntent(this));
+    }
+
+    private void startRecyclerViewActivity() {
+        startActivity(RecyclerViewActivity.newIntent(this));
     }
 
     private void fetchIp() {

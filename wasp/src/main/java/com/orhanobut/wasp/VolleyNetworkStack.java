@@ -35,7 +35,7 @@ final class VolleyNetworkStack implements NetworkStack {
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack, Parser parser) {
         requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
-        //requestQueue = Volley.newRequestQueue(context);
+        // requestQueue = Volley.newRequestQueue(context);
         this.parser = parser;
     }
 
