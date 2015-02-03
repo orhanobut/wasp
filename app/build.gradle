@@ -40,5 +40,4 @@ dependencies {
     androidTestCompile 'com.google.dexmaker:dexmaker:1.0'
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile project(':wasp')
-    compile 'com.squareup.picasso:picasso:2.4.0'
 }
