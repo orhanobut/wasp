@@ -21,8 +21,6 @@ import java.util.Map;
  */
 final class NetworkHandler implements InvocationHandler {
 
-    private static final String TAG = NetworkHandler.class.getSimpleName();
-
     private final Map<String, MethodInfo> methodInfoCache = new LinkedHashMap<>();
     private final Class<?> service;
     private final Context context;
@@ -52,13 +50,6 @@ final class NetworkHandler implements InvocationHandler {
         return new NetworkHandler(service, builder);
     }
 
-    Object getProxyClass() {
-        List<Method> methods = getMethods(service);
-        fillMethods(methods);
-
-        return Proxy.newProxyInstance(classLoader, new Class[]{service}, this);
-    }
-
     private static List<Method> getMethods(Class<?> service) {
         List<Method> result = new ArrayList<>();
 //        try {
@@ -81,6 +72,13 @@ final class NetworkHandler implements InvocationHandler {
         Collections.addAll(methods, service.getDeclaredMethods());
     }
 
+    Object getProxyClass() {
+        List<Method> methods = getMethods(service);
+        fillMethods(methods);
+
+        return Proxy.newProxyInstance(classLoader, new Class[]{service}, this);
+    }
+
     private void fillMethods(List<Method> methods) {
         for (Method method : methods) {
             MethodInfo methodInfo = MethodInfo.newInstance(context, method);
@@ -89,6 +87,7 @@ final class NetworkHandler implements InvocationHandler {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
         if (args.length == 0) {
             throw new IllegalArgumentException("Callback must be sent as param");
@@ -110,8 +109,7 @@ final class NetworkHandler implements InvocationHandler {
             public void onSuccess(WaspResponse response) {
                 response.log(logLevel);
                 try {
-                    Object result = parser.fromJson(response.getBody(), methodInfo.getResponseObjectType());
-                    new ResponseWrapper(callBack, result).submitResponse();
+                    new ResponseWrapper(callBack, response.getResponseObject()).submitResponse();
                 } catch (Exception e) {
                     callBack.onError(new WaspError(parser, response, e.getMessage()));
                 }
@@ -125,11 +123,11 @@ final class NetworkHandler implements InvocationHandler {
         };
 
         if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
-            MockFactory.getDefault(context).invokeRequest(waspRequest, responseCallBack, parser);
+            MockFactory.getDefault(context, parser).invokeRequest(waspRequest, responseCallBack);
             return null;
         }
 
-        networkStack.invokeRequest(waspRequest, responseCallBack, parser);
+        networkStack.invokeRequest(waspRequest, responseCallBack);
         return null;
     }
 }

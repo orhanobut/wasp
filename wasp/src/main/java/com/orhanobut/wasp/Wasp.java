@@ -34,6 +34,7 @@ public class Wasp {
         context = builder.context;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T create(Class<T> service) {
         if (service == null) {
             throw new NullPointerException("service param may not be null");
@@ -175,7 +176,7 @@ public class Wasp {
             }
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
             waspHttpStack.setCookieHandler(cookieHandler);
-            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
+            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack, parser);
         }
 
         String getEndPointUrl() {
@@ -198,6 +199,7 @@ public class Wasp {
             return networkMode;
         }
 
+        @SuppressWarnings("unused")
         public Builder setNetworkMode(NetworkMode networkMode) {
             if (networkMode == null) {
                 throw new NullPointerException("NetworkMode should not be null");
