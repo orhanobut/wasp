@@ -18,7 +18,7 @@ android {
         }
     }
 
-    packagingOptions{
+    packagingOptions {
         exclude 'LICENSE'
         exclude 'NOTICE'
         exclude 'asm-license.txt'
@@ -29,7 +29,7 @@ android {
     }
 }
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
@@ -38,7 +38,6 @@ dependencies {
     androidTestCompile 'org.mockito:mockito-core:1.9.5'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.0'
-
+    compile 'com.android.support:recyclerview-v7:21.0.+'
     compile project(':wasp')
- //   compile 'com.orhanobut:wasp:1.2-SNAPSHOT'
 }

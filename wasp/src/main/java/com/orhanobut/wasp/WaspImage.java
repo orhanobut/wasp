@@ -15,12 +15,13 @@ final class WaspImage {
     private final String url;
     private final ImageView imageView;
     private final ImageHandler imageHandler;
+    private final Size size;
+    private final LogLevel logLevel;
+
     private final int defaultImage;
     private final int errorImage;
     private final boolean cropCenter;
     private final boolean fit;
-    private final Size size;
-    private final LogLevel logLevel;
 
     /**
      * For now, we will use Volley ImageLoader for the image handling
@@ -129,6 +130,7 @@ final class WaspImage {
         return bitmap.getByteCount();
     }
 
+    @SuppressWarnings("unused")
     public static class Builder {
 
         private String url;
@@ -208,6 +210,7 @@ final class WaspImage {
 
         /**
          * It is used to print logs
+         *
          * @param logLevel is used to determine which information will be printed
          * @return Builder
          */
@@ -231,8 +234,7 @@ final class WaspImage {
          * This should be called to fetch the image
          */
         public void load() {
-            WaspImage waspImage = new WaspImage(this);
-            waspImage.load();
+            new WaspImage(this).load();
         }
     }
 

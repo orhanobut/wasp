@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
@@ -17,19 +16,17 @@ import com.orhanobut.wasp.utils.WaspBitmapCache;
  */
 class VolleyImageHandler implements ImageHandler {
 
-    private ImageLoader imageLoader;
-    private WaspImage waspImage;
+    private static ImageLoader imageLoader;
 
-    /**
-     * Current ImageContainer. (either in-flight or finished)
-     */
+    private WaspImage waspImage;
     private ImageLoader.ImageContainer imageContainer;
 
     VolleyImageHandler(Context context) {
-        this.imageLoader = new ImageLoader(
-                Volley.newRequestQueue(context),
-                new WaspBitmapCache()
-        );
+        synchronized (this) {
+            if (imageLoader == null) {
+                imageLoader = new ImageLoader(Volley.newRequestQueue(context), new WaspBitmapCache());
+            }
+        }
     }
 
     @Override
@@ -39,16 +36,7 @@ class VolleyImageHandler implements ImageHandler {
 
     @Override
     public void load() {
-        final ImageView imageView = waspImage.getImageView();
-        final ViewTreeObserver observer = imageView.getViewTreeObserver();
-        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                loadImage();
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
-            }
-        });
+        loadImage();
     }
 
     private void loadImage() {
@@ -56,8 +44,8 @@ class VolleyImageHandler implements ImageHandler {
         final String url = waspImage.getUrl();
         final int defaultImage = waspImage.getDefaultImage();
 
-        int width = imageView.getMeasuredWidth();
-        int height = imageView.getMeasuredHeight();
+        int width = imageView.getWidth();
+        int height = imageView.getHeight();
 
         boolean wrapWidth = false;
         boolean wrapHeight = false;
@@ -66,10 +54,19 @@ class VolleyImageHandler implements ImageHandler {
             wrapHeight = imageView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
+        // if the view's bounds aren't known yet, and this is not a wrap-content/wrap-content
+        // view, hold off on loading the image.
+        boolean isFullyWrapContent = wrapWidth && wrapHeight;
+        if (width == 0 && height == 0 && !isFullyWrapContent) {
+            Logger.d("VolleyImageHandler : width == 0 && height == 0 && !isFullyWrapContent");
+            return;
+        }
+
         // if there was an old request in this view, check if it needs to be canceled.
         if (imageContainer != null) {
             String requestUrl = imageContainer.getRequestUrl();
             if (TextUtils.equals(requestUrl, url)) {
+                Logger.d("VolleyImageHandler : requestUrl == url");
                 return;
             }
             imageContainer.cancelRequest();
