@@ -8,8 +8,6 @@ import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
-import com.orhanobut.wasp.utils.WaspBitmapCache;
 
 /**
  * @author Orhan Obut
@@ -17,29 +15,79 @@ import com.orhanobut.wasp.utils.WaspBitmapCache;
 class VolleyImageHandler implements ImageHandler {
 
     private static ImageLoader imageLoader;
+    private static BitmapWaspCache bitmapWaspCache;
 
     private WaspImage waspImage;
     private ImageLoader.ImageContainer imageContainer;
 
-    VolleyImageHandler(Context context) {
-        synchronized (this) {
-            if (imageLoader == null) {
-                imageLoader = new ImageLoader(Volley.newRequestQueue(context), new WaspBitmapCache());
-            }
-        }
-    }
-
-    @Override
-    public void init(WaspImage waspImage) {
+    private VolleyImageHandler(WaspImage waspImage) {
         this.waspImage = waspImage;
     }
 
-    @Override
-    public void load() {
-        loadImage();
+    static void init(Context context) {
+        synchronized (VolleyImageHandler.class) {
+            bitmapWaspCache = new BitmapWaspCache();
+            // imageLoader = new ImageLoader(Volley.newRequestQueue(context), bitmapWaspCache);
+        }
     }
 
-    private void loadImage() {
+    static VolleyImageHandler newHandler(WaspImage waspImage) {
+        return new VolleyImageHandler(waspImage);
+    }
+
+    public void load() {
+        final ImageView imageView = waspImage.getImageView();
+        //        final ViewTreeObserver observer = imageView.getViewTreeObserver();
+        //        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        //            @Override
+        //            public void onGlobalLayout() {
+        //                loadImage();
+        //                imageView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        //            }
+        //        });
+
+        //
+        //        imageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        //            @Override
+        //            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        //                loadImage(true);
+        //            }
+        //        });
+        //
+        //        imageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+        //            @Override
+        //            public void onViewAttachedToWindow(View v) {
+        //
+        //            }
+        //
+        //            @Override
+        //            public void onViewDetachedFromWindow(View v) {
+        //                if (imageContainer != null) {
+        //                    // If the view was bound to an image request, cancel it and clear
+        //                    // out the image from the view.
+        //                    imageContainer.cancelRequest();
+        //                    imageView.setImageBitmap(null);
+        //                    // also clear out the container so we can reload the image if necessary.
+        //                    imageContainer = null;
+        //                }
+        //            }
+        //        });
+
+
+        loadImage(false);
+    }
+
+    @Override
+    public void load(WaspImage waspImage) {
+
+    }
+
+    @Override
+    public void clearCache() {
+        bitmapWaspCache.clearAll();
+    }
+
+    private void loadImage(boolean isInLayoutChanged) {
         final ImageView imageView = waspImage.getImageView();
         final String url = waspImage.getUrl();
         final int defaultImage = waspImage.getDefaultImage();
@@ -77,7 +125,9 @@ class VolleyImageHandler implements ImageHandler {
         int maxWidth = wrapWidth ? 0 : width;
         int maxHeight = wrapHeight ? 0 : height;
 
-        imageContainer = imageLoader.get(url, new WaspImageListener(imageView, waspImage), maxWidth, maxHeight);
+        imageContainer = imageLoader.get(
+                url, new WaspImageListener(imageView, waspImage, isInLayoutChanged), maxWidth, maxHeight
+        );
         waspImage.logRequest();
     }
 
@@ -93,10 +143,12 @@ class VolleyImageHandler implements ImageHandler {
 
         final ImageView imageView;
         final WaspImage waspImage;
+        final boolean isInLayoutChanged;
 
-        private WaspImageListener(ImageView imageView, WaspImage waspImage) {
+        private WaspImageListener(ImageView imageView, WaspImage waspImage, boolean isInLayoutChanged) {
             this.imageView = imageView;
             this.waspImage = waspImage;
+            this.isInLayoutChanged = isInLayoutChanged;
         }
 
         @Override
@@ -105,7 +157,7 @@ class VolleyImageHandler implements ImageHandler {
             // pass do not set the image immediately as it will trigger a requestLayout
             // inside of a layout. Instead, defer setting the image by posting back to
             // the main thread.
-            if (isImmediate) {
+            if (isImmediate && isInLayoutChanged) {
                 imageView.post(new Runnable() {
                     @Override
                     public void run() {

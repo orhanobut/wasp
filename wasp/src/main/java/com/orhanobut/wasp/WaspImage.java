@@ -69,9 +69,21 @@ final class WaspImage {
         return size;
     }
 
+    /**
+     * If default is set, it will be load into the imageview, otherwise the imageview will be cleared
+     * In case the imageview is preloaded previously, this preload image will be deleted.
+     */
     void load() {
-        imageHandler.init(this);
-        imageHandler.load();
+        //        if (defaultImage != 0) {
+        //            imageView.setImageResource(defaultImage);
+        //        } else {
+        //            imageView.setImageBitmap();
+        //        }
+
+        //   imageView.setImageResource(android.R.drawable.ic_delete);
+
+
+        imageHandler.load(this);
     }
 
     public void logRequest() {
@@ -258,4 +270,5 @@ final class WaspImage {
             return height;
         }
     }
+
 }

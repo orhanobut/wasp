@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.orhanobut.wasp.Wasp;
-
 /**
  * @author Orhan Obut
  */
@@ -16,10 +14,12 @@ public class MyListAdapter extends BaseAdapter {
 
     final String[] list;
     final LayoutInflater layoutInflater;
+    final Context context;
 
     public MyListAdapter(Context context, String[] list) {
         this.list = list;
         this.layoutInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @Override
@@ -53,7 +53,8 @@ public class MyListAdapter extends BaseAdapter {
             holder = (Holder) view.getTag();
         }
 
-        Wasp.Image.from(getItem(position)).to(holder.image).load();
+        //  ImageHandler.volley(context, holder.image, getItem(position));
+        ImageHandler.wasp(context, holder.image, getItem(position));
 
         return view;
     }

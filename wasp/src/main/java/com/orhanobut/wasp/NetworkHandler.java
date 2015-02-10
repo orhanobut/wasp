@@ -2,7 +2,6 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
-import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
 import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.RequestInterceptor;
@@ -25,7 +24,6 @@ final class NetworkHandler implements InvocationHandler {
     private final Class<?> service;
     private final Context context;
     private final NetworkStack networkStack;
-    private final Parser parser;
     private final String endPoint;
     private final ClassLoader classLoader;
     private final RequestInterceptor requestInterceptor;
@@ -36,7 +34,6 @@ final class NetworkHandler implements InvocationHandler {
         this.service = service;
         this.context = builder.getContext();
         this.networkStack = builder.getNetworkStack();
-        this.parser = builder.getParser();
         this.endPoint = builder.getEndPointUrl();
         this.requestInterceptor = builder.getRequestInterceptor();
         this.logLevel = builder.getLogLevel();
@@ -99,7 +96,7 @@ final class NetworkHandler implements InvocationHandler {
         final CallBack<?> callBack = (CallBack<?>) lastArg;
         final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
-        WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint, parser)
+        WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
         waspRequest.log(logLevel);
@@ -111,7 +108,7 @@ final class NetworkHandler implements InvocationHandler {
                 try {
                     new ResponseWrapper(callBack, response.getResponseObject()).submitResponse();
                 } catch (Exception e) {
-                    callBack.onError(new WaspError(parser, response, e.getMessage()));
+                    callBack.onError(new WaspError(response, e.getMessage()));
                 }
             }
 
@@ -123,7 +120,7 @@ final class NetworkHandler implements InvocationHandler {
         };
 
         if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
-            MockFactory.getDefault(context, parser).invokeRequest(waspRequest, responseCallBack);
+            MockFactory.getDefault(context).invokeRequest(waspRequest, responseCallBack);
             return null;
         }
 

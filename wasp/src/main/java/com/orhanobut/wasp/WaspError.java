@@ -2,7 +2,6 @@ package com.orhanobut.wasp;
 
 import android.text.TextUtils;
 
-import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
 
 import java.lang.reflect.Type;
@@ -12,14 +11,10 @@ import java.lang.reflect.Type;
  */
 public class WaspError {
 
-    public static final int INVALID_STATUS_CODE = -1;
-
-    private final Parser parser;
     private final WaspResponse response;
     private final String errorMessage;
 
-    public WaspError(Parser parser, WaspResponse response, String errorMessage) {
-        this.parser = parser;
+    public WaspError(WaspResponse response, String errorMessage) {
         this.response = response;
         this.errorMessage = errorMessage;
     }
@@ -55,7 +50,7 @@ public class WaspError {
             return null;
         }
         try {
-            return parser.fromJson(response.getBody(), type);
+            return Wasp.getParser().fromJson(response.getBody(), type);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

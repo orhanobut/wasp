@@ -2,6 +2,7 @@ package com.orhanobut.waspsample;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,8 +42,28 @@ public class MainActivity extends BaseActivity {
 
         // getFoo();
 
-        //   startRecyclerViewActivity();
-        startListViewActivity();
+        //startListViewActivity();
+
+        findViewById(R.id.listView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListViewActivity();
+            }
+        });
+
+        findViewById(R.id.recycler_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRecyclerViewActivity();
+            }
+        });
+
+        findViewById(R.id.clear_cache).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Wasp.Image.clearCache();
+            }
+        });
 
     }
 

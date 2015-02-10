@@ -9,7 +9,6 @@ import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.QueryMap;
-import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.AuthToken;
 import com.orhanobut.wasp.utils.CollectionUtils;
 import com.orhanobut.wasp.utils.LogLevel;
@@ -113,7 +112,6 @@ final class WaspRequest {
         private final MethodInfo methodInfo;
         private final String baseUrl;
         private final Object[] args;
-        private final Parser parser;
 
         private String body;
         private String relativeUrl;
@@ -122,11 +120,10 @@ final class WaspRequest {
         private Map<String, String> headers;
         private RequestInterceptor requestInterceptor;
 
-        Builder(MethodInfo methodInfo, Object[] args, String baseUrl, Parser parser) {
+        Builder(MethodInfo methodInfo, Object[] args, String baseUrl) {
             this.methodInfo = methodInfo;
             this.baseUrl = baseUrl;
             this.args = args;
-            this.parser = parser;
             this.relativeUrl = methodInfo.getRelativeUrl();
 
             initParams();
@@ -265,7 +262,7 @@ final class WaspRequest {
         }
 
         private String getBody(Object body) {
-            return parser.toJson(body);
+            return Wasp.getParser().toJson(body);
         }
 
         /**

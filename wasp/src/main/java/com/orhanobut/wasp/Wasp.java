@@ -24,6 +24,7 @@ public class Wasp {
 
     private static Context context;
     private static LogLevel logLevel;
+    private static Parser parser;
 
     private final Builder builder;
 
@@ -32,6 +33,11 @@ public class Wasp {
 
         logLevel = builder.logLevel;
         context = builder.context;
+        parser = builder.parser;
+    }
+
+    static Parser getParser() {
+        return parser;
     }
 
     @SuppressWarnings("unchecked")
@@ -51,21 +57,37 @@ public class Wasp {
      */
     public static class Image {
 
+        private static ImageHandler imageHandler;
+        private static WaspImageHandler.ImageCache imageCache;
+        private static WaspImageHandler.ImageNetworkHandler imageNetworkHandler;
+
         public static WaspImage.Builder from(String path) {
             if (TextUtils.isEmpty(path)) {
                 throw new IllegalArgumentException("Path cannot be empty or null");
             }
             return new WaspImage.Builder()
-                    .setImageHandler(newImageHandler())
+                    .setImageHandler(getImageHandler())
                     .setLogLevel(logLevel)
                     .from(path);
         }
 
-        private static ImageHandler newImageHandler() {
+        private static ImageHandler getImageHandler() {
             if (context == null) {
                 throw new NullPointerException("Wasp.Builder should be instantiated first");
             }
-            return new VolleyImageHandler(context);
+            if (imageHandler == null) {
+                imageCache = new BitmapWaspCache();
+                imageNetworkHandler = new VolleyImageNetworkHandler(context);
+                imageHandler = new WaspImageHandler(imageCache, imageNetworkHandler);
+            }
+            return imageHandler;
+        }
+
+        public static void clearCache() {
+            if (imageHandler == null) {
+                return;
+            }
+            imageHandler.clearCache();
         }
 
     }
@@ -171,7 +193,7 @@ public class Wasp {
             }
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
             waspHttpStack.setCookieHandler(cookieHandler);
-            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack, parser);
+            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
         String getEndPointUrl() {
