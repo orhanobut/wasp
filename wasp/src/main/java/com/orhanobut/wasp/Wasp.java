@@ -36,8 +36,18 @@ public class Wasp {
         parser = builder.parser;
     }
 
-    static Parser getParser() {
+    /**
+     * It is used for the parse operations.
+     */
+    public static Parser getParser() {
+        if (parser == null) {
+            throw new NullPointerException("Wasp.Builder must be called first");
+        }
         return parser;
+    }
+
+    static LogLevel getLogLevel() {
+        return logLevel;
     }
 
     @SuppressWarnings("unchecked")
@@ -67,7 +77,6 @@ public class Wasp {
             }
             return new WaspImage.Builder()
                     .setImageHandler(getImageHandler())
-                    .setLogLevel(logLevel)
                     .from(path);
         }
 
@@ -95,6 +104,7 @@ public class Wasp {
     /**
      * Initiate all required information for the wasp
      */
+    @SuppressWarnings("unused")
     public static class Builder {
 
         private String endPointUrl;

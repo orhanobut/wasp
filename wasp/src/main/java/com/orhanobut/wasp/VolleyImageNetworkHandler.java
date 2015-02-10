@@ -3,13 +3,17 @@ package com.orhanobut.wasp;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.utils.StringUtils;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author Orhan Obut
@@ -48,7 +52,31 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callBack.onError(new WaspError(null, error.getMessage()));
+                        WaspResponse.Builder builder = new WaspResponse.Builder().setUrl(url);
+                        String errorMessage = null;
+
+                        if (error != null) {
+                            builder.setNetworkTime(error.getNetworkTimeMs());
+                            errorMessage = error.getMessage();
+
+                            if (error.networkResponse != null) {
+                                NetworkResponse response = error.networkResponse;
+                                String body;
+                                try {
+                                    body = new String(
+                                            error.networkResponse.data, HttpHeaderParser.parseCharset(response.headers)
+                                    );
+                                } catch (UnsupportedEncodingException e) {
+                                    body = "Unable to parse error body!!!!!";
+                                }
+                                builder.setStatusCode(response.statusCode)
+                                        .setHeaders(response.headers)
+                                        .setBody(body)
+                                        .setLength(response.data.length);
+                            }
+                        }
+
+                        callBack.onError(new WaspError(builder.build(), errorMessage));
                     }
                 }
         );

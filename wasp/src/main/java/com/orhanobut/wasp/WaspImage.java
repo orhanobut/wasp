@@ -35,7 +35,7 @@ final class WaspImage {
         this.cropCenter = builder.cropCenter;
         this.fit = builder.fit;
         this.size = builder.size;
-        this.logLevel = builder.logLevel;
+        this.logLevel = Wasp.getLogLevel();
     }
 
     String getUrl() {
@@ -74,15 +74,6 @@ final class WaspImage {
      * In case the imageview is preloaded previously, this preload image will be deleted.
      */
     void load() {
-        //        if (defaultImage != 0) {
-        //            imageView.setImageResource(defaultImage);
-        //        } else {
-        //            imageView.setImageBitmap();
-        //        }
-
-        //   imageView.setImageResource(android.R.drawable.ic_delete);
-
-
         imageHandler.load(this);
     }
 
@@ -152,7 +143,6 @@ final class WaspImage {
         private boolean cropCenter;
         private boolean fit;
         private Size size;
-        private LogLevel logLevel;
         private ImageHandler imageHandler;
 
         /**
@@ -217,17 +207,6 @@ final class WaspImage {
         //TODO 
         public Builder resize(int width, int height) {
             this.size = new Size(width, height);
-            return this;
-        }
-
-        /**
-         * It is used to print logs
-         *
-         * @param logLevel is used to determine which information will be printed
-         * @return Builder
-         */
-        Builder setLogLevel(LogLevel logLevel) {
-            this.logLevel = logLevel;
             return this;
         }
 

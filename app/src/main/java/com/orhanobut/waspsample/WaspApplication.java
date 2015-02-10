@@ -14,9 +14,14 @@ import java.util.Map;
 /**
  * @author Orhan Obut
  */
+@SuppressWarnings("unused")
 public class WaspApplication extends Application {
 
     private static MyService service;
+
+    public static MyService getService() {
+        return service;
+    }
 
     @Override
     public void onCreate() {
@@ -53,7 +58,7 @@ public class WaspApplication extends Application {
             @Override
             public void onQueryParamsAdded(Map<String, Object> params) {
                 super.onQueryParamsAdded(params);
-                params.put("name","something");
+                params.put("name", "something");
             }
 
             @Override
@@ -73,13 +78,9 @@ public class WaspApplication extends Application {
                         //.enableCookies(CookiePolicy.ACCEPT_ALL)
                         //.trustCertificates()
                         //.trustCertificates(R.raw.mytruststore, "123456")
-              //  .setRequestInterceptor(interceptor1)
+                        //.setRequestInterceptor(interceptor1)
                 .build()
                 .create(MyService.class);
 
-    }
-
-    public static MyService getService() {
-        return service;
     }
 }

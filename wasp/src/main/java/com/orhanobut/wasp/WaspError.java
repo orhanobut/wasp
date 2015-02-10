@@ -9,14 +9,17 @@ import java.lang.reflect.Type;
 /**
  * @author Orhan Obut
  */
+@SuppressWarnings("unused")
 public class WaspError {
 
     private final WaspResponse response;
     private final String errorMessage;
+    private final LogLevel logLevel;
 
     public WaspError(WaspResponse response, String errorMessage) {
         this.response = response;
         this.errorMessage = errorMessage;
+        this.logLevel = Wasp.getLogLevel();
     }
 
     /**
@@ -68,14 +71,14 @@ public class WaspError {
         return builder.toString();
     }
 
-    void log(LogLevel logLevel) {
+    void log() {
         switch (logLevel) {
             case FULL:
                 // Fall Through
             case FULL_REST_ONLY:
                 Logger.d("<--- ERROR");
                 Logger.d("Message - " + "[" + errorMessage + "]");
-                response.log(logLevel);
+                response.log();
                 break;
         }
     }

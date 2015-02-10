@@ -33,6 +33,7 @@ final class WaspRequest {
     private final WaspRetryPolicy retryPolicy;
     private final WaspMock mock;
     private final MethodInfo methodInfo;
+    private final LogLevel logLevel;
 
     private WaspRequest(Builder builder) {
         this.url = builder.getUrl();
@@ -42,6 +43,7 @@ final class WaspRequest {
         this.retryPolicy = builder.getRetryPolicy();
         this.mock = builder.getMock();
         this.methodInfo = builder.getMethodInfo();
+        this.logLevel = Wasp.getLogLevel();
     }
 
     String getUrl() {
@@ -68,20 +70,7 @@ final class WaspRequest {
         return retryPolicy;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Request URL : ").append(url);
-        if (body != null) {
-            builder.append(", Body: ").append(body);
-        }
-        if (!getHeaders().isEmpty()) {
-            //TODO add header output
-        }
-        return builder.toString();
-    }
-
-    void log(LogLevel logLevel) {
+    void log() {
         switch (logLevel) {
             case FULL:
                 // Fall Through
@@ -107,7 +96,6 @@ final class WaspRequest {
     static class Builder {
 
         private static final String KEY_AUTH = "Authorization";
-        private static final CharSequence ASCII_SPACE = "%20";
 
         private final MethodInfo methodInfo;
         private final String baseUrl;
@@ -129,6 +117,7 @@ final class WaspRequest {
             initParams();
         }
 
+        @SuppressWarnings("unchecked")
         private void initParams() {
             Annotation[] annotations = methodInfo.getMethodAnnotations();
             int count = annotations.length;

@@ -2,7 +2,6 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
-import com.orhanobut.wasp.utils.LogLevel;
 import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.RequestInterceptor;
 
@@ -27,7 +26,6 @@ final class NetworkHandler implements InvocationHandler {
     private final String endPoint;
     private final ClassLoader classLoader;
     private final RequestInterceptor requestInterceptor;
-    private final LogLevel logLevel;
     private final NetworkMode networkMode;
 
     private NetworkHandler(Class<?> service, Wasp.Builder builder) {
@@ -36,7 +34,6 @@ final class NetworkHandler implements InvocationHandler {
         this.networkStack = builder.getNetworkStack();
         this.endPoint = builder.getEndPointUrl();
         this.requestInterceptor = builder.getRequestInterceptor();
-        this.logLevel = builder.getLogLevel();
         this.networkMode = builder.getNetworkMode();
 
         ClassLoader loader = service.getClassLoader();
@@ -99,12 +96,12 @@ final class NetworkHandler implements InvocationHandler {
         WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint)
                 .setRequestInterceptor(requestInterceptor)
                 .build();
-        waspRequest.log(logLevel);
+        waspRequest.log();
 
         CallBack<WaspResponse> responseCallBack = new CallBack<WaspResponse>() {
             @Override
             public void onSuccess(WaspResponse response) {
-                response.log(logLevel);
+                response.log();
                 try {
                     new ResponseWrapper(callBack, response.getResponseObject()).submitResponse();
                 } catch (Exception e) {
@@ -114,7 +111,7 @@ final class NetworkHandler implements InvocationHandler {
 
             @Override
             public void onError(WaspError error) {
-                error.log(logLevel);
+                error.log();
                 callBack.onError(error);
             }
         };

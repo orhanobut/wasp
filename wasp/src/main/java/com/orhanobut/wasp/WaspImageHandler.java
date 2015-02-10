@@ -3,19 +3,32 @@ package com.orhanobut.wasp;
 import android.graphics.Bitmap;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.orhanobut.wasp.utils.StringUtils;
 
-
 /**
+ * This class is responsible of the loading image. It automatically handles the canceling and
+ * loading images for the recycled view as well.
+ *
  * @author Orhan Obut
  */
 final class WaspImageHandler implements ImageHandler {
 
+    /**
+     * It is used to determine which url is current for the ImageView
+     */
     private static final int KEY_TAG = 0x7f070006;
 
+    /**
+     * Stores the cached images
+     */
     private final ImageCache imageCache;
+
+    /**
+     * It is used to create network request for the bitmap
+     */
     private final ImageNetworkHandler imageNetworkHandler;
 
     WaspImageHandler(ImageCache cache, ImageNetworkHandler handler) {
@@ -24,15 +37,42 @@ final class WaspImageHandler implements ImageHandler {
     }
 
     @Override
-    public void load(WaspImage waspImage) {
+    public void load(final WaspImage waspImage) {
         checkMain();
+        loadImage(waspImage);
+    }
 
+    private void loadImage(final WaspImage waspImage) {
         final String url = waspImage.getUrl();
         final ImageView imageView = waspImage.getImageView();
-        final String cacheKey = StringUtils.getCacheKey(url, 0, 0);
 
         // clear the target
         initImageView(waspImage);
+
+        // update the current url
+        imageView.setTag(KEY_TAG, url);
+
+        int width = imageView.getWidth();
+        int height = imageView.getHeight();
+
+        boolean wrapWidth = false;
+        boolean wrapHeight = false;
+        if (imageView.getLayoutParams() != null) {
+            wrapWidth = imageView.getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT;
+            wrapHeight = imageView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
+
+        // if the view's bounds aren't known yet, and this is not a wrap-content/wrap-content
+        // view, hold off on loading the image.
+        boolean isFullyWrapContent = wrapWidth && wrapHeight;
+        if (width == 0 && height == 0 && !isFullyWrapContent) {
+            Logger.d("ImageHandler : width == 0 && height == 0 && !isFullyWrapContent");
+            // return;
+        }
+
+        // Calculate the max image width / height to use while ignoring WRAP_CONTENT dimens.
+        int maxWidth = wrapWidth ? 0 : width;
+        int maxHeight = wrapHeight ? 0 : height;
 
         // if there is any old request. cancel it
         String tag = (String) imageView.getTag(KEY_TAG);
@@ -41,6 +81,7 @@ final class WaspImageHandler implements ImageHandler {
         }
 
         // check if it is already in cache
+        final String cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
         final Bitmap bitmap = imageCache.getBitmap(cacheKey);
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
@@ -48,11 +89,8 @@ final class WaspImageHandler implements ImageHandler {
             return;
         }
 
-        // update the current url
-        imageView.setTag(KEY_TAG, url);
-
         // make a new request
-        imageNetworkHandler.requestImage(waspImage, 0, 0, new CallBack<Container>() {
+        imageNetworkHandler.requestImage(waspImage, maxWidth, maxHeight, new CallBack<Container>() {
             @Override
             public void onSuccess(final Container container) {
                 ImageView imageView1 = container.imageView;
@@ -60,6 +98,9 @@ final class WaspImageHandler implements ImageHandler {
                 if (bitmap1 == null) {
                     return;
                 }
+
+                // log
+                waspImage.logSuccess(bitmap1);
 
                 // cache the image
                 imageCache.putBitmap(container.cacheKey, container.bitmap);
@@ -74,9 +115,12 @@ final class WaspImageHandler implements ImageHandler {
 
             @Override
             public void onError(WaspError error) {
-
+                Logger.d(error.toString());
             }
         });
+
+        waspImage.logRequest();
+
     }
 
     // clear the target by setting null or default placeholder
@@ -101,14 +145,12 @@ final class WaspImageHandler implements ImageHandler {
     // the call should be done in main thread
     private void checkMain() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
-            throw new IllegalStateException("ImageLoader must be invoked from the main thread.");
+            throw new IllegalStateException("Wasp.Image.load() must be invoked from the main thread.");
         }
     }
 
     /**
-     * Simple cache adapter interface. If provided to the ImageLoader, it
-     * will be used as an L1 cache before dispatch to Volley. Implementations
-     * must not block. Implementation with an LruCache is recommended.
+     * Simple cache adapter interface.
      */
     public interface ImageCache {
 
