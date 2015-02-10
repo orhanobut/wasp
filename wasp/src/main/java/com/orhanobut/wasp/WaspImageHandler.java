@@ -99,7 +99,6 @@ final class WaspImageHandler implements ImageHandler {
                     return;
                 }
 
-                // log
                 waspImage.logSuccess(bitmap1);
 
                 // cache the image
@@ -115,12 +114,11 @@ final class WaspImageHandler implements ImageHandler {
 
             @Override
             public void onError(WaspError error) {
-                Logger.d(error.toString());
+                error.log();
             }
         });
 
         waspImage.logRequest();
-
     }
 
     // clear the target by setting null or default placeholder
