@@ -51,7 +51,7 @@ final class WaspImageHandler implements ImageHandler {
 
         // if there is any old request. cancel it
         String tag = (String) imageView.getTag(KEY_TAG);
-        if (tag != null && !TextUtils.equals(tag, url)) {
+        if (tag != null) {
             imageNetworkHandler.cancelRequest(tag);
         }
 
