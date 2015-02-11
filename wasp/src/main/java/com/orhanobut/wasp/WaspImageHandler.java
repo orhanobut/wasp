@@ -49,6 +49,12 @@ final class WaspImageHandler implements ImageHandler {
         // clear the target
         initImageView(waspImage);
 
+        // if there is any old request. cancel it
+        String tag = (String) imageView.getTag(KEY_TAG);
+        if (tag != null && !TextUtils.equals(tag, url)) {
+            imageNetworkHandler.cancelRequest(tag);
+        }
+
         // update the current url
         imageView.setTag(KEY_TAG, url);
 
@@ -58,8 +64,9 @@ final class WaspImageHandler implements ImageHandler {
         boolean wrapWidth = false;
         boolean wrapHeight = false;
         if (imageView.getLayoutParams() != null) {
-            wrapWidth = imageView.getLayoutParams().width == ViewGroup.LayoutParams.WRAP_CONTENT;
-            wrapHeight = imageView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT;
+            ViewGroup.LayoutParams params = imageView.getLayoutParams();
+            wrapWidth = params.width == ViewGroup.LayoutParams.WRAP_CONTENT;
+            wrapHeight = params.height == ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
         // if the view's bounds aren't known yet, and this is not a wrap-content/wrap-content
@@ -74,12 +81,6 @@ final class WaspImageHandler implements ImageHandler {
         int maxWidth = wrapWidth ? 0 : width;
         int maxHeight = wrapHeight ? 0 : height;
 
-        // if there is any old request. cancel it
-        String tag = (String) imageView.getTag(KEY_TAG);
-        if (tag != null) {
-            imageNetworkHandler.cancelRequest(tag);
-        }
-
         // check if it is already in cache
         final String cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
         final Bitmap bitmap = imageCache.getBitmap(cacheKey);
@@ -93,22 +94,23 @@ final class WaspImageHandler implements ImageHandler {
         imageNetworkHandler.requestImage(waspImage, maxWidth, maxHeight, new CallBack<Container>() {
             @Override
             public void onSuccess(final Container container) {
-                ImageView imageView1 = container.imageView;
-                Bitmap bitmap1 = container.bitmap;
-                if (bitmap1 == null) {
+                Bitmap bitmap = container.bitmap;
+                if (bitmap == null) {
                     return;
                 }
 
-                waspImage.logSuccess(bitmap1);
+                container.waspImage.logSuccess(bitmap);
 
                 // cache the image
                 imageCache.putBitmap(container.cacheKey, container.bitmap);
 
+                ImageView imageView = container.waspImage.getImageView();
+
                 // if it is the current url, set the image
-                String tag = (String) imageView1.getTag(KEY_TAG);
-                if (TextUtils.equals(tag, container.url)) {
-                    imageView1.setImageBitmap(container.bitmap);
-                    imageView1.setTag(KEY_TAG, null);
+                String tag = (String) imageView.getTag(KEY_TAG);
+                if (TextUtils.equals(tag, container.waspImage.getUrl())) {
+                    imageView.setImageBitmap(container.bitmap);
+                    imageView.setTag(KEY_TAG, null);
                 }
             }
 
@@ -150,7 +152,7 @@ final class WaspImageHandler implements ImageHandler {
     /**
      * Simple cache adapter interface.
      */
-    public interface ImageCache {
+    interface ImageCache {
 
         public Bitmap getBitmap(String url);
 
@@ -159,7 +161,7 @@ final class WaspImageHandler implements ImageHandler {
         public void clearCache();
     }
 
-    public interface ImageNetworkHandler {
+    interface ImageNetworkHandler {
 
         void requestImage(WaspImage waspImage, int maxWidth, int maxHeight, CallBack<Container> callBack);
 
@@ -167,11 +169,10 @@ final class WaspImageHandler implements ImageHandler {
 
     }
 
-    public static class Container {
+    static class Container {
         String cacheKey;
         Bitmap bitmap;
-        ImageView imageView;
-        String url;
+        WaspImage waspImage;
     }
 
 }

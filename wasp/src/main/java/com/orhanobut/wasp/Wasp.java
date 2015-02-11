@@ -68,8 +68,6 @@ public class Wasp {
     public static class Image {
 
         private static ImageHandler imageHandler;
-        private static WaspImageHandler.ImageCache imageCache;
-        private static WaspImageHandler.ImageNetworkHandler imageNetworkHandler;
 
         public static WaspImage.Builder from(String path) {
             if (TextUtils.isEmpty(path)) {
@@ -85,9 +83,9 @@ public class Wasp {
                 throw new NullPointerException("Wasp.Builder should be instantiated first");
             }
             if (imageHandler == null) {
-                imageCache = new BitmapWaspCache();
-                imageNetworkHandler = new VolleyImageNetworkHandler(context);
-                imageHandler = new WaspImageHandler(imageCache, imageNetworkHandler);
+                imageHandler = new WaspImageHandler(
+                        new BitmapWaspCache(), new VolleyImageNetworkHandler(context, new OkHttpStack())
+                );
             }
             return imageHandler;
         }

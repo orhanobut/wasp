@@ -9,9 +9,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.utils.StringUtils;
+import com.orhanobut.wasp.utils.WaspHttpStack;
 
 import java.io.UnsupportedEncodingException;
 
@@ -22,8 +24,8 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
 
     private final RequestQueue requestQueue;
 
-    public VolleyImageNetworkHandler(Context context) {
-        this.requestQueue = Volley.newRequestQueue(context);
+    public VolleyImageNetworkHandler(Context context, WaspHttpStack httpStack) {
+        this.requestQueue = Volley.newRequestQueue(context, (HttpStack) httpStack);
     }
 
     @Override
@@ -41,8 +43,7 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
                         WaspImageHandler.Container container = new WaspImageHandler.Container();
                         container.bitmap = response;
                         container.cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
-                        container.imageView = waspImage.getImageView();
-                        container.url = url;
+                        container.waspImage = waspImage;
                         callBack.onSuccess(container);
                     }
                 },
@@ -64,7 +65,8 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
                                 String body;
                                 try {
                                     body = new String(
-                                            error.networkResponse.data, HttpHeaderParser.parseCharset(response.headers)
+                                            error.networkResponse.data,
+                                            HttpHeaderParser.parseCharset(response.headers)
                                     );
                                 } catch (UnsupportedEncodingException e) {
                                     body = "Unable to parse error body!!!!!";
