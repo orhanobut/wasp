@@ -1,13 +1,13 @@
-package com.orhanobut.wasp.utils;
+package com.orhanobut.wasp;
 
 import android.graphics.Bitmap;
 
-import com.android.volley.toolbox.ImageLoader;
+import com.orhanobut.wasp.utils.WaspCache;
 
 /**
  * @author Orhan Obut
  */
-public class WaspBitmapCache extends WaspCache<String, Bitmap> implements ImageLoader.ImageCache {
+public class BitmapWaspCache extends WaspCache<String, Bitmap> implements WaspImageHandler.ImageCache {
 
     @Override
     public Bitmap getBitmap(String url) {
@@ -17,5 +17,10 @@ public class WaspBitmapCache extends WaspCache<String, Bitmap> implements ImageL
     @Override
     public void putBitmap(String url, Bitmap bitmap) {
         put(url, bitmap);
+    }
+
+    @Override
+    public void clearCache() {
+        clearAll();
     }
 }

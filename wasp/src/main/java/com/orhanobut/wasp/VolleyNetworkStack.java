@@ -12,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
-import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
@@ -31,16 +30,13 @@ final class VolleyNetworkStack implements NetworkStack {
     private static final String METHOD_DELETE = "DELETE";
 
     private final RequestQueue requestQueue;
-    private final Parser parser;
 
-    private VolleyNetworkStack(Context context, WaspHttpStack stack, Parser parser) {
+    private VolleyNetworkStack(Context context, WaspHttpStack stack) {
         requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
-        // requestQueue = Volley.newRequestQueue(context);
-        this.parser = parser;
     }
 
-    static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack, Parser parser) {
-        return new VolleyNetworkStack(context, stack, parser);
+    static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
+        return new VolleyNetworkStack(context, stack);
     }
 
     synchronized RequestQueue getRequestQueue() {
@@ -53,8 +49,8 @@ final class VolleyNetworkStack implements NetworkStack {
     private <T> void addToQueue(final WaspRequest waspRequest, CallBack<T> callBack) {
         String url = waspRequest.getUrl();
         int method = getMethod(waspRequest.getMethod());
-        VolleyListener<T> listener = new VolleyListener<>(callBack, url, parser);
-        Request<T> request = new VolleyRequest<T>(method, url, waspRequest, listener, parser) {
+        VolleyListener<T> listener = new VolleyListener<>(callBack, url);
+        Request<T> request = new VolleyRequest<T>(method, url, waspRequest, listener) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 return waspRequest.getHeaders();
@@ -99,12 +95,10 @@ final class VolleyNetworkStack implements NetworkStack {
 
         private final CallBack callBack;
         private final String url;
-        private final Parser parser;
 
-        VolleyListener(CallBack callBack, String url, Parser parser) {
+        VolleyListener(CallBack callBack, String url) {
             this.callBack = callBack;
             this.url = url;
-            this.parser = parser;
         }
 
         @Override
@@ -139,7 +133,7 @@ final class VolleyNetworkStack implements NetworkStack {
                 }
             }
 
-            callBack.onError(new WaspError(parser, builder.build(), errorMessage));
+            callBack.onError(new WaspError(builder.build(), errorMessage));
         }
     }
 
@@ -160,15 +154,13 @@ final class VolleyNetworkStack implements NetworkStack {
         private final String requestBody;
         private final String url;
         private final Type responseObjectType;
-        private final Parser parser;
 
-        public VolleyRequest(int method, String url, WaspRequest request, VolleyListener<T> listener, Parser parser) {
+        public VolleyRequest(int method, String url, WaspRequest request, VolleyListener<T> listener) {
             super(method, url, listener);
             this.url = url;
             this.listener = listener;
             this.requestBody = request.getBody();
             this.responseObjectType = request.getMethodInfo().getResponseObjectType();
-            this.parser = parser;
         }
 
         @Override
@@ -184,7 +176,7 @@ final class VolleyNetworkStack implements NetworkStack {
                 String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
                 Object responseObject = null;
                 try {
-                    responseObject = parser.fromJson(body, responseObjectType);
+                    responseObject = Wasp.getParser().fromJson(body, responseObjectType);
                 } catch (Exception e) {
                     Logger.e(e.getMessage());
                 }

@@ -9,7 +9,6 @@ import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.QueryMap;
-import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.AuthToken;
 import com.orhanobut.wasp.utils.CollectionUtils;
 import com.orhanobut.wasp.utils.LogLevel;
@@ -34,6 +33,7 @@ final class WaspRequest {
     private final WaspRetryPolicy retryPolicy;
     private final WaspMock mock;
     private final MethodInfo methodInfo;
+    private final LogLevel logLevel;
 
     private WaspRequest(Builder builder) {
         this.url = builder.getUrl();
@@ -43,6 +43,7 @@ final class WaspRequest {
         this.retryPolicy = builder.getRetryPolicy();
         this.mock = builder.getMock();
         this.methodInfo = builder.getMethodInfo();
+        this.logLevel = Wasp.getLogLevel();
     }
 
     String getUrl() {
@@ -69,20 +70,7 @@ final class WaspRequest {
         return retryPolicy;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Request URL : ").append(url);
-        if (body != null) {
-            builder.append(", Body: ").append(body);
-        }
-        if (!getHeaders().isEmpty()) {
-            //TODO add header output
-        }
-        return builder.toString();
-    }
-
-    void log(LogLevel logLevel) {
+    void log() {
         switch (logLevel) {
             case FULL:
                 // Fall Through
@@ -108,12 +96,10 @@ final class WaspRequest {
     static class Builder {
 
         private static final String KEY_AUTH = "Authorization";
-        private static final CharSequence ASCII_SPACE = "%20";
 
         private final MethodInfo methodInfo;
         private final String baseUrl;
         private final Object[] args;
-        private final Parser parser;
 
         private String body;
         private String relativeUrl;
@@ -122,16 +108,16 @@ final class WaspRequest {
         private Map<String, String> headers;
         private RequestInterceptor requestInterceptor;
 
-        Builder(MethodInfo methodInfo, Object[] args, String baseUrl, Parser parser) {
+        Builder(MethodInfo methodInfo, Object[] args, String baseUrl) {
             this.methodInfo = methodInfo;
             this.baseUrl = baseUrl;
             this.args = args;
-            this.parser = parser;
             this.relativeUrl = methodInfo.getRelativeUrl();
 
             initParams();
         }
 
+        @SuppressWarnings("unchecked")
         private void initParams() {
             Annotation[] annotations = methodInfo.getMethodAnnotations();
             int count = annotations.length;
@@ -265,7 +251,7 @@ final class WaspRequest {
         }
 
         private String getBody(Object body) {
-            return parser.toJson(body);
+            return Wasp.getParser().toJson(body);
         }
 
         /**

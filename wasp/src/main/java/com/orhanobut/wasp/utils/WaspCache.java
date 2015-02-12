@@ -42,4 +42,8 @@ public class WaspCache<K, V> {
         }
         return map.get(key);
     }
+
+    public synchronized void clearAll() {
+        map.clear();
+    }
 }
