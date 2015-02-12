@@ -24,6 +24,7 @@ public class Wasp {
 
     private static Context context;
     private static LogLevel logLevel;
+    private static Parser parser;
 
     private final Builder builder;
 
@@ -32,6 +33,21 @@ public class Wasp {
 
         logLevel = builder.logLevel;
         context = builder.context;
+        parser = builder.parser;
+    }
+
+    /**
+     * It is used for the parse operations.
+     */
+    public static Parser getParser() {
+        if (parser == null) {
+            throw new NullPointerException("Wasp.Builder must be called first");
+        }
+        return parser;
+    }
+
+    static LogLevel getLogLevel() {
+        return logLevel;
     }
 
     @SuppressWarnings("unchecked")
@@ -59,7 +75,6 @@ public class Wasp {
             }
             return new WaspImage.Builder()
                     .setImageHandler(getImageHandler())
-                    .setLogLevel(logLevel)
                     .from(path);
         }
 
@@ -68,9 +83,18 @@ public class Wasp {
                 throw new NullPointerException("Wasp.Builder should be instantiated first");
             }
             if (imageHandler == null) {
-                imageHandler = new VolleyImageHandler(context);
+                imageHandler = new WaspImageHandler(
+                        new BitmapWaspCache(), new VolleyImageNetworkHandler(context, new OkHttpStack())
+                );
             }
             return imageHandler;
+        }
+
+        public static void clearCache() {
+            if (imageHandler == null) {
+                return;
+            }
+            imageHandler.clearCache();
         }
 
     }
@@ -78,6 +102,7 @@ public class Wasp {
     /**
      * Initiate all required information for the wasp
      */
+    @SuppressWarnings("unused")
     public static class Builder {
 
         private String endPointUrl;
@@ -176,7 +201,7 @@ public class Wasp {
             }
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
             waspHttpStack.setCookieHandler(cookieHandler);
-            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack, parser);
+            networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
         }
 
         String getEndPointUrl() {

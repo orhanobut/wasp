@@ -15,12 +15,13 @@ final class WaspImage {
     private final String url;
     private final ImageView imageView;
     private final ImageHandler imageHandler;
+    private final Size size;
+    private final LogLevel logLevel;
+
     private final int defaultImage;
     private final int errorImage;
     private final boolean cropCenter;
     private final boolean fit;
-    private final Size size;
-    private final LogLevel logLevel;
 
     /**
      * For now, we will use Volley ImageLoader for the image handling
@@ -34,7 +35,7 @@ final class WaspImage {
         this.cropCenter = builder.cropCenter;
         this.fit = builder.fit;
         this.size = builder.size;
-        this.logLevel = builder.logLevel;
+        this.logLevel = Wasp.getLogLevel();
     }
 
     String getUrl() {
@@ -68,9 +69,12 @@ final class WaspImage {
         return size;
     }
 
+    /**
+     * If default is set, it will be load into the imageview, otherwise the imageview will be cleared
+     * In case the imageview is preloaded previously, this preload image will be deleted.
+     */
     void load() {
-        imageHandler.init(this);
-        imageHandler.load();
+        imageHandler.load(this);
     }
 
     public void logRequest() {
@@ -129,6 +133,7 @@ final class WaspImage {
         return bitmap.getByteCount();
     }
 
+    @SuppressWarnings("unused")
     public static class Builder {
 
         private String url;
@@ -138,7 +143,6 @@ final class WaspImage {
         private boolean cropCenter;
         private boolean fit;
         private Size size;
-        private LogLevel logLevel;
         private ImageHandler imageHandler;
 
         /**
@@ -207,16 +211,6 @@ final class WaspImage {
         }
 
         /**
-         * It is used to print logs
-         * @param logLevel is used to determine which information will be printed
-         * @return Builder
-         */
-        Builder setLogLevel(LogLevel logLevel) {
-            this.logLevel = logLevel;
-            return this;
-        }
-
-        /**
          * It is used to download and load the image
          *
          * @param imageHandler is injected as dependency
@@ -231,8 +225,7 @@ final class WaspImage {
          * This should be called to fetch the image
          */
         public void load() {
-            WaspImage waspImage = new WaspImage(this);
-            waspImage.load();
+            new WaspImage(this).load();
         }
     }
 
@@ -256,4 +249,5 @@ final class WaspImage {
             return height;
         }
     }
+
 }

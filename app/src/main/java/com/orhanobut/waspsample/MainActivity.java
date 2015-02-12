@@ -2,6 +2,7 @@ package com.orhanobut.waspsample;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,14 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 
+@SuppressWarnings("unused")
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView textView;
     private ImageView imageView;
-    private Object image;
-    private Object foo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +38,41 @@ public class MainActivity extends BaseActivity {
         //putFoo();
 
         //  putFooMap();
-        loadImage();
+        //  loadImage();
 
-        getFoo();
+        // getFoo();
+
+        //startListViewActivity();
+
+        findViewById(R.id.listView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startListViewActivity();
+            }
+        });
+
+        findViewById(R.id.recycler_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startRecyclerViewActivity();
+            }
+        });
+
+        findViewById(R.id.clear_cache).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Wasp.Image.clearCache();
+            }
+        });
+
+    }
+
+    private void startListViewActivity() {
+        startActivity(ListViewActivity.newIntent(this));
+    }
+
+    private void startRecyclerViewActivity() {
+        startActivity(RecyclerViewActivity.newIntent(this));
     }
 
     private void fetchIp() {
