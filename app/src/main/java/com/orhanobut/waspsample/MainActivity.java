@@ -30,19 +30,14 @@ public class MainActivity extends BaseActivity {
         textView = (TextView) findViewById(R.id.text);
         imageView = (ImageView) findViewById(R.id.image);
 
-        // fetchIp();
-
-        // postFoo();
-
-        //putFoo();
-
-        //  putFooMap();
-        //  loadImage();
-
-        // getFoo();
-
-        //   startRecyclerViewActivity();
-        startListViewActivity();
+        //fetchIp();
+        //postFoo();
+        putFoo();
+        //putFooMap();
+        //loadImage();
+        //getFoo();
+        //startRecyclerViewActivity();
+        //startListViewActivity();
 
     }
 

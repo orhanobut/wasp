@@ -10,7 +10,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.WaspHttpStack;
@@ -34,7 +33,7 @@ final class VolleyNetworkStack implements NetworkStack {
     private final Parser parser;
 
     private VolleyNetworkStack(Context context, WaspHttpStack stack, Parser parser) {
-        requestQueue = Volley.newRequestQueue(context, (HttpStack) stack.getHttpStack());
+        requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
         // requestQueue = Volley.newRequestQueue(context);
         this.parser = parser;
     }
