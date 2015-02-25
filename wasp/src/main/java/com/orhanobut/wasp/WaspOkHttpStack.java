@@ -13,7 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class WaspOkHttpStack implements WaspHttpStack<OkHttpStack> {
 
-    private OkHttpStack okHttpStack;
+    private final OkHttpStack okHttpStack;
 
     public WaspOkHttpStack() {
         this(new OkHttpClient());
@@ -45,4 +45,5 @@ public class WaspOkHttpStack implements WaspHttpStack<OkHttpStack> {
     public void setCookieHandler(CookieHandler cookieHandler) {
         okHttpStack.getClient().setCookieHandler(cookieHandler);
     }
+
 }

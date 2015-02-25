@@ -30,9 +30,9 @@ import java.util.concurrent.TimeUnit;
  */
 class OkHttpStack implements HttpStack {
 
-    private OkHttpClient client;
+    private final OkHttpClient client;
 
-    OkHttpStack(final OkHttpClient client) {
+    OkHttpStack(OkHttpClient client) {
         this.client = client;
     }
 
@@ -51,30 +51,31 @@ class OkHttpStack implements HttpStack {
         okHttpClient.setReadTimeout(timeoutMs, TimeUnit.MILLISECONDS);
         okHttpClient.setWriteTimeout(timeoutMs, TimeUnit.MILLISECONDS);
 
-        com.squareup.okhttp.Request.Builder okHttpRequestBuilder = new com.squareup.okhttp.Request.Builder();
-        okHttpRequestBuilder.url(request.getUrl());
+        com.squareup.okhttp.Request.Builder builder = new com.squareup.okhttp.Request.Builder();
+        builder.url(request.getUrl());
 
         Map<String, String> headers = request.getHeaders();
-        for (final String name : headers.keySet()) {
-            okHttpRequestBuilder.addHeader(name, headers.get(name));
+        for (String name : headers.keySet()) {
+            builder.addHeader(name, headers.get(name));
         }
-        for (final String name : additionalHeaders.keySet()) {
-            okHttpRequestBuilder.addHeader(name, additionalHeaders.get(name));
+        for (String name : additionalHeaders.keySet()) {
+            builder.addHeader(name, additionalHeaders.get(name));
         }
 
-        setConnectionParametersForRequest(okHttpRequestBuilder, request);
+        setConnectionParametersForRequest(builder, request);
 
-        com.squareup.okhttp.Request okHttpRequest = okHttpRequestBuilder.build();
-        Call okHttpCall = okHttpClient.newCall(okHttpRequest);
+        Call okHttpCall = okHttpClient.newCall(builder.build());
         Response okHttpResponse = okHttpCall.execute();
 
-        StatusLine responseStatus = new BasicStatusLine(parseProtocol(okHttpResponse.protocol()), okHttpResponse.code(), okHttpResponse.message());
+        StatusLine responseStatus = new BasicStatusLine(
+                parseProtocol(okHttpResponse.protocol()), okHttpResponse.code(), okHttpResponse.message()
+        );
         BasicHttpResponse response = new BasicHttpResponse(responseStatus);
         response.setEntity(entityFromOkHttpResponse(okHttpResponse));
 
         Headers responseHeaders = okHttpResponse.headers();
         for (int i = 0, len = responseHeaders.size(); i < len; i++) {
-            final String name = responseHeaders.name(i), value = responseHeaders.value(i);
+            String name = responseHeaders.name(i), value = responseHeaders.value(i);
             if (name != null) {
                 response.addHeader(new BasicHeader(name, value));
             }
@@ -150,7 +151,7 @@ class OkHttpStack implements HttpStack {
     }
 
     private static RequestBody createRequestBody(Request request) throws AuthFailureError {
-        final byte[] body = request.getBody();
+        byte[] body = request.getBody();
         if (body == null) {
             return null;
         }

@@ -16,7 +16,10 @@ import okio.Buffer;
 /**
  * @author Emmar Kardeslik
  */
-public class WaspLoggingInterceptor implements Interceptor {
+public class OkHttpLogInterceptor implements Interceptor {
+
+    private static final double MILLI_AS_NANO = 1e6d;
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
@@ -40,8 +43,8 @@ public class WaspLoggingInterceptor implements Interceptor {
         logHeaders(response.headers());
         String responseBody = response.body().string();
         Logger.d(TextUtils.isEmpty(responseBody) ? "Body - no body" : "Body - " + responseBody);
-        Logger.d("<--- END " + "(Size: " + response.body().contentLength() + " bytes - Network time: " + (t2 - t1) / 1e6d + " ms)");
-
+        Logger.d("<--- END " + "(Size: " + response.body().contentLength() + " bytes - "+
+                "Network time: " + (t2 - t1) / MILLI_AS_NANO + " ms)");
 
         return response;
     }

@@ -2,6 +2,8 @@ package com.orhanobut.wasp.utils;
 
 import android.content.Context;
 
+import com.orhanobut.wasp.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -20,13 +22,14 @@ import javax.net.ssl.X509TrustManager;
  * @author Emmar Kardeslik
  */
 public final class SSLUtils {
+
     private SSLUtils() {
         //no instance
     }
 
     public static SSLSocketFactory getTrustAllCertSslSocketFactory() {
         try {
-            final TrustManager[] trustAllCerts = new TrustManager[]{
+            TrustManager[] trustAllCerts = new TrustManager[]{
                     new X509TrustManager() {
                         @Override
                         public void checkClientTrusted(X509Certificate[] chain, String authType)
@@ -84,7 +87,7 @@ public final class SSLUtils {
                     in.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.e(e.getMessage());
             }
         }
     }
@@ -97,4 +100,5 @@ public final class SSLUtils {
             }
         };
     }
+
 }
