@@ -8,33 +8,33 @@ import com.orhanobut.wasp.utils.LogLevel;
  * @author Orhan Obut
  */
 @SuppressWarnings("unused")
-final class Logger {
-
+public final class Logger {
+    
     private static final int CHUNK_SIZE = 4000;
 
     private static final String TAG = "Wasp";
 
-    static void d(String message) {
+    public static void d(String message) {
         log(Log.DEBUG, message);
     }
 
-    static void e(String message) {
+    public static void e(String message) {
         log(Log.ERROR, message);
     }
 
-    static void w(String message) {
+    public static void w(String message) {
         log(Log.WARN, message);
     }
 
-    static void i(String message) {
+    public static void i(String message) {
         log(Log.INFO, message);
     }
 
-    static void v(String message) {
+    public static void v(String message) {
         log(Log.VERBOSE, message);
     }
 
-    static void wtf(String message) {
+    public static void wtf(String message) {
         log(Log.ASSERT, message);
     }
 

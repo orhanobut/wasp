@@ -32,17 +32,11 @@ public class MainActivity extends BaseActivity {
         imageView = (ImageView) findViewById(R.id.image);
 
         // fetchIp();
-
         // postFoo();
-
-        //putFoo();
-
+        putFoo();
         //  putFooMap();
         //  loadImage();
-
         // getFoo();
-
-        //startListViewActivity();
 
         findViewById(R.id.listView).setOnClickListener(new View.OnClickListener() {
             @Override

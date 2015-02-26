@@ -8,6 +8,7 @@ import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.LogLevel;
 import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.RequestInterceptor;
+import com.orhanobut.wasp.utils.SSLUtils;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 
 import java.net.CookieHandler;
@@ -15,6 +16,7 @@ import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
@@ -84,7 +86,7 @@ public class Wasp {
             }
             if (imageHandler == null) {
                 imageHandler = new WaspImageHandler(
-                        new BitmapWaspCache(), new VolleyImageNetworkHandler(context, new OkHttpStack())
+                        new BitmapWaspCache(), new VolleyImageNetworkHandler(context, new WaspOkHttpStack())
                 );
             }
             return imageHandler;
@@ -113,9 +115,9 @@ public class Wasp {
         private WaspHttpStack waspHttpStack;
         private RequestInterceptor requestInterceptor;
         private NetworkStack networkStack;
+        private HostnameVerifier hostnameVerifier;
         private SSLSocketFactory sslSocketFactory;
         private CookieHandler cookieHandler;
-        private boolean trustAllCertificates;
 
         public Builder(Context context) {
             if (context == null) {
@@ -152,8 +154,8 @@ public class Wasp {
             if (sslSocketFactory != null) {
                 throw new IllegalStateException("Only one type of trust certificate method can be used!");
             }
-            this.sslSocketFactory = OkHttpStack.getTrustAllCertSslSocketFactory();
-            this.trustAllCertificates = true;
+            this.sslSocketFactory = SSLUtils.getTrustAllCertSslSocketFactory();
+            this.hostnameVerifier = SSLUtils.getEmptyHostnameVerifier();
             return this;
         }
 
@@ -162,7 +164,7 @@ public class Wasp {
             if (sslSocketFactory != null) {
                 throw new IllegalStateException("Only one type of trust certificate method can be used!");
             }
-            this.sslSocketFactory = OkHttpStack.getPinnedCertSslSocketFactory(
+            this.sslSocketFactory = SSLUtils.getPinnedCertSslSocketFactory(
                     context, keyStoreRawResId, keyStorePassword
             );
             return this;
@@ -197,8 +199,9 @@ public class Wasp {
                 networkMode = NetworkMode.LIVE;
             }
             if (waspHttpStack == null) {
-                waspHttpStack = new OkHttpStack(trustAllCertificates);
+                waspHttpStack = new WaspOkHttpStack();
             }
+            waspHttpStack.setHostnameVerifier(hostnameVerifier);
             waspHttpStack.setSslSocketFactory(sslSocketFactory);
             waspHttpStack.setCookieHandler(cookieHandler);
             networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
