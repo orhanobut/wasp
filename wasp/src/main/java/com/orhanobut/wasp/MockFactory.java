@@ -3,7 +3,6 @@ package com.orhanobut.wasp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.orhanobut.wasp.parsers.Parser;
 import com.orhanobut.wasp.utils.CollectionUtils;
 import com.orhanobut.wasp.utils.IOUtils;
 import com.orhanobut.wasp.utils.JsonUtil;
@@ -28,16 +27,14 @@ class MockFactory implements NetworkStack {
     private static MockFactory mockFactory;
 
     private Context context;
-    private Parser parser;
 
-    private MockFactory(Context context, Parser parser) {
+    private MockFactory(Context context) {
         this.context = context;
-        this.parser = parser;
     }
 
-    static MockFactory getDefault(Context context, Parser parser) {
+    static MockFactory getDefault(Context context) {
         if (mockFactory == null) {
-            mockFactory = new MockFactory(context, parser);
+            mockFactory = new MockFactory(context);
         }
         return mockFactory;
     }
@@ -79,11 +76,7 @@ class MockFactory implements NetworkStack {
                 .build();
 
         if (statusCode < 200 || statusCode > 299) {
-            callBack.onError(new WaspError(
-                    parser,
-                    waspResponse,
-                    "Mock error message!"
-            ));
+            callBack.onError(new WaspError(waspResponse, "Mock error message!"));
             return;
         }
 

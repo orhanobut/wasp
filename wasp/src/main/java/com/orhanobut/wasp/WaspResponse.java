@@ -20,6 +20,7 @@ public final class WaspResponse {
     private final Map<String, String> headers;
     private final String body;
     private final String url;
+    private final LogLevel logLevel;
 
     private WaspResponse(Builder builder) {
         this.url = builder.getUrl();
@@ -29,6 +30,7 @@ public final class WaspResponse {
         this.length = builder.getLength();
         this.networkTime = builder.getNetworkTime();
         this.responseObject = builder.getResponseObject();
+        this.logLevel = Wasp.getLogLevel();
     }
 
     /**
@@ -88,7 +90,7 @@ public final class WaspResponse {
         return body.replace("\n", "").replace("\r", "").replace("\t", "");
     }
 
-    void log(LogLevel logLevel) {
+    void log() {
         switch (logLevel) {
             case FULL:
                 // Fall Through

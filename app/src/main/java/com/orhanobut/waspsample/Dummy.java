@@ -8,8 +8,6 @@ public class Dummy {
     static String[] IMAGE_LIST = {
             "http://imgsv.imaging.nikon.com/lineup/lens/zoom/normalzoom/af-s_dx_18-300mmf_35-56g_ed_vr/img/sample" +
                     "/sample4_l.jpg",
-            "http://indianapublicmedia.org/arts/files/2012/04/sample-gates-9-940x626.jpg",
-            "http://isc.stuorg.iastate.edu/wp-content/uploads/sample.jpg",
             "http://upload.wikimedia.org/wikipedia/commons/1/16/HDRI_Sample_Scene_Balls_%28JPEG-HDR%29.jpg",
             "http://blogs.ubc.ca/CourseBlogSample01/wp-content/themes/thesis/rotator/sample-1.jpg",
             "http://res.cloudinary.com/demo/image/upload/sample.jpg",

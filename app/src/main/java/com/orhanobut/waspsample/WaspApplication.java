@@ -15,9 +15,14 @@ import java.io.IOException;
 /**
  * @author Orhan Obut
  */
+@SuppressWarnings("unused")
 public class WaspApplication extends Application {
 
     private static MyService service;
+
+    public static MyService getService() {
+        return service;
+    }
 
     @Override
     public void onCreate() {
@@ -45,9 +50,5 @@ public class WaspApplication extends Application {
                 .build()
                 .create(MyService.class);
 
-    }
-
-    public static MyService getService() {
-        return service;
     }
 }

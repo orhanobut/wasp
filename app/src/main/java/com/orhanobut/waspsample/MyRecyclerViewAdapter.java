@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.orhanobut.wasp.Wasp;
-
 /**
  * @author Orhan Obut
  */
@@ -33,9 +31,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        Wasp.Image.from(imageList[position]).to(holder.image).load();
-        //   Picasso.with(context).load(imageList[position]).into(holder.image);
+        // ImageHandler.volley(context, holder.image, imageList[position]);
+        ImageHandler.wasp(context, holder.image, imageList[position]);
     }
 
     @Override

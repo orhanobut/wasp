@@ -2,11 +2,16 @@ package com.orhanobut.wasp;
 
 import android.util.Log;
 
+import com.orhanobut.wasp.utils.LogLevel;
+
 /**
  * @author Orhan Obut
  */
+@SuppressWarnings("unused")
 public final class Logger {
+    
     private static final int CHUNK_SIZE = 4000;
+
     private static final String TAG = "Wasp";
 
     public static void d(String message) {
@@ -34,6 +39,10 @@ public final class Logger {
     }
 
     private static void log(int logType, String message) {
+        LogLevel logLevel = Wasp.getLogLevel();
+        if (logLevel == LogLevel.NONE) {
+            return;
+        }
         int length = message.length();
         if (length <= CHUNK_SIZE) {
             logChunk(logType, message);
