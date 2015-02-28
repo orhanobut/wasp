@@ -102,11 +102,7 @@ final class NetworkHandler implements InvocationHandler {
             @Override
             public void onSuccess(WaspResponse response) {
                 response.log();
-                try {
-                    new ResponseWrapper(callBack, response.getResponseObject()).submitResponse();
-                } catch (Exception e) {
-                    callBack.onError(new WaspError(response, e.getMessage()));
-                }
+                new ResponseWrapper(callBack, response.getResponseObject()).submitResponse();
             }
 
             @Override

@@ -27,6 +27,12 @@ public final class SSLUtils {
         //no instance
     }
 
+    /**
+     * Helper method to create an empty {@link SSLSocketFactory} which trusts all certificates
+     * It is intended to be used only for testing purposes
+     *
+     * @return created empty factory
+     */
     public static SSLSocketFactory getTrustAllCertSslSocketFactory() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
@@ -57,6 +63,11 @@ public final class SSLUtils {
         }
     }
 
+    /**
+     * Helper method to create an {@link SSLSocketFactory} which trusts only given certificate
+     *
+     * @return created specific factory
+     */
     public static SSLSocketFactory getPinnedCertSslSocketFactory(Context context, int keyStoreRawResId, String keyStorePassword) {
         InputStream in = null;
         try {
@@ -92,6 +103,12 @@ public final class SSLUtils {
         }
     }
 
+    /**
+     * Helper method to create an empty {@link HostnameVerifier} which verifies all hosts
+     * It is intended to be used only for testing purposes
+     *
+     * @return created empty hostnameVerifier
+     */
     public static HostnameVerifier getEmptyHostnameVerifier() {
         return new HostnameVerifier() {
             @Override

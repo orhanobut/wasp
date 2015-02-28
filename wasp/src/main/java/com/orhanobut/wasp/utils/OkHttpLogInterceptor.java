@@ -14,6 +14,9 @@ import java.io.IOException;
 import okio.Buffer;
 
 /**
+ * An {@link com.squareup.okhttp.Interceptor} implementation which logs all info about outgoing request and related response
+ * including complete header set, request and response bodies and network time
+ *
  * @author Emmar Kardeslik
  */
 public class OkHttpLogInterceptor implements Interceptor {

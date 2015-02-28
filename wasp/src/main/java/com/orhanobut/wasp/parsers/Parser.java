@@ -1,5 +1,7 @@
 package com.orhanobut.wasp.parsers;
 
+import com.google.gson.JsonSyntaxException;
+
 import java.lang.reflect.Type;
 
 /**
@@ -7,7 +9,7 @@ import java.lang.reflect.Type;
  */
 public interface Parser {
 
-    <T> T fromJson(String content, Type type) throws Exception;
+    <T> T fromJson(String content, Type type) throws JsonSyntaxException;
 
     String toJson(Object body);
 }
