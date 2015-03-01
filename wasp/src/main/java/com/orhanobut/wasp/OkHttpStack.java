@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * An HttpStack implementation which uses {@link com.squareup.okhttp.OkHttpClient} as http client
+ *
  * @author Emmar Kardeslik
  */
 class OkHttpStack implements HttpStack {

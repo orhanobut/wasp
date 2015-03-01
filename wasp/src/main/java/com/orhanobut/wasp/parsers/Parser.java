@@ -1,5 +1,6 @@
 package com.orhanobut.wasp.parsers;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -7,7 +8,7 @@ import java.lang.reflect.Type;
  */
 public interface Parser {
 
-    <T> T fromJson(String content, Type type) throws Exception;
+    <T> T fromJson(String content, Type type) throws IOException;
 
     String toJson(Object body);
 }

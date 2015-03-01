@@ -66,11 +66,19 @@ class MockFactory implements NetworkStack {
             }
         }
 
+        Object responseObject;
+        try {
+            responseObject = Wasp.getParser().fromJson(responseString, methodInfo.getResponseObjectType());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         WaspResponse waspResponse = new WaspResponse.Builder()
                 .setUrl(waspRequest.getUrl())
                 .setStatusCode(statusCode)
                 .setHeaders(Collections.<String, String>emptyMap())
                 .setBody(responseString)
+                .setResponseObject(responseObject)
                 .setLength(responseString.length())
                 .setNetworkTime(0)
                 .build();

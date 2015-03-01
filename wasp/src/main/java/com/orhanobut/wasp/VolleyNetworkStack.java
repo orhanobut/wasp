@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -173,12 +174,7 @@ final class VolleyNetworkStack implements NetworkStack {
             try {
                 byte[] data = response.data;
                 String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
-                Object responseObject = null;
-                try {
-                    responseObject = Wasp.getParser().fromJson(body, responseObjectType);
-                } catch (Exception e) {
-                    Logger.e(e.getMessage());
-                }
+                Object responseObject = Wasp.getParser().fromJson(body, responseObjectType);
 
                 WaspResponse waspResponse = new WaspResponse.Builder()
                         .setUrl(url)
@@ -192,6 +188,8 @@ final class VolleyNetworkStack implements NetworkStack {
 
                 return Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
             } catch (UnsupportedEncodingException e) {
+                return Response.error(new ParseError(e));
+            } catch (IOException e) {
                 return Response.error(new ParseError(e));
             }
         }

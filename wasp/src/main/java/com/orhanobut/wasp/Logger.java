@@ -9,7 +9,9 @@ import com.orhanobut.wasp.utils.LogLevel;
  */
 @SuppressWarnings("unused")
 public final class Logger {
-    
+
+    /*Android's max limit for a log entry is ~4076 bytes,
+    so 4000 bytes is used as chunk size since default charset is UTF-8*/
     private static final int CHUNK_SIZE = 4000;
 
     private static final String TAG = "Wasp";
@@ -43,15 +45,18 @@ public final class Logger {
         if (logLevel == LogLevel.NONE) {
             return;
         }
-        int length = message.length();
+        //get bytes of message with system's default charset (which is UTF-8 for Android)
+        byte[] bytes = message.getBytes();
+        int length = bytes.length;
         if (length <= CHUNK_SIZE) {
             logChunk(logType, message);
             return;
         }
 
         for (int i = 0; i < length; i += CHUNK_SIZE) {
-            int end = Math.min(length, i + CHUNK_SIZE);
-            logChunk(logType, message.substring(i, end));
+            int count = Math.min(length - i, CHUNK_SIZE);
+            //create a new String with system's default charset (which is UTF-8 for Android)
+            logChunk(logType, new String(bytes, i, count));
         }
     }
 
@@ -79,4 +84,5 @@ public final class Logger {
                 break;
         }
     }
+
 }

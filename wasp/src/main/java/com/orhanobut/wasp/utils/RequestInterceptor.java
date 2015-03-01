@@ -10,16 +10,14 @@ public interface RequestInterceptor {
     /**
      * For each request, these headers will be added
      *
-     * @param headers
-     * @return map which contains headers
+     * @param headers to be added request headers
      */
     void onHeadersAdded(Map<String, String> headers);
 
     /**
      * For each request, these query params will be added
      *
-     * @param params
-     * @return map which contains query params
+     * @param params query parameters to be added request url
      */
     void onQueryParamsAdded(Map<String, Object> params);
 
