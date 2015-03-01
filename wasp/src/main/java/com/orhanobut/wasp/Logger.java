@@ -46,7 +46,7 @@ public final class Logger {
             return;
         }
         //get bytes of message with system's default charset (which is UTF-8 for Android)
-        final byte[] bytes = message.getBytes();
+        byte[] bytes = message.getBytes();
         int length = bytes.length;
         if (length <= CHUNK_SIZE) {
             logChunk(logType, message);

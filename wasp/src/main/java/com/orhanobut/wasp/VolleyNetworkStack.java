@@ -11,10 +11,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonSyntaxException;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -189,7 +189,7 @@ final class VolleyNetworkStack implements NetworkStack {
                 return Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
             } catch (UnsupportedEncodingException e) {
                 return Response.error(new ParseError(e));
-            } catch (JsonSyntaxException e) {
+            } catch (IOException e) {
                 return Response.error(new ParseError(e));
             }
         }

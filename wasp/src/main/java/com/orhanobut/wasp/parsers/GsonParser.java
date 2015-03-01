@@ -3,8 +3,8 @@ package com.orhanobut.wasp.parsers;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
 /**
@@ -23,7 +23,7 @@ public class GsonParser implements Parser {
     }
 
     @Override
-    public <T> T fromJson(String content, Type type) throws JsonSyntaxException{
+    public <T> T fromJson(String content, Type type) throws IOException {
         if (TextUtils.isEmpty(content)) {
             return null;
         }
