@@ -1,6 +1,7 @@
 package com.orhanobut.wasp.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +18,9 @@ public class IOUtils {
     }
 
     public static boolean assetsFileExists(Context context, String filePath) {
-
+        if (TextUtils.isEmpty(filePath)) {
+            return false;
+        }
         try {
             InputStream inputStream = context.getAssets().open(filePath);
             inputStream.close();
@@ -29,6 +32,9 @@ public class IOUtils {
     }
 
     public static String readFileFromAssets(Context context, String filePath) throws IOException {
+        if (TextUtils.isEmpty(filePath)) {
+            return null;
+        }
 
         StringBuilder builder = new StringBuilder();
 
