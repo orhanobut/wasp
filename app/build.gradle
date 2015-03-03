@@ -34,10 +34,6 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile 'org.assertj:assertj-core:1.7.0'
-    androidTestCompile 'org.mockito:mockito-core:1.9.5'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.0'
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile project(':wasp')
 }

@@ -189,6 +189,9 @@ public class Wasp {
         }
 
         private void init() {
+            if (endPointUrl == null) {
+                throw new NullPointerException("Endpoint may not be null");
+            }
             if (parser == null) {
                 parser = new GsonParser();
             }

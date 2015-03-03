@@ -12,13 +12,12 @@ import junit.framework.Assert;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 /**
  * @author Orhan Obut
  */
 public class MyServiceTest extends InstrumentationTestCase {
 
-    private static final String TAG = MyServiceTest.class.getSimpleName();
-    
     Context context;
 
     @Override
@@ -51,12 +50,12 @@ public class MyServiceTest extends InstrumentationTestCase {
                     .setEndpoint("endpoint")
                     .build()
                     .create(Service1.class);
-            Assert.fail("Last param should be callback");
+            fail("Last param should be callback");
         } catch (Exception e) {
             assertThat(e.getMessage());
         }
     }
-    
+
     public interface Service2 {
         @GET("/repos/{user}/{repo}")
         void fetchRepo(@Path("user") String user,
