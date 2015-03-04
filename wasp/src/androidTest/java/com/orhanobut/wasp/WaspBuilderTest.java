@@ -1,10 +1,5 @@
-package com.orhanobut.waspsample;
+package com.orhanobut.wasp;
 
-import android.content.Context;
-import android.test.InstrumentationTestCase;
-
-import com.orhanobut.wasp.CallBack;
-import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.GET;
 import com.orhanobut.wasp.http.POST;
@@ -20,10 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Orhan Obut
  */
-public class WaspBuilderTest extends InstrumentationTestCase {
+public class WaspBuilderTest extends BaseTest {
 
     ServiceTest service;
-    Context context;
 
     interface ServiceTest {
         @GET("/repos/{user}/{repo}")
@@ -51,12 +45,6 @@ public class WaspBuilderTest extends InstrumentationTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-
-        System.setProperty(
-                "dexmaker.dexcache",
-                getInstrumentation().getTargetContext().getCacheDir().getPath());
-
-        context = getInstrumentation().getContext();
 
         service = new Wasp.Builder(context)
                 .setEndpoint("endpoint")

@@ -1,8 +1,5 @@
 package com.orhanobut.wasp;
 
-import android.content.Context;
-import android.test.InstrumentationTestCase;
-
 import com.orhanobut.wasp.utils.WaspCache;
 
 import junit.framework.Assert;
@@ -12,19 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by yekmer
  */
-public class WaspCacheTest extends InstrumentationTestCase {
-    Context context;
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        System.setProperty(
-                "dexmaker.dexcache",
-                getInstrumentation().getTargetContext().getCacheDir().getPath());
-
-        context = getInstrumentation().getContext();
-    }
+public class WaspCacheTest extends BaseTest {
 
     @Override
     protected void tearDown() throws Exception {

@@ -1,4 +1,4 @@
-package com.orhanobut.waspsample;
+package com.orhanobut.wasp;
 
 import com.google.gson.annotations.SerializedName;
 
