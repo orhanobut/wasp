@@ -3,6 +3,7 @@ package com.orhanobut.waspsample;
 import android.content.Context;
 import android.test.InstrumentationTestCase;
 
+import com.orhanobut.wasp.CallBack;
 import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.GET;
@@ -12,14 +13,14 @@ import com.orhanobut.wasp.http.Query;
 
 import junit.framework.Assert;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Orhan Obut
  */
 public class WaspBuilderTest extends InstrumentationTestCase {
-
-    private static final String TAG = WaspBuilderTest.class.getSimpleName();
 
     ServiceTest service;
     Context context;
@@ -28,21 +29,21 @@ public class WaspBuilderTest extends InstrumentationTestCase {
         @GET("/repos/{user}/{repo}")
         void fetchRepo(@Path("user") String user,
                        @Path("repo") String repo,
-                       RepoCallBack callBack
+                       CallBack<Repo> callBack
         );
 
         @GET("/users/{user}/repos")
         void fetchRepoBySearch(@Path("user") String user,
                                @Query("page") int pageNumber,
                                @Query("sort") String sort,
-                               RepoSearchCallBack callBack
+                               CallBack<List<Repo>> callBack
         );
 
         @POST("/repos/{user}/{repo}")
         void addName(@Path("user") String user,
                      @Path("repo") String repo,
                      @Body String body,
-                     RepoCallBack callBack
+                     CallBack<Repo> callBack
         );
 
     }
@@ -64,12 +65,12 @@ public class WaspBuilderTest extends InstrumentationTestCase {
     }
 
     public void test_activityShouldNotBeNull() {
-        assertThat(context).isNotNull();
+        assertNotNull(context);
 
     }
 
     public void test_serviceShouldNotBeNull() throws Exception {
-        assertThat(service).isNotNull();
+        assertNotNull(service);
     }
 
     public void test_onlyInterfaceShouldBeSupported() {

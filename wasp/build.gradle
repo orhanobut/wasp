@@ -20,6 +20,8 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.10'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
+    androidTestCompile 'org.assertj:assertj-core:1.7.0'
+
 }
 
 apply from: '../maven_push.gradle'
