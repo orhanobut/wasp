@@ -11,12 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class WaspCacheTest extends BaseTest {
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        context = null;
-    }
-
     public void test_get() {
         WaspCache<String, String> waspCache = new WaspCache<>();
         waspCache.put("key", "value");
