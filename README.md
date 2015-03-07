@@ -21,6 +21,10 @@ Wasp provides:
 - **Certificate management**
 - Image loading in an easy way
 
+Wasp aims :
+- There are many open issues to contribute. Get this chance to contribute and improve the knowledge
+- We want to make something that is usefull and also motivates people to contribute
+
 ###Add dependency
 ```groovy
 repositories {
