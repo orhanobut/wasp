@@ -129,8 +129,9 @@ Note: Other than following options you may also need to keep your network relate
 ####For more details, check the website
 http://orhanobut.github.io/wasp/
 
-###TODO
-Check wiki
+
+<img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
+
 
 ###License
 <pre>
