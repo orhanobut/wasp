@@ -132,6 +132,11 @@ http://orhanobut.github.io/wasp/
 
 <img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
 
+#### You might also like
+- [Hawk](https://github.com/orhanobut/hawk) Secure simple key-value storage
+- [Bee](https://github.com/orhanobut/bee) QA/Debug tool
+- [DialogPlus](https://github.com/orhanobut/dialogplus) Easy,simple dialog solution
+- [SimpleListView](https://github.com/orhanobut/simplelistview) Simple basic listview implementation with linearlayout
 
 ###License
 <pre>
