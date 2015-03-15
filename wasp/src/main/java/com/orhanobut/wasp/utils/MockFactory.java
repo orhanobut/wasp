@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.internal.UnsafeAllocator;
+import com.orhanobut.wasp.Logger;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -91,6 +92,10 @@ public final class MockFactory {
             return (T) constructor.newInstance((Object[]) null);
         } catch (Exception e) {
             // Default constructor failed, attempt Unsafe Allocation
+            Logger.w("Default constructor failed for "
+                    + rawType.getCanonicalName()
+                    + "\nWith exception : " + e.getMessage()
+                    + "\nAttempting unsafe allocation of object.");
         }
 
         try {
@@ -99,7 +104,7 @@ public final class MockFactory {
         } catch (Exception e) {
             // Give up
             throw new RuntimeException("Failed to instantiate "
-                    + rawType.getSimpleName(), e);
+                    + rawType.getCanonicalName(), e);
         }
     }
 
@@ -121,7 +126,7 @@ public final class MockFactory {
                     field.set(object, value);
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to populate object of type "
-                            + object.getClass().getSimpleName(), e);
+                            + object.getClass().getCanonicalName(), e);
                 }
             }
         }
@@ -177,6 +182,7 @@ public final class MockFactory {
         // TODO: Date and BigInteger classes may be considered.
 
         // Field type is not supported.
+        Logger.w("Unsupported field type : " + rawType.getCanonicalName());
         return null;
     }
 
