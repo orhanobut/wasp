@@ -251,7 +251,7 @@ final class WaspRequest {
         }
 
         private String getBody(Object body) {
-            return Wasp.getParser().toJson(body);
+            return Wasp.getParser().toBody(body);
         }
 
         /**

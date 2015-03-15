@@ -53,7 +53,7 @@ public class WaspError {
             return null;
         }
         try {
-            return Wasp.getParser().fromJson(response.getBody(), type);
+            return Wasp.getParser().fromBody(response.getBody(), type);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
