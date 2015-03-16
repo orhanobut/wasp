@@ -17,7 +17,7 @@ public class GsonParserTest extends BaseTest {
             String a;
         }
 
-        String json = parser.toJson(new Foo());
+        String json = parser.toBody(new Foo());
         assertThat(json).isNotNull();
 
     }

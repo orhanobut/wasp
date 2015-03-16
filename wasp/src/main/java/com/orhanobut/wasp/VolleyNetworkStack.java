@@ -142,13 +142,16 @@ final class VolleyNetworkStack implements NetworkStack {
         /**
          * Charset for request.
          */
-        private static final String PROTOCOL_CHARSET = "utf-8";
+        private static final String PROTOCOL_CHARSET = "UTF-8";
 
         /**
          * Content type for request.
          */
-        private static final String PROTOCOL_CONTENT_TYPE =
-                String.format("application/json; charset=%s", PROTOCOL_CHARSET);
+        private static final String PROTOCOL_CONTENT_TYPE = String.format(
+                "%1$s; charset=%2$s",
+                Wasp.getParser().getSupportedContentType(),
+                PROTOCOL_CHARSET
+        );
 
         private final VolleyListener<T> listener;
         private final String requestBody;
@@ -174,7 +177,7 @@ final class VolleyNetworkStack implements NetworkStack {
             try {
                 byte[] data = response.data;
                 String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
-                Object responseObject = Wasp.getParser().fromJson(body, responseObjectType);
+                Object responseObject = Wasp.getParser().fromBody(body, responseObjectType);
 
                 WaspResponse waspResponse = new WaspResponse.Builder()
                         .setUrl(url)
