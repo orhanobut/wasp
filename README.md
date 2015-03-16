@@ -27,12 +27,7 @@ Wasp aims :
 
 ###Add dependency
 ```groovy
-repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
-}
-dependencies {
-    compile 'com.orhanobut:wasp:1.7-SNAPSHOT'
-}
+compile 'com.orhanobut:wasp:1.8'
 ```
 
 ####Create a service interface.
