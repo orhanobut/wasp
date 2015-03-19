@@ -94,7 +94,9 @@ class OkHttpStack implements HttpStack {
         entity.setContentLength(body.contentLength());
         entity.setContentEncoding(response.header("Content-Encoding"));
 
-        entity.setContentType(body.contentType().type());
+        if (body.contentType() != null) {
+            entity.setContentType(body.contentType().type());
+        }
         return entity;
     }
 

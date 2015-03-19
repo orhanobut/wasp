@@ -28,7 +28,9 @@ public class OkHttpLogInterceptor implements Interceptor {
         Request request = chain.request();
         Logger.d("---> REQUEST " + request.method() + " " + request.urlString());
         logHeaders(request.headers());
-        RequestBody requestBody = request.body();
+        //copy original request for logging request body
+        Request copy = request.newBuilder().build();
+        RequestBody requestBody = copy.body();
         if (requestBody == null) {
             Logger.d("Body - no body");
         } else {
