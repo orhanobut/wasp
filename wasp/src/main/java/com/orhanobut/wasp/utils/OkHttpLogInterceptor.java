@@ -26,6 +26,9 @@ public class OkHttpLogInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
+        //keep original request's body in order not to lose it when logging body below
+        Request.Builder originalRequestBuilder = request.newBuilder()
+                .method(request.method(), request.body());
         Logger.d("---> REQUEST " + request.method() + " " + request.urlString());
         logHeaders(request.headers());
         RequestBody requestBody = request.body();
@@ -39,7 +42,7 @@ public class OkHttpLogInterceptor implements Interceptor {
         Logger.d("---> END");
 
         long t1 = System.nanoTime();
-        Response response = chain.proceed(request);
+        Response response = chain.proceed(originalRequestBuilder.build());
         long t2 = System.nanoTime();
 
         Logger.d("<--- RESPONSE " + response.code() + " " + response.request().urlString());
