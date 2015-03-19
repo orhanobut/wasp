@@ -26,12 +26,11 @@ public class OkHttpLogInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        //keep original request's body in order not to lose it when logging body below
-        Request.Builder originalRequestBuilder = request.newBuilder()
-                .method(request.method(), request.body());
         Logger.d("---> REQUEST " + request.method() + " " + request.urlString());
         logHeaders(request.headers());
-        RequestBody requestBody = request.body();
+        //copy original request for logging request body
+        Request copy = request.newBuilder().build();
+        RequestBody requestBody = copy.body();
         if (requestBody == null) {
             Logger.d("Body - no body");
         } else {
@@ -42,7 +41,7 @@ public class OkHttpLogInterceptor implements Interceptor {
         Logger.d("---> END");
 
         long t1 = System.nanoTime();
-        Response response = chain.proceed(originalRequestBuilder.build());
+        Response response = chain.proceed(request);
         long t2 = System.nanoTime();
 
         Logger.d("<--- RESPONSE " + response.code() + " " + response.request().urlString());
