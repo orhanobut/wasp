@@ -116,19 +116,30 @@ public final class MockFactory {
      * @return Populated object
      */
     private static <T> T populateObject(T object) {
-        Field[] fields = object.getClass().getDeclaredFields();
+        Class clazz = object.getClass();
 
-        for (Field field : fields) {
-            if (!Modifier.isFinal(field.getModifiers())) {
-                Object value = generateValue(field);
-                field.setAccessible(true);
-                try {
-                    field.set(object, value);
-                } catch (Exception e) {
-                    throw new RuntimeException("Failed to populate object of type "
-                            + object.getClass().getCanonicalName(), e);
+        while (clazz != null) {
+            String name = clazz.getName();
+            if (name.startsWith("java.") || name.startsWith("javax.") || name.startsWith("android.")) {
+                // Skip system classes
+                break;
+            }
+
+            Field[] fields = clazz.getDeclaredFields();
+
+            for (Field field : fields) {
+                if (!Modifier.isFinal(field.getModifiers())) {
+                    Object value = generateValue(field);
+                    field.setAccessible(true);
+                    try {
+                        field.set(object, value);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to populate object of type "
+                                + object.getClass().getCanonicalName(), e);
+                    }
                 }
             }
+            clazz = clazz.getSuperclass();
         }
 
         return object;

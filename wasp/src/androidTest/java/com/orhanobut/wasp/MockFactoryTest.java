@@ -109,4 +109,26 @@ public class MockFactoryTest extends BaseTest {
         assertThat(foo.aLinkedList).isInstanceOf(LinkedList.class);
         assertThat(foo.aLinkedList.get(0)).isEqualTo(10);
     }
+
+    private static class SuperClass {
+        String superString;
+        int superInt;
+    }
+
+    private static class SubClass extends SuperClass {
+        String subString;
+        int subInt;
+    }
+
+    public void testSuperFields() {
+
+        SubClass mock = MockFactory.createMockObject(SubClass.class);
+        assertThat(mock).isNotNull();
+
+        assertThat(mock.subString).isEqualTo("test");
+        assertThat(mock.subInt).isEqualTo(10);
+
+        assertThat(mock.superString).isEqualTo("test");
+        assertThat(mock.superInt).isEqualTo(10);
+    }
 }
