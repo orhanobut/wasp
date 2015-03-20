@@ -9,7 +9,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.utils.StringUtils;
@@ -24,8 +23,8 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
 
     private final RequestQueue requestQueue;
 
-    public VolleyImageNetworkHandler(Context context, WaspHttpStack httpStack) {
-        this.requestQueue = Volley.newRequestQueue(context, (HttpStack) httpStack);
+    public VolleyImageNetworkHandler(Context context, WaspHttpStack stack) {
+        this.requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
     }
 
     @Override
