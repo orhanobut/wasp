@@ -85,18 +85,276 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
 });
 ```
 
-####Load images easily
+#### Add Body
+@Body can be used to add an object for request body. Object will be converted to json.
 
 ```java
-Wasp.Image.from(url)
-      .to(imageView)
-      .setErrorResource(errorImage)     // Optional
-      .setDefaultResource(defaulImage)  // Optional
-      .fit()                            // Optional, in TODO
-      .cropCenter()                     // Optional, in TODO
-      .resize(100,200)                  // Optional, in TODO
-      .load();
+    @POST("/repos")
+    void addName(
+        @Body Repo repo,
+        CallBack<Repo> callBack
+    );
+
+    service.addName(new Repo("3423",3),callback);
 ```
+
+@BodyMap can be used to add a Map object instead of creating body class. It will be converted to json. You can use @BodyMap for the simple operations which you don't want to create a class.
+
+```java
+    @POST("/repos")
+    void addName(
+        @BodyMap Map map,
+        CallBack<Repo> callBack
+    );
+
+    Map map = new HashMap<>();
+    map.put("ip","3423");
+    map.put("page",3);
+
+    service.addName(map, callback);
+```
+
+####Add Query Params
+@Query is used to add query params
+
+```java
+    @GET("/users/repos")
+    void fetchRepoBySearch(
+          @Query("page") int pageNumber,
+          @Query("sort") String sort,
+          CallBack<Repo> callBack
+    );
+
+    service.fetchRepoBySearch(2,"asc", callback);
+    //output url is ENDPOINT/users/repos?page=2&sort=asc
+```
+@QueryMap is used to add query params using a map
+```java
+    @GET("/users/repos")
+    void fetchRepoBySearch(
+          @QueryMap Map queryParamsMap,
+          CallBack<Repo> callBack
+    );
+
+    Map<String,String> map = new HashMap<>();
+    map.put("sort","asc");
+    map.put("offset", "100");
+
+    service.fetchRepoBySearch(map, callback);
+```
+
+####Add Headers
+@Header is used to add headers by using params
+
+```java
+    @GET("/repos")
+    void fetchRepos(
+          @Header("auth") String authToken,
+          RepoCallBack<List<Repo> callBack
+    );
+```
+
+@Headers is used to add static headers by adding to method
+
+```java
+    //Single static header
+    @Headers("Accept-Language:en-En")
+    @GET("/users")
+    void fetchUsers(
+          RepoCallBack<List<User> callBack
+    );
+
+    // Multiple static headers
+    @Headers({
+        "Accept-Language:en-En",
+        "Content-type:application/json"
+    })
+```
+
+##### Request Interceptor
+You can intercept each request and add some additional information. You can either implement RequestInterceptor interface or use the SimpleInterceptor class. Use SimpleInterceptor if you don't need to implement each feature.
+
+Add headers to each request
+```java
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override                                                
+      public void onHeadersAdded(Map headers) {
+          super.onHeadersAdded(headers);                       
+          headers.put("key","value");                          
+      }                                                        
+  }
+```
+Add additional query parameters to the each request
+```java
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public void onQueryParamsAdded(Map params) {
+          super.onQueryParamsAdded(params);
+          params.put("name","something");
+      }                                                       
+  }
+```
+Add retry policy to the each request
+
+```java
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public WaspRetryPolicy getRetryPolicy() {
+          return new WaspRetryPolicy(45000, 3, 1.5f);
+      }                                                      
+  }
+```
+
+Add auth token to the each request or filtered requests. Return a new AuthToken object which accepts authtoken value and filter enabled. If you enabled the filter, all request which has @Auth annotation will use the auth token in the header. If you disabled filter, each request will add the token.
+
+```java
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public AuthToken getAuthToken() {
+          return new AuthToken(token, true);
+      }                                                     
+  }
+
+    @Auth
+    @GET("/users")
+    void fetchUsers(
+          RepoCallBack<List<User> callBack
+    );
+```
+
+And finally set it to the builder
+```java
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .setRequestInterceptor(interceptor)        
+        .build()                        
+        .create(MyService.class);   
+```
+
+#### Retry Policy
+You can set retry policy for each call by using request interceptor
+
+```java
+  RequestInterceptor interceptor = new SimpleInterceptor() {
+      @Override
+      public WaspRetryPolicy getRetryPolicy() {
+          return new WaspRetryPolicy(45000, 3, 1.5f);
+      }                                                      
+  }
+```
+
+You can use annotation to add specific policy for the specific calls. Annotation always override the request interceptor if both are used at the same time
+
+```java
+    @RetryPolicy(timeout = 10000)
+    @GET("/users")
+    void fetchUsers(
+          RepoCallBack<List<User>> callBack
+    );
+```
+
+#### Http Stack
+You can set your custom http stack instead of default. Default is OkHttp.
+
+```java
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .setHttpStack(new YourHttpStack());       
+        .build()                        
+        .create(MyService.class);   
+```
+
+##### Add different end points for different network calls
+You can add different end point url for some network calls, it will override the base url.
+
+```java
+    @EndPoint("http://www.google.com")
+    @GET("/users")
+    void fetchUsers(
+          RepoCallBack<List<User>> callBack
+    );
+```
+
+#### Mocking
+You can mock your network calls easily by using mock annotation.
+@Mock Uses auto generate feature mock regarding to your response type
+
+```java
+    @Mock
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack<User> callBack
+    );
+```
+@Mock(path="users.json") : Uses local file to generate mock. Local files must be under assets folder. This will return a response with the generated content by given path, with the status code 200
+```java
+    @Mock(path="user.json")
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack<User> callBack
+    );
+```
+@Mock(statusCode=404) : Returns a fail response with status code 404
+```java
+    @Mock(statusCode=404)
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack<User> callBack
+    );
+```
+@Mock(statusCode=201) : Returns a success with the status code 201 and auto generated response
+```java
+    @Mock(statusCode=201)
+    @GET("/user")
+    void fetchUser(
+          RepoCallBack<User> callBack
+    );
+```
+
+#### Cookie Management
+You can easily handle cookies in two ways:
+- Set a CookiePolicy and let the CookieManager to use the default CookieStore implementation
+
+```java
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .enableCookies(CookiePolicy.ACCEPT_ALL)     
+        .build()                        
+        .create(MyService.class);
+```
+
+Provide also your own implementation of CookieStore which will be used by CookieManager
+
+```java
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .enableCookies(new YourCookieStore(), CookiePolicy.ACCEPT_ALL)   
+        .build()                        
+        .create(MyService.class);
+```
+
+#### Certificate Management
+You can make use of this feature in two ways:
+Trust All Certificates: Most of the time test servers do not use a certificate which is signed by a CA. Therefore, connections to those servers fail at SSL Handshake step. To solve this, you can let Wasp to accept all certificates (Note that, this should only be used for testing purposes because it makes the connections vulnerable to security attacks.)
+
+```java
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .trustCertificates()  //Trust All Certificates
+        .build()                        
+        .create(MyService.class);
+```
+
+Certificate Pinning: Create a BKS file of your server certificate and put it under res/raw folder. Than, let Wasp use your certificate for SSL Handshake with the server by providing your raw resource id and keystore pasword.
+
+```java
+  GitHubService service = new Wasp.Builder(this)    
+        .setEndpoint("https://api.github.com")   
+        .trustCertificates(R.raw.YOUR_TRUST_STORE, "YOUR_PASSWORD") //Trust only to the given certificate    
+        .build()                        
+        .create(MyService.class);
+```
+
 
 ####ProGuard
 
