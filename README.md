@@ -379,9 +379,6 @@ If you are using ProGuard you should add the following options to your configura
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 ```
 
-####For more details, check the website
-http://orhanobut.github.io/wasp/
-
 
 <img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
 
