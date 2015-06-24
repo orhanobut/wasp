@@ -17,5 +17,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @RestMethod(value = "DELETE")
 public @interface DELETE {
-    String value();
+  String value();
 }

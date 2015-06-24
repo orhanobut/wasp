@@ -5,7 +5,7 @@ package com.orhanobut.wasp;
  */
 public interface CallBack<T> {
 
-    void onSuccess(T t);
+  void onSuccess(T t);
 
-    void onError(WaspError error);
+  void onError(WaspError error);
 }

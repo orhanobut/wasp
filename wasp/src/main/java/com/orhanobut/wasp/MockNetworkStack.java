@@ -27,7 +27,7 @@ class MockNetworkStack implements NetworkStack {
     static MockNetworkStack getDefault(Context context) {
         if (mockNetworkStack == null) {
             mockNetworkStack = new MockNetworkStack(context);
-        }
+    }
         return mockNetworkStack;
     }
 
@@ -53,24 +53,24 @@ class MockNetworkStack implements NetworkStack {
                 responseObject = Wasp.getParser().fromBody(responseString, responseType);
             } catch (IOException e) {
                 throw new RuntimeException("Mock file \"" + mock.getPath()
-                        + "\" is in an invalid format", e);
+                    + "\" is in an invalid format", e);
             }
         }
 
         WaspResponse waspResponse = new WaspResponse.Builder()
-                .setUrl(waspRequest.getUrl())
-                .setStatusCode(statusCode)
-                .setHeaders(Collections.<String, String>emptyMap())
-                .setBody(responseString)
-                .setResponseObject(responseObject)
-                .setLength(responseString.length())
-                .setNetworkTime(0)
-                .build();
+            .setUrl(waspRequest.getUrl())
+            .setStatusCode(statusCode)
+            .setHeaders(Collections.<String, String>emptyMap())
+            .setBody(responseString)
+            .setResponseObject(responseObject)
+            .setLength(responseString.length())
+            .setNetworkTime(0)
+            .build();
 
         if (statusCode < 200 || statusCode > 299) {
             callBack.onError(new WaspError(waspResponse, "Mock error message!"));
             return;
-        }
+    }
 
         callBack.onSuccess((T) waspResponse);
     }
