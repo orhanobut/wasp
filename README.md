@@ -64,6 +64,7 @@ GitHubService service = new Wasp.Builder(this)
     .trustCertificates                         // Optional
     .setHttpStack                              // Optional
     .enableCookies                             // Optional
+    .setNetworkMode(NetworkMode.MOCK)          // Optional(Used for Mock)
     .build()
     .create(MyService.class);
 ```
