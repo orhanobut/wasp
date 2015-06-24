@@ -21,80 +21,80 @@ import java.io.UnsupportedEncodingException;
  */
 public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkHandler {
 
-    private final RequestQueue requestQueue;
+  private final RequestQueue requestQueue;
 
-    public VolleyImageNetworkHandler(Context context, WaspHttpStack stack) {
-        this.requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
-    }
+  public VolleyImageNetworkHandler(Context context, WaspHttpStack stack) {
+    this.requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
+  }
 
-    @Override
-    public void requestImage(final WaspImage waspImage, final int maxWidth, final int maxHeight,
-                             final CallBack<WaspImageHandler.Container> callBack) {
+  @Override
+  public void requestImage(final WaspImage waspImage, final int maxWidth, final int maxHeight,
+                           final CallBack<WaspImageHandler.Container> callBack) {
 
-        final String url = waspImage.getUrl();
-        Logger.d("REQUEST IMAGE -> url : " + url);
-        Request<Bitmap> request = new ImageRequest(
-                url,
-                new Response.Listener<Bitmap>() {
-                    @Override
-                    public void onResponse(Bitmap response) {
-                        Logger.i("SUCCESS -> url : " + url);
-                        WaspImageHandler.Container container = new WaspImageHandler.Container();
-                        container.bitmap = response;
-                        container.cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
-                        container.waspImage = waspImage;
-                        callBack.onSuccess(container);
-                    }
-                },
-                maxWidth,
-                maxHeight,
-                Bitmap.Config.RGB_565,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        WaspResponse.Builder builder = new WaspResponse.Builder().setUrl(url);
-                        String errorMessage = null;
+    final String url = waspImage.getUrl();
+    Logger.d("REQUEST IMAGE -> url : " + url);
+    Request<Bitmap> request = new ImageRequest(
+        url,
+        new Response.Listener<Bitmap>() {
+          @Override
+          public void onResponse(Bitmap response) {
+            Logger.i("SUCCESS -> url : " + url);
+            WaspImageHandler.Container container = new WaspImageHandler.Container();
+            container.bitmap = response;
+            container.cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
+            container.waspImage = waspImage;
+            callBack.onSuccess(container);
+          }
+        },
+        maxWidth,
+        maxHeight,
+        Bitmap.Config.RGB_565,
+        new Response.ErrorListener() {
+          @Override
+          public void onErrorResponse(VolleyError error) {
+            WaspResponse.Builder builder = new WaspResponse.Builder().setUrl(url);
+            String errorMessage = null;
 
-                        if (error != null) {
-                            builder.setNetworkTime(error.getNetworkTimeMs());
-                            errorMessage = error.getMessage();
+            if (error != null) {
+              builder.setNetworkTime(error.getNetworkTimeMs());
+              errorMessage = error.getMessage();
 
-                            if (error.networkResponse != null) {
-                                NetworkResponse response = error.networkResponse;
-                                String body;
-                                try {
-                                    body = new String(
-                                            error.networkResponse.data,
-                                            HttpHeaderParser.parseCharset(response.headers)
-                                    );
-                                } catch (UnsupportedEncodingException e) {
-                                    body = "Unable to parse error body!!!!!";
-                                }
-                                builder.setStatusCode(response.statusCode)
-                                        .setHeaders(response.headers)
-                                        .setBody(body)
-                                        .setLength(response.data.length);
-                            }
-                        }
-
-                        callBack.onError(new WaspError(builder.build(), errorMessage));
-                    }
+              if (error.networkResponse != null) {
+                NetworkResponse response = error.networkResponse;
+                String body;
+                try {
+                  body = new String(
+                      error.networkResponse.data,
+                      HttpHeaderParser.parseCharset(response.headers)
+                  );
+                } catch (UnsupportedEncodingException e) {
+                  body = "Unable to parse error body!!!!!";
                 }
-        );
-        request.setTag(url);
-        requestQueue.add(request);
-    }
-
-    @Override
-    public void cancelRequest(final String tag) {
-        Logger.w("CANCEL REQUEST -> url : " + tag);
-        RequestQueue.RequestFilter filter = new RequestQueue.RequestFilter() {
-            @Override
-            public boolean apply(Request<?> request) {
-                return tag.equals(request.getTag());
+                builder.setStatusCode(response.statusCode)
+                    .setHeaders(response.headers)
+                    .setBody(body)
+                    .setLength(response.data.length);
+              }
             }
-        };
-        requestQueue.cancelAll(filter);
-    }
+
+            callBack.onError(new WaspError(builder.build(), errorMessage));
+          }
+        }
+    );
+    request.setTag(url);
+    requestQueue.add(request);
+  }
+
+  @Override
+  public void cancelRequest(final String tag) {
+    Logger.w("CANCEL REQUEST -> url : " + tag);
+    RequestQueue.RequestFilter filter = new RequestQueue.RequestFilter() {
+      @Override
+      public boolean apply(Request<?> request) {
+        return tag.equals(request.getTag());
+      }
+    };
+    requestQueue.cancelAll(filter);
+  }
 
 }

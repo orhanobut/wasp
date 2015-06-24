@@ -17,5 +17,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @RestMethod(value = "PUT", hasBody = true)
 public @interface PUT {
-    String value();
+  String value();
 }

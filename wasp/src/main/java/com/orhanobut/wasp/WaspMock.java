@@ -5,19 +5,19 @@ package com.orhanobut.wasp;
  */
 class WaspMock {
 
-    private final int statusCode;
-    private final String path;
+  private final int statusCode;
+  private final String path;
 
-    WaspMock(int statusCode, String path) {
-        this.statusCode = statusCode;
-        this.path = path;
-    }
+  WaspMock(int statusCode, String path) {
+    this.statusCode = statusCode;
+    this.path = path;
+  }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
+  public int getStatusCode() {
+    return statusCode;
+  }
 
-    public String getPath() {
-        return path;
-    }
+  public String getPath() {
+    return path;
+  }
 }

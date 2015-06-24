@@ -5,6 +5,6 @@ package com.orhanobut.wasp;
  */
 public class Owner {
 
-    String name;
-    String imageUrl;
+  String name;
+  String imageUrl;
 }

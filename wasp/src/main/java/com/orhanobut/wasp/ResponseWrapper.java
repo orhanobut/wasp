@@ -5,15 +5,15 @@ package com.orhanobut.wasp;
  */
 final class ResponseWrapper<T> {
 
-    private final CallBack<T> callBack;
-    private final T response;
+  private final CallBack<T> callBack;
+  private final T response;
 
-    public ResponseWrapper(CallBack<T> callBack, T response) {
-        this.callBack = callBack;
-        this.response = response;
-    }
+  public ResponseWrapper(CallBack<T> callBack, T response) {
+    this.callBack = callBack;
+    this.response = response;
+  }
 
-    void submitResponse() {
-        callBack.onSuccess(response);
-    }
+  void submitResponse() {
+    callBack.onSuccess(response);
+  }
 }

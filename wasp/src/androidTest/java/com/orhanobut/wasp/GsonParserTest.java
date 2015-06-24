@@ -10,15 +10,15 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class GsonParserTest extends BaseTest {
 
-    Parser parser = new GsonParser();
+  Parser parser = new GsonParser();
 
-    public void testToJson() {
-        class Foo {
-            String a;
-        }
-
-        String json = parser.toBody(new Foo());
-        assertThat(json).isNotNull();
-
+  public void testToJson() {
+    class Foo {
+      String a;
     }
+
+    String json = parser.toBody(new Foo());
+    assertThat(json).isNotNull();
+
+  }
 }

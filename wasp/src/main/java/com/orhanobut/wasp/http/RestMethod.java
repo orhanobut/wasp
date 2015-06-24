@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(ANNOTATION_TYPE)
 @Retention(RUNTIME)
 public @interface RestMethod {
-    String value();
+  String value();
 
-    boolean hasBody() default false;
+  boolean hasBody() default false;
 }

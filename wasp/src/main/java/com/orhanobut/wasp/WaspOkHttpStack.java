@@ -16,51 +16,51 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class WaspOkHttpStack implements WaspHttpStack<OkHttpStack> {
 
-    private final OkHttpStack okHttpStack;
+  private final OkHttpStack okHttpStack;
 
-    public WaspOkHttpStack() {
-        this(new OkHttpClient());
-    }
+  public WaspOkHttpStack() {
+    this(new OkHttpClient());
+  }
 
-    public WaspOkHttpStack(OkHttpClient okHttpClient) {
-        if (okHttpClient == null) {
-            throw new NullPointerException("OkHttpClient may not be null.");
-        }
-        okHttpStack = new OkHttpStack(okHttpClient);
+  public WaspOkHttpStack(OkHttpClient okHttpClient) {
+    if (okHttpClient == null) {
+      throw new NullPointerException("OkHttpClient may not be null.");
     }
+    okHttpStack = new OkHttpStack(okHttpClient);
+  }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return {@link com.orhanobut.wasp.OkHttpStack}
-     */
-    @Override
-    public OkHttpStack getHttpStack() {
-        return okHttpStack;
-    }
+  /**
+   * {@inheritDoc}
+   *
+   * @return {@link com.orhanobut.wasp.OkHttpStack}
+   */
+  @Override
+  public OkHttpStack getHttpStack() {
+    return okHttpStack;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-        okHttpStack.getClient().setHostnameVerifier(hostnameVerifier);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+    okHttpStack.getClient().setHostnameVerifier(hostnameVerifier);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
-        okHttpStack.getClient().setSslSocketFactory(sslSocketFactory);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setSslSocketFactory(SSLSocketFactory sslSocketFactory) {
+    okHttpStack.getClient().setSslSocketFactory(sslSocketFactory);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setCookieHandler(CookieHandler cookieHandler) {
-        okHttpStack.getClient().setCookieHandler(cookieHandler);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setCookieHandler(CookieHandler cookieHandler) {
+    okHttpStack.getClient().setCookieHandler(cookieHandler);
+  }
 
 }

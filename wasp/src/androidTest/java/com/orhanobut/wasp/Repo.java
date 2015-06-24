@@ -7,9 +7,9 @@ import java.util.List;
  */
 public class Repo {
 
-    String name;
-    String url;
+  String name;
+  String url;
 
-    List<Owner> owners;
+  List<Owner> owners;
 
 }

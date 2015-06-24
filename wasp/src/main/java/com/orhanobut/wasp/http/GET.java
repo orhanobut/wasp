@@ -16,6 +16,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 @RestMethod("GET")
-public @interface GET  {
-    String value();
+public @interface GET {
+  String value();
 }
