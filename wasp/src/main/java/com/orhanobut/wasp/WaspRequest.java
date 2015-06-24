@@ -59,7 +59,11 @@ final class WaspRequest {
     }
 
     Map<String, String> getHeaders() {
-        Map<String, String> headers = this.headers != null ? this.headers : Collections.<String, String>emptyMap();
+        if (requestInterceptor == null) {
+            return this.headers != null ? this.headers : Collections.<String, String>emptyMap();
+        }
+
+        Map<String, String> headers = this.headers != null ? this.headers : new LinkedHashMap<String, String>();
 
         //Add intercepted headers
         Map<String, String> tempHeaders = new HashMap<>();
