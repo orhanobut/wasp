@@ -5,7 +5,7 @@ package com.orhanobut.wasp;
  */
 interface ImageHandler {
 
-    void load(WaspImage waspImage);
+  void load(WaspImage waspImage);
 
-    void clearCache();
+  void clearCache();
 }

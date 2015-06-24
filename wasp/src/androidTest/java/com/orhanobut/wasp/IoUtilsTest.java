@@ -11,13 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class IoUtilsTest extends BaseTest {
 
-    public void testAssetFileExists() {
-        assertThat(IOUtils.assetsFileExists(context, null)).isFalse();
-    }
+  public void testAssetFileExists() {
+    assertThat(IOUtils.assetsFileExists(context, null)).isFalse();
+  }
 
-    public void testReadFileFromAssetsNull() throws IOException {
-        assertThat(IOUtils.readFileFromAssets(context, null)).isNull();
-    }
+  public void testReadFileFromAssetsNull() throws IOException {
+    assertThat(IOUtils.readFileFromAssets(context, null)).isNull();
+  }
 
 
 }

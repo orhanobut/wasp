@@ -80,13 +80,13 @@ final class WaspRequest {
                     for (Map.Entry<String, String> entry : headers.entrySet()) {
                         Logger.d("Header - [" + entry.getKey() + ": " + entry.getValue() + "]");
                     }
-                }
+        }
                 Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + body);
                 Logger.d("---> END");
                 break;
             default:
                 // Method is called but log level is not meant to log anything
-        }
+    }
     }
 
     MethodInfo getMethodInfo() {
@@ -126,17 +126,17 @@ final class WaspRequest {
                 Object value = args[i];
                 if (value == null) {
                     throw new NullPointerException("Value cannot be null");
-                }
+        }
                 Annotation annotation = annotations[i];
                 if (annotation == null) {
                     continue;
-                }
+        }
                 Class<? extends Annotation> annotationType = annotation.annotationType();
                 if (annotationType == Path.class) {
                     String key = ((Path) annotation).value();
                     addPathParam(key, String.valueOf(value));
                     continue;
-                }
+        }
                 if (annotationType == Query.class) {
                     String key = ((Query) annotation).value();
                     addQueryParam(key, value);
@@ -243,10 +243,10 @@ final class WaspRequest {
                 if (!authToken.isFilterEnabled()) {
                     addHeaderParam(KEY_AUTH, token);
                     return;
-                }
+        }
                 if (methodInfo.isAuthTokenEnabled()) {
                     addHeaderParam(KEY_AUTH, token);
-                }
+        }
             }
         }
 
@@ -304,7 +304,7 @@ final class WaspRequest {
 
         String getBody() {
             return body;
-        }
+    }
 
         WaspRetryPolicy getRetryPolicy() {
             return retryPolicy;

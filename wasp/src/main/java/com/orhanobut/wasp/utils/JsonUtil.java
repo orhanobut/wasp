@@ -8,16 +8,16 @@ import com.google.gson.JsonParser;
  */
 public class JsonUtil {
 
-    private JsonUtil() {
-        //no instance
-    }
+  private JsonUtil() {
+    //no instance
+  }
 
-    public static boolean isValid(String jsonSource) {
-        try {
-            new JsonParser().parse(jsonSource);
-            return true;
-        } catch (JsonParseException e) {
-            return false;
-        }
+  public static boolean isValid(String jsonSource) {
+    try {
+      new JsonParser().parse(jsonSource);
+      return true;
+    } catch (JsonParseException e) {
+      return false;
     }
+  }
 }

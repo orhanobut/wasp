@@ -8,17 +8,17 @@ import android.test.InstrumentationTestCase;
  */
 public class BaseTest extends InstrumentationTestCase {
 
-    Context context;
+  Context context;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
 
-        System.setProperty(
-                "dexmaker.dexcache",
-                getInstrumentation().getTargetContext().getCacheDir().getPath());
+    System.setProperty(
+        "dexmaker.dexcache",
+        getInstrumentation().getTargetContext().getCacheDir().getPath());
 
-        context = getInstrumentation().getContext();
+    context = getInstrumentation().getContext();
 
-    }
+  }
 }

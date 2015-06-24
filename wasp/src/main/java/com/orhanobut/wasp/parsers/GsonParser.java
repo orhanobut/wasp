@@ -12,34 +12,34 @@ import java.lang.reflect.Type;
  */
 public class GsonParser implements Parser {
 
-    private static final String CONTENT_TYPE = "application/json";
+  private static final String CONTENT_TYPE = "application/json";
 
-    private final Gson gson;
+  private final Gson gson;
 
-    public GsonParser() {
-        this(new Gson());
+  public GsonParser() {
+    this(new Gson());
+  }
+
+  public GsonParser(Gson gson) {
+    this.gson = gson;
+  }
+
+  @Override
+  public <T> T fromBody(String content, Type type) throws IOException {
+    if (TextUtils.isEmpty(content)) {
+      return null;
     }
+    return gson.fromJson(content, type);
+  }
 
-    public GsonParser(Gson gson) {
-        this.gson = gson;
-    }
+  @Override
+  public String toBody(Object body) {
+    return gson.toJson(body);
+  }
 
-    @Override
-    public <T> T fromBody(String content, Type type) throws IOException {
-        if (TextUtils.isEmpty(content)) {
-            return null;
-        }
-        return gson.fromJson(content, type);
-    }
-
-    @Override
-    public String toBody(Object body) {
-        return gson.toJson(body);
-    }
-
-    @Override
-    public String getSupportedContentType() {
-        return CONTENT_TYPE;
-    }
+  @Override
+  public String getSupportedContentType() {
+    return CONTENT_TYPE;
+  }
 
 }

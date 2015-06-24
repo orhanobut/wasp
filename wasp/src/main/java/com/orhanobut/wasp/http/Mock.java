@@ -16,6 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Mock {
-    int statusCode() default 200;
-    String path() default "";
+  int statusCode() default 200;
+
+  String path() default "";
 }
