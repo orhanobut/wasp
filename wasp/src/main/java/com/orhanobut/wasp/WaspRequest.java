@@ -26,8 +26,11 @@ import java.util.Map;
  */
 final class WaspRequest {
 
+    private static final String KEY_AUTH = "Authorization";
+
     private final String url;
     private final String method;
+    private final RequestInterceptor requestInterceptor;
     private final Map<String, String> headers;
     private final String body;
     private final WaspRetryPolicy retryPolicy;
@@ -38,6 +41,7 @@ final class WaspRequest {
     private WaspRequest(Builder builder) {
         this.url = builder.getUrl();
         this.method = builder.getHttpMethod();
+        this.requestInterceptor = builder.getRequestInterceptor();
         this.headers = builder.getHeaders();
         this.body = builder.getBody();
         this.retryPolicy = builder.getRetryPolicy();
@@ -55,7 +59,29 @@ final class WaspRequest {
     }
 
     Map<String, String> getHeaders() {
-        return headers != null ? headers : Collections.<String, String>emptyMap();
+        Map<String, String> headers = this.headers != null ? this.headers : Collections.<String, String>emptyMap();
+
+        //Add intercepted headers
+        Map<String, String> tempHeaders = new HashMap<>();
+        requestInterceptor.onHeadersAdded(tempHeaders);
+        for (Map.Entry<String, String> entry : tempHeaders.entrySet()) {
+            headers.put(entry.getKey(), entry.getValue());
+        }
+
+        // If authToken is set, it will check if the filter is enabled
+        // it will add token to each request if the filter is not enabled
+        // If the filter is enabled, it will be added to request which has @Auth annotation
+        AuthToken authToken = requestInterceptor.getAuthToken();
+        if (authToken != null) {
+            String token = authToken.getToken();
+            if (!authToken.isFilterEnabled()) {
+                headers.put(KEY_AUTH, token);
+            } else if (methodInfo.isAuthTokenEnabled()) {
+                headers.put(KEY_AUTH, token);
+            }
+        }
+
+        return headers;
     }
 
     String getBody() {
@@ -94,8 +120,6 @@ final class WaspRequest {
     }
 
     static class Builder {
-
-        private static final String KEY_AUTH = "Authorization";
 
         private final MethodInfo methodInfo;
         private final String baseUrl;
@@ -221,32 +245,10 @@ final class WaspRequest {
                 addQueryParam(entry.getKey(), entry.getValue());
             }
 
-            //Add intercepted headers
-            Map<String, String> tempHeaders = new HashMap<>();
-            requestInterceptor.onHeadersAdded(tempHeaders);
-            for (Map.Entry<String, String> entry : tempHeaders.entrySet()) {
-                addHeaderParam(entry.getKey(), entry.getValue());
-            }
-
             //If retry policy is not already set via annotations than set it via requestInterceptor
             WaspRetryPolicy waspRetryPolicy = requestInterceptor.getRetryPolicy();
             if (retryPolicy == null && waspRetryPolicy != null) {
                 retryPolicy = waspRetryPolicy;
-            }
-
-            // If authToken is set, it will check if the filter is enabled
-            // it will add token to each request if the filter is not enabled
-            // If the filter is enabled, it will be added to request which has @Auth annotation
-            AuthToken authToken = requestInterceptor.getAuthToken();
-            if (authToken != null) {
-                String token = authToken.getToken();
-                if (!authToken.isFilterEnabled()) {
-                    addHeaderParam(KEY_AUTH, token);
-                    return;
-                }
-                if (methodInfo.isAuthTokenEnabled()) {
-                    addHeaderParam(KEY_AUTH, token);
-                }
             }
         }
 
@@ -296,6 +298,10 @@ final class WaspRequest {
 
         String getHttpMethod() {
             return methodInfo.getHttpMethod();
+        }
+
+        RequestInterceptor getRequestInterceptor() {
+            return requestInterceptor;
         }
 
         Map<String, String> getHeaders() {
