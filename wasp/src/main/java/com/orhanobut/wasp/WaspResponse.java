@@ -109,7 +109,6 @@ public final class WaspResponse {
         }
     }
 
-
     static class Builder {
 
         private String url;
