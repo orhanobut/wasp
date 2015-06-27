@@ -87,10 +87,10 @@ final class NetworkHandler implements InvocationHandler {
       throw new IllegalArgumentException("Callback must be sent as param");
     }
     Object lastArg = args[args.length - 1];
-    if (!(lastArg instanceof CallBack)) {
+    if (!(lastArg instanceof MyCallBack)) {
       throw new IllegalArgumentException("Last param must be type of CallBack<T>");
     }
-    final CallBack<?> callBack = (CallBack<?>) lastArg;
+    final MyCallBack<?> callback = (MyCallBack<?>) lastArg;
     final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
     WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint)
@@ -98,26 +98,26 @@ final class NetworkHandler implements InvocationHandler {
         .build();
     waspRequest.log();
 
-    CallBack<WaspResponse> responseCallBack = new CallBack<WaspResponse>() {
+    WaspCallback<WaspResponse> responseWaspCallback = new WaspCallback<WaspResponse>() {
       @Override
       public void onSuccess(WaspResponse response) {
         response.log();
-        new ResponseWrapper(callBack, response.getResponseObject()).submitResponse();
+        new ResponseWrapper(callback, response, response.getResponseObject()).submitResponse();
       }
 
       @Override
       public void onError(WaspError error) {
         error.log();
-        callBack.onError(error);
+        callback.onError(error);
       }
     };
 
     if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
-      MockNetworkStack.getDefault(context).invokeRequest(waspRequest, responseCallBack);
+      MockNetworkStack.getDefault(context).invokeRequest(waspRequest, responseWaspCallback);
       return null;
     }
 
-    networkStack.invokeRequest(waspRequest, responseCallBack);
+    networkStack.invokeRequest(waspRequest, responseWaspCallback);
     return null;
   }
 }

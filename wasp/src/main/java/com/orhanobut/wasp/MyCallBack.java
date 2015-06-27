@@ -3,9 +3,9 @@ package com.orhanobut.wasp;
 /**
  * @author Orhan Obut
  */
-public interface CallBack<T> {
+public interface MyCallBack<T> {
 
-  void onSuccess(T t);
+  void onSuccess(WaspResponse response, T t);
 
   void onError(WaspError error);
 }

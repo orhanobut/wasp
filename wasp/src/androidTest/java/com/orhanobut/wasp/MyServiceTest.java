@@ -42,7 +42,7 @@ public class MyServiceTest extends BaseTest {
     @GET("/repos/{user}/{repo}")
     void fetchRepo(@Path("user") String user,
                    @Path("user") String repo,
-                   CallBack callBack
+                   MyCallBack callback
     );
   }
 
@@ -61,7 +61,7 @@ public class MyServiceTest extends BaseTest {
   public interface Service3 {
     @GET("/repos/{user}/{repo}")
     void fetchRepo(@Path("user") String user,
-                   CallBack callBack,
+                   MyCallBack callback,
                    @Path("repo") String repo
     );
   }

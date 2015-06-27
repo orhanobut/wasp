@@ -64,10 +64,13 @@ public class WaspError {
     StringBuilder builder = new StringBuilder();
     builder.append("Wasp Error: ");
     if (errorMessage != null) {
-      builder.append("Message: ").append(errorMessage);
+      builder.append("Message: ")
+          .append(errorMessage);
     }
-    builder.append(" Status Code: ").append(response.getStatusCode())
-        .append(" Url ").append(response.getUrl());
+    builder.append(" Status Code: ")
+        .append(response.getStatusCode())
+        .append(" Url ")
+        .append(response.getUrl());
     return builder.toString();
   }
 

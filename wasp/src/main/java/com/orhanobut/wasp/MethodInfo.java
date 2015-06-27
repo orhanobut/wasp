@@ -7,14 +7,17 @@ import com.orhanobut.wasp.http.Auth;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.EndPoint;
+import com.orhanobut.wasp.http.FormUrlEncoded;
 import com.orhanobut.wasp.http.Header;
 import com.orhanobut.wasp.http.Headers;
 import com.orhanobut.wasp.http.Mock;
+import com.orhanobut.wasp.http.Multipart;
 import com.orhanobut.wasp.http.Path;
 import com.orhanobut.wasp.http.Query;
 import com.orhanobut.wasp.http.RestMethod;
 import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.utils.IOUtils;
+import com.orhanobut.wasp.utils.MimeTypes;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
 import java.lang.annotation.Annotation;
@@ -41,6 +44,7 @@ final class MethodInfo {
   private String baseUrl;
   private String relativeUrl;
   private String httpMethod;
+  private String contentType;
   private WaspRetryPolicy retryPolicy;
   private Type responseObjectType;
   private Annotation[] methodAnnotations;
@@ -110,6 +114,16 @@ final class MethodInfo {
         continue;
       }
 
+      if (annotationType == FormUrlEncoded.class) {
+        contentType = MimeTypes.CONTENT_TYPE_FORM_URL_ENCODED;
+        continue;
+      }
+
+      if (annotationType == Multipart.class) {
+        contentType = MimeTypes.CONTENT_TYPE_MULTIPART;
+        continue;
+      }
+
       RestMethod methodInfo = null;
 
       // Look for a @RestMethod annotation on the parameter annotation indicating request method.
@@ -163,11 +177,11 @@ final class MethodInfo {
     if (typeToCheck instanceof Class) {
       lastArgClass = (Class<?>) typeToCheck;
     }
-    if (!CallBack.class.isAssignableFrom(lastArgClass)) {
+    if (!MyCallBack.class.isAssignableFrom(lastArgClass)) {
       throw new IllegalArgumentException("Last param should be CallBack");
     }
 
-    lastArgType = RetroTypes.getSupertype(lastArgType, RetroTypes.getRawType(lastArgType), CallBack.class);
+    lastArgType = RetroTypes.getSupertype(lastArgType, RetroTypes.getRawType(lastArgType), MyCallBack.class);
     if (lastArgType instanceof ParameterizedType) {
       responseObjectType = getParameterUpperBound((ParameterizedType) lastArgType);
     }
@@ -290,5 +304,9 @@ final class MethodInfo {
 
   boolean isAuthTokenEnabled() {
     return isAuthTokenEnabled;
+  }
+
+  public String getContentType() {
+    return contentType;
   }
 }

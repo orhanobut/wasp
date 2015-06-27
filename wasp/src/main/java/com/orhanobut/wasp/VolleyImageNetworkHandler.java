@@ -29,7 +29,7 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
 
   @Override
   public void requestImage(final WaspImage waspImage, final int maxWidth, final int maxHeight,
-                           final CallBack<WaspImageHandler.Container> callBack) {
+                           final WaspCallback<WaspImageHandler.Container> waspCallback) {
 
     final String url = waspImage.getUrl();
     Logger.d("REQUEST IMAGE -> url : " + url);
@@ -43,7 +43,7 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
             container.bitmap = response;
             container.cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
             container.waspImage = waspImage;
-            callBack.onSuccess(container);
+            waspCallback.onSuccess(container);
           }
         },
         maxWidth,
@@ -77,7 +77,7 @@ public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkH
               }
             }
 
-            callBack.onError(new WaspError(builder.build(), errorMessage));
+            waspCallback.onError(new WaspError(builder.build(), errorMessage));
           }
         }
     );

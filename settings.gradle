@@ -1,1 +1,1 @@
-include ':app', ':wasp'
+include ':app', ':wasp', ':mockserver'

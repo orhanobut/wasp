@@ -3,6 +3,7 @@ package com.orhanobut.wasp.parsers;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.orhanobut.wasp.utils.MimeTypes;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -11,8 +12,6 @@ import java.lang.reflect.Type;
  * @author Orhan Obut
  */
 public class GsonParser implements Parser {
-
-  private static final String CONTENT_TYPE = "application/json";
 
   private final Gson gson;
 
@@ -39,7 +38,7 @@ public class GsonParser implements Parser {
 
   @Override
   public String getSupportedContentType() {
-    return CONTENT_TYPE;
+    return MimeTypes.CONTENT_JSON;
   }
 
 }

@@ -1,71 +1,61 @@
 package com.orhanobut.waspsample;
 
-import com.orhanobut.wasp.CallBack;
-import com.orhanobut.wasp.http.Auth;
+import com.orhanobut.wasp.MyCallBack;
 import com.orhanobut.wasp.http.Body;
-import com.orhanobut.wasp.http.BodyMap;
 import com.orhanobut.wasp.http.DELETE;
-import com.orhanobut.wasp.http.EndPoint;
+import com.orhanobut.wasp.http.Field;
+import com.orhanobut.wasp.http.FormUrlEncoded;
 import com.orhanobut.wasp.http.GET;
-import com.orhanobut.wasp.http.Header;
-import com.orhanobut.wasp.http.Mock;
+import com.orhanobut.wasp.http.HEAD;
+import com.orhanobut.wasp.http.PATCH;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
-import com.orhanobut.wasp.http.QueryMap;
-import com.orhanobut.wasp.http.Query;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Orhan Obut
  */
 public interface MyService {
 
-    @Auth
-    @GET("/ip")
-    void fetchIps(
-            CallBack<List<Ip>> callBack
-    );
+  @GET("/get")
+  void get(
+      MyCallBack<User> callback
+  );
 
-    @GET("/ip")
-    void fetchIp(
-            @Header("ParamHeaderKey") String paramHeader,
-            @QueryMap Map queryParams,
-            @Body Ip ip,
-            CallBack<Ip> callBack
-    );
+  @POST("/post")
+  void post(
+      @Body User user,
+      MyCallBack<User> callback
+  );
 
-    @POST("/post")
-    void postFoo(
-            @Body Ip ip,
-            CallBack<Ip> callBack
-    );
+  @PUT("/put")
+  void put(
+      @Body User user,
+      MyCallBack<User> callback
+  );
 
-    @Mock(statusCode = 300)
-    @PUT("/put")
-    void putFoo(
-            @Body Ip ip,
-            CallBack<Ip> callBack
-    );
 
-    @EndPoint("http://api.github.com")
-    @DELETE("/delete")
-    void deleteFoo(
-            CallBack<Ip> callBack
-    );
+  @PATCH("/patch")
+  void patch(
+      @Body User user,
+      MyCallBack<User> callback
+  );
 
-    //  @RetryPolicy(timeout = 1)
-    @PUT("/put")
-    void putFooMap(
-            @BodyMap Map bodyMap,
-            CallBack<Ip> callBack
-    );
+  @DELETE("/delete")
+  void delete(
+      MyCallBack<User> callback
+  );
 
-    @GET("/get")
-    void get(
-            @Query("test test2") String value,
-            CallBack<Foo> callBack
-    );
+  @HEAD("/head")
+  void head(
+      MyCallBack<User> callback
+  );
+
+  @FormUrlEncoded
+  @POST("/post")
+  void postFormUrlEncoded(
+      @Field("param1") String param1,
+      @Field("param2") String param2,
+      MyCallBack<User> callback
+  );
 
 }

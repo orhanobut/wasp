@@ -16,62 +16,62 @@ import java.util.Collections;
  */
 class MockNetworkStack implements NetworkStack {
 
-    private static MockNetworkStack mockNetworkStack;
+  private static MockNetworkStack mockNetworkStack;
 
-    private Context context;
+  private Context context;
 
-    private MockNetworkStack(Context context) {
-        this.context = context;
+  private MockNetworkStack(Context context) {
+    this.context = context;
+  }
+
+  static MockNetworkStack getDefault(Context context) {
+    if (mockNetworkStack == null) {
+      mockNetworkStack = new MockNetworkStack(context);
+    }
+    return mockNetworkStack;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T> void invokeRequest(WaspRequest waspRequest, WaspCallback<T> waspCallback) {
+    WaspMock mock = waspRequest.getMock();
+    int statusCode = mock.getStatusCode();
+
+    MethodInfo methodInfo = waspRequest.getMethodInfo();
+    Type responseType = methodInfo.getResponseObjectType();
+
+    String responseString;
+    Object responseObject;
+
+    if (TextUtils.isEmpty(mock.getPath())) {
+      //Create mock object and return
+      responseObject = MockFactory.createMockObject(responseType);
+      responseString = Wasp.getParser().toBody(responseObject);
+    } else {
+      responseString = MockFactory.readMockResponse(context, mock.getPath());
+      try {
+        responseObject = Wasp.getParser().fromBody(responseString, responseType);
+      } catch (IOException e) {
+        throw new RuntimeException("Mock file \"" + mock.getPath()
+            + "\" is in an invalid format", e);
+      }
     }
 
-    static MockNetworkStack getDefault(Context context) {
-        if (mockNetworkStack == null) {
-            mockNetworkStack = new MockNetworkStack(context);
-    }
-        return mockNetworkStack;
-    }
+    WaspResponse waspResponse = new WaspResponse.Builder()
+        .setUrl(waspRequest.getUrl())
+        .setStatusCode(statusCode)
+        .setHeaders(Collections.<String, String>emptyMap())
+        .setBody(responseString)
+        .setResponseObject(responseObject)
+        .setLength(responseString.length())
+        .setNetworkTime(0)
+        .build();
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
-        WaspMock mock = waspRequest.getMock();
-        int statusCode = mock.getStatusCode();
-
-        MethodInfo methodInfo = waspRequest.getMethodInfo();
-        Type responseType = methodInfo.getResponseObjectType();
-
-        String responseString;
-        Object responseObject;
-
-        if (TextUtils.isEmpty(mock.getPath())) {
-            //Create mock object and return
-            responseObject = MockFactory.createMockObject(responseType);
-            responseString = Wasp.getParser().toBody(responseObject);
-        } else {
-            responseString = MockFactory.readMockResponse(context, mock.getPath());
-            try {
-                responseObject = Wasp.getParser().fromBody(responseString, responseType);
-            } catch (IOException e) {
-                throw new RuntimeException("Mock file \"" + mock.getPath()
-                    + "\" is in an invalid format", e);
-            }
-        }
-
-        WaspResponse waspResponse = new WaspResponse.Builder()
-            .setUrl(waspRequest.getUrl())
-            .setStatusCode(statusCode)
-            .setHeaders(Collections.<String, String>emptyMap())
-            .setBody(responseString)
-            .setResponseObject(responseObject)
-            .setLength(responseString.length())
-            .setNetworkTime(0)
-            .build();
-
-        if (statusCode < 200 || statusCode > 299) {
-            callBack.onError(new WaspError(waspResponse, "Mock error message!"));
-            return;
+    if (statusCode < 200 || statusCode > 299) {
+      waspCallback.onError(new WaspError(waspResponse, "Mock error message!"));
+      return;
     }
 
-        callBack.onSuccess((T) waspResponse);
-    }
+    waspCallback.onSuccess((T) waspResponse);
+  }
 }

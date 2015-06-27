@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author Orhan Obut
  */
-public class SimpleInterceptor implements RequestInterceptor {
+public class SimpleRequestInterceptor implements RequestInterceptor {
 
   @Override
   public void onHeadersAdded(Map<String, String> headers) {
