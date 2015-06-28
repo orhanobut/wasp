@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author alessandro.balocco
  */
-public final class WaspResponse {
+public final class Response {
 
   private final int statusCode;
   private final int length;
@@ -22,7 +22,7 @@ public final class WaspResponse {
   private final String url;
   private final LogLevel logLevel;
 
-  private WaspResponse(Builder builder) {
+  private Response(Builder builder) {
     this.url = builder.getUrl();
     this.statusCode = builder.getStatusCode();
     this.headers = builder.getHeaders();
@@ -120,8 +120,8 @@ public final class WaspResponse {
     private int length;
     private long networkTime;
 
-    WaspResponse build() {
-      return new WaspResponse(this);
+    Response build() {
+      return new Response(this);
     }
 
     String getUrl() {

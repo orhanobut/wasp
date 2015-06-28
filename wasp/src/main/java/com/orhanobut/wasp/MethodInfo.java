@@ -49,7 +49,7 @@ final class MethodInfo {
   private Type responseObjectType;
   private Annotation[] methodAnnotations;
   private Map<String, String> headers;
-  private WaspMock mock;
+  private MockHolder mock;
   private boolean isAuthTokenEnabled;
 
   private MethodInfo(Context context, Method method) {
@@ -110,7 +110,7 @@ final class MethodInfo {
               method.getDeclaringClass().getSimpleName() + "." + method.getName() + "\""
           );
         }
-        this.mock = new WaspMock(mock.statusCode(), path);
+        this.mock = new MockHolder(mock.statusCode(), path);
         continue;
       }
 
@@ -298,7 +298,7 @@ final class MethodInfo {
     return headers != null ? headers : Collections.<String, String>emptyMap();
   }
 
-  WaspMock getMock() {
+  MockHolder getMock() {
     return mock;
   }
 

@@ -7,7 +7,6 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
@@ -46,7 +45,7 @@ final class VolleyNetworkStack implements NetworkStack {
     return requestQueue;
   }
 
-  private <T> void addToQueue(final WaspRequest waspRequest, WaspCallback<T> waspCallback) {
+  private <T> void addToQueue(final RequestCreator waspRequest, InternalCallback<T> waspCallback) {
     String url = waspRequest.getUrl();
     int method = getMethod(waspRequest.getMethod());
     VolleyListener<T> listener = new VolleyListener<>(waspCallback, url);
@@ -84,18 +83,18 @@ final class VolleyNetworkStack implements NetworkStack {
   }
 
   @Override
-  public <T> void invokeRequest(WaspRequest waspRequest, WaspCallback<T> waspCallback) {
+  public <T> void invokeRequest(RequestCreator waspRequest, InternalCallback<T> waspCallback) {
     addToQueue(waspRequest, waspCallback);
   }
 
   private static class VolleyListener<T> implements
-      Response.Listener<T>,
-      Response.ErrorListener {
+      com.android.volley.Response.Listener<T>,
+      com.android.volley.Response.ErrorListener {
 
-    private final WaspCallback waspCallback;
+    private final InternalCallback waspCallback;
     private final String url;
 
-    VolleyListener(WaspCallback waspCallback, String url) {
+    VolleyListener(InternalCallback waspCallback, String url) {
       this.waspCallback = waspCallback;
       this.url = url;
     }
@@ -108,7 +107,7 @@ final class VolleyNetworkStack implements NetworkStack {
 
     @Override
     public void onErrorResponse(VolleyError error) {
-      WaspResponse.Builder builder = new WaspResponse.Builder().setUrl(url);
+      Response.Builder builder = new Response.Builder().setUrl(url);
       String errorMessage = null;
 
       if (error != null) {
@@ -147,9 +146,9 @@ final class VolleyNetworkStack implements NetworkStack {
     private final String requestBody;
     private final String url;
     private final Type responseObjectType;
-    private final WaspRequest waspRequest;
+    private final RequestCreator waspRequest;
 
-    public VolleyRequest(int method, String url, WaspRequest request, VolleyListener<T> listener) {
+    public VolleyRequest(int method, String url, RequestCreator request, VolleyListener<T> listener) {
       super(method, url, listener);
       this.url = url;
       this.listener = listener;
@@ -170,13 +169,13 @@ final class VolleyNetworkStack implements NetworkStack {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Response parseNetworkResponse(NetworkResponse response) {
+    protected com.android.volley.Response parseNetworkResponse(NetworkResponse response) {
       try {
         byte[] data = response.data;
         String body = new String(data, HttpHeaderParser.parseCharset(response.headers));
         Object responseObject = Wasp.getParser().fromBody(body, responseObjectType);
 
-        WaspResponse waspResponse = new WaspResponse.Builder()
+        Response waspResponse = new Response.Builder()
             .setUrl(url)
             .setStatusCode(response.statusCode)
             .setHeaders(response.headers)
@@ -186,11 +185,11 @@ final class VolleyNetworkStack implements NetworkStack {
             .setNetworkTime(response.networkTimeMs)
             .build();
 
-        return Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
+        return com.android.volley.Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
       } catch (UnsupportedEncodingException e) {
-        return Response.error(new ParseError(e));
+        return com.android.volley.Response.error(new ParseError(e));
       } catch (IOException e) {
-        return Response.error(new ParseError(e));
+        return com.android.volley.Response.error(new ParseError(e));
       }
     }
 

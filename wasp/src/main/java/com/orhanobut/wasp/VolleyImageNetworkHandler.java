@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.ImageRequest;
@@ -19,40 +18,41 @@ import java.io.UnsupportedEncodingException;
 /**
  * @author Orhan Obut
  */
-public class VolleyImageNetworkHandler implements WaspImageHandler.ImageNetworkHandler {
+public class VolleyImageNetworkHandler implements InternalImageHandler.ImageNetworkHandler {
 
   private final RequestQueue requestQueue;
 
   public VolleyImageNetworkHandler(Context context, WaspHttpStack stack) {
-    this.requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
+    //    requestQueue = Volley.newRequestQueue(context);
+    requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
   }
 
   @Override
-  public void requestImage(final WaspImage waspImage, final int maxWidth, final int maxHeight,
-                           final WaspCallback<WaspImageHandler.Container> waspCallback) {
+  public void requestImage(final ImageCreator waspImageCreator, final int maxWidth, final int maxHeight,
+                           final InternalCallback<InternalImageHandler.Container> waspCallback) {
 
-    final String url = waspImage.getUrl();
+    final String url = waspImageCreator.getUrl();
     Logger.d("REQUEST IMAGE -> url : " + url);
     Request<Bitmap> request = new ImageRequest(
         url,
-        new Response.Listener<Bitmap>() {
+        new com.android.volley.Response.Listener<Bitmap>() {
           @Override
           public void onResponse(Bitmap response) {
             Logger.i("SUCCESS -> url : " + url);
-            WaspImageHandler.Container container = new WaspImageHandler.Container();
+            InternalImageHandler.Container container = new InternalImageHandler.Container();
             container.bitmap = response;
             container.cacheKey = StringUtils.getCacheKey(url, maxWidth, maxHeight);
-            container.waspImage = waspImage;
+            container.waspImageCreator = waspImageCreator;
             waspCallback.onSuccess(container);
           }
         },
         maxWidth,
         maxHeight,
         Bitmap.Config.RGB_565,
-        new Response.ErrorListener() {
+        new com.android.volley.Response.ErrorListener() {
           @Override
           public void onErrorResponse(VolleyError error) {
-            WaspResponse.Builder builder = new WaspResponse.Builder().setUrl(url);
+            Response.Builder builder = new Response.Builder().setUrl(url);
             String errorMessage = null;
 
             if (error != null) {

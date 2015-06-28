@@ -27,6 +27,7 @@ public class Wasp {
   private static Context context;
   private static LogLevel logLevel;
   private static Parser parser;
+  private static WaspHttpStack httpStack;
 
   private final Builder builder;
 
@@ -36,6 +37,7 @@ public class Wasp {
     logLevel = builder.logLevel;
     context = builder.context;
     parser = builder.parser;
+    httpStack = builder.getWaspHttpStack();
   }
 
   /**
@@ -71,11 +73,11 @@ public class Wasp {
 
     private static ImageHandler imageHandler;
 
-    public static WaspImage.Builder from(String path) {
+    public static ImageCreator.Builder from(String path) {
       if (TextUtils.isEmpty(path)) {
         throw new IllegalArgumentException("Path cannot be empty or null");
       }
-      return new WaspImage.Builder()
+      return new ImageCreator.Builder()
           .setImageHandler(getImageHandler())
           .from(path);
     }
@@ -85,8 +87,8 @@ public class Wasp {
         throw new NullPointerException("Wasp.Builder should be instantiated first");
       }
       if (imageHandler == null) {
-        imageHandler = new WaspImageHandler(
-            new BitmapWaspCache(), new VolleyImageNetworkHandler(context, new WaspOkHttpStack())
+        imageHandler = new InternalImageHandler(
+            new BitmapWaspCache(), new VolleyImageNetworkHandler(context, httpStack)
         );
       }
       return imageHandler;
@@ -147,6 +149,10 @@ public class Wasp {
       }
       this.waspHttpStack = waspHttpStack;
       return this;
+    }
+
+    public WaspHttpStack getWaspHttpStack() {
+      return this.waspHttpStack;
     }
 
     @SuppressWarnings("unused")

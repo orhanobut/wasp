@@ -10,6 +10,7 @@ import com.orhanobut.wasp.http.HEAD;
 import com.orhanobut.wasp.http.PATCH;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
+import com.orhanobut.wasp.http.Path;
 
 /**
  * @author Orhan Obut
@@ -27,12 +28,18 @@ public interface MyService {
       Callback<User> callback
   );
 
+  @POST("/post/{id}")
+  void postPath(
+      @Path("id") String id,
+      @Body User user,
+      Callback<User> callback
+  );
+
   @PUT("/put")
   void put(
       @Body User user,
       Callback<User> callback
   );
-
 
   @PATCH("/patch")
   void patch(

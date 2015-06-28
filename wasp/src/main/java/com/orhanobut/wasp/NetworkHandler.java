@@ -93,14 +93,14 @@ final class NetworkHandler implements InvocationHandler {
     final Callback<?> callback = (Callback<?>) lastArg;
     final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
-    WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint)
+    RequestCreator waspRequest = new RequestCreator.Builder(methodInfo, args, endPoint)
         .setRequestInterceptor(requestInterceptor)
         .build();
     waspRequest.log();
 
-    WaspCallback<WaspResponse> responseWaspCallback = new WaspCallback<WaspResponse>() {
+    InternalCallback<Response> responseWaspCallback = new InternalCallback<Response>() {
       @Override
-      public void onSuccess(WaspResponse response) {
+      public void onSuccess(Response response) {
         response.log();
         new ResponseWrapper(callback, response, response.getResponseObject()).submitResponse();
       }

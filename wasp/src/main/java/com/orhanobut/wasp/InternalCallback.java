@@ -3,7 +3,7 @@ package com.orhanobut.wasp;
 /**
  * @author Orhan Obut
  */
-public interface WaspCallback<T> {
+public interface InternalCallback<T> {
 
   void onSuccess(T t);
 

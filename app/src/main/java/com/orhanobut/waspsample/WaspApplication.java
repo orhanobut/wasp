@@ -50,6 +50,5 @@ public class WaspApplication extends Application {
         .setWaspHttpStack(new WaspOkHttpStack(okHttpClient))
         .build()
         .create(MyService.class);
-
   }
 }

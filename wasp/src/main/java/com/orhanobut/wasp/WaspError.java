@@ -10,13 +10,13 @@ import java.lang.reflect.Type;
  * @author Orhan Obut
  */
 @SuppressWarnings("unused")
-public class WaspError {
+public class WaspError extends Throwable {
 
-  private final WaspResponse response;
+  private final Response response;
   private final String errorMessage;
   private final LogLevel logLevel;
 
-  public WaspError(WaspResponse response, String errorMessage) {
+  public WaspError(Response response, String errorMessage) {
     this.response = response;
     this.errorMessage = errorMessage;
     this.logLevel = Wasp.getLogLevel();
@@ -35,7 +35,7 @@ public class WaspError {
   /**
    * Response object containing status code, headers, body, etc.
    */
-  public WaspResponse getRespone() {
+  public Response getResponse() {
     return response;
   }
 

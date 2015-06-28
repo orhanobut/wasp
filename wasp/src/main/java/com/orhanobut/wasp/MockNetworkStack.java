@@ -33,8 +33,8 @@ class MockNetworkStack implements NetworkStack {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T> void invokeRequest(WaspRequest waspRequest, WaspCallback<T> waspCallback) {
-    WaspMock mock = waspRequest.getMock();
+  public <T> void invokeRequest(RequestCreator waspRequest, InternalCallback<T> waspCallback) {
+    MockHolder mock = waspRequest.getMock();
     int statusCode = mock.getStatusCode();
 
     MethodInfo methodInfo = waspRequest.getMethodInfo();
@@ -57,7 +57,7 @@ class MockNetworkStack implements NetworkStack {
       }
     }
 
-    WaspResponse waspResponse = new WaspResponse.Builder()
+    Response waspResponse = new Response.Builder()
         .setUrl(waspRequest.getUrl())
         .setStatusCode(statusCode)
         .setHeaders(Collections.<String, String>emptyMap())
