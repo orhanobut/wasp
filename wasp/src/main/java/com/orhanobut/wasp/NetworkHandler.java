@@ -87,10 +87,10 @@ final class NetworkHandler implements InvocationHandler {
       throw new IllegalArgumentException("Callback must be sent as param");
     }
     Object lastArg = args[args.length - 1];
-    if (!(lastArg instanceof MyCallBack)) {
+    if (!(lastArg instanceof Callback)) {
       throw new IllegalArgumentException("Last param must be type of CallBack<T>");
     }
-    final MyCallBack<?> callback = (MyCallBack<?>) lastArg;
+    final Callback<?> callback = (Callback<?>) lastArg;
     final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
     WaspRequest waspRequest = new WaspRequest.Builder(methodInfo, args, endPoint)

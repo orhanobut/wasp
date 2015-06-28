@@ -177,11 +177,11 @@ final class MethodInfo {
     if (typeToCheck instanceof Class) {
       lastArgClass = (Class<?>) typeToCheck;
     }
-    if (!MyCallBack.class.isAssignableFrom(lastArgClass)) {
+    if (!Callback.class.isAssignableFrom(lastArgClass)) {
       throw new IllegalArgumentException("Last param should be CallBack");
     }
 
-    lastArgType = RetroTypes.getSupertype(lastArgType, RetroTypes.getRawType(lastArgType), MyCallBack.class);
+    lastArgType = RetroTypes.getSupertype(lastArgType, RetroTypes.getRawType(lastArgType), Callback.class);
     if (lastArgType instanceof ParameterizedType) {
       responseObjectType = getParameterUpperBound((ParameterizedType) lastArgType);
     }

@@ -1,6 +1,6 @@
 package com.orhanobut.waspsample;
 
-import com.orhanobut.wasp.MyCallBack;
+import com.orhanobut.wasp.Callback;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.Field;
@@ -18,36 +18,36 @@ public interface MyService {
 
   @GET("/get")
   void get(
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
   @POST("/post")
   void post(
       @Body User user,
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
   @PUT("/put")
   void put(
       @Body User user,
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
 
   @PATCH("/patch")
   void patch(
       @Body User user,
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
   @DELETE("/delete")
   void delete(
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
   @HEAD("/head")
   void head(
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
   @FormUrlEncoded
@@ -55,7 +55,7 @@ public interface MyService {
   void postFormUrlEncoded(
       @Field("param1") String param1,
       @Field("param2") String param2,
-      MyCallBack<User> callback
+      Callback<User> callback
   );
 
 }

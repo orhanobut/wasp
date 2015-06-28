@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.orhanobut.wasp.MyCallBack;
+import com.orhanobut.wasp.Callback;
 import com.orhanobut.wasp.WaspError;
 import com.orhanobut.wasp.WaspResponse;
 
@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
     }
   }
 
-  private final MyCallBack<User> callback = new MyCallBack<User>() {
+  private final Callback<User> callback = new Callback<User>() {
     @Override
     public void onSuccess(WaspResponse response, User user) {
       if (user == null) {
