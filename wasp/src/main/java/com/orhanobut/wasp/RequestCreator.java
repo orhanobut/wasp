@@ -17,7 +17,9 @@ import com.orhanobut.wasp.utils.LogLevel;
 import com.orhanobut.wasp.utils.RequestInterceptor;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -26,7 +28,7 @@ import java.util.Map;
 /**
  * @author Orhan Obut
  */
-final class WaspRequest {
+final class RequestCreator {
 
   private final String url;
   private final String method;
@@ -35,11 +37,11 @@ final class WaspRequest {
   private final Map<String, String> fieldParams;
   private final String body;
   private final WaspRetryPolicy retryPolicy;
-  private final WaspMock mock;
+  private final MockHolder mock;
   private final MethodInfo methodInfo;
   private final LogLevel logLevel;
 
-  private WaspRequest(Builder builder) {
+  private RequestCreator(Builder builder) {
     this.url = builder.getUrl();
     this.method = builder.getHttpMethod();
     this.headers = builder.getHeaders();
@@ -68,7 +70,7 @@ final class WaspRequest {
     return body;
   }
 
-  WaspMock getMock() {
+  MockHolder getMock() {
     return mock;
   }
 
@@ -229,9 +231,9 @@ final class WaspRequest {
      *
      * @return WaspRequest
      */
-    WaspRequest build() {
+    RequestCreator build() {
       postInit();
-      return new WaspRequest(this);
+      return new RequestCreator(this);
     }
 
     /**
@@ -313,9 +315,13 @@ final class WaspRequest {
       return queryParamBuilder.toString();
     }
 
-    //TODO we can also do something about value check
     private void addPathParam(String key, String value) {
-      relativeUrl = relativeUrl.replace("{" + key + "}", value);
+      try {
+        String encodedValue = URLEncoder.encode(String.valueOf(value), "UTF-8");
+        relativeUrl = relativeUrl.replace("{" + key + "}", encodedValue);
+      } catch (UnsupportedEncodingException e) {
+        throw new RuntimeException("unable to encode the value for path");
+      }
     }
 
     private void addQueryParam(String key, Object value) {
@@ -363,7 +369,7 @@ final class WaspRequest {
       return retryPolicy;
     }
 
-    WaspMock getMock() {
+    MockHolder getMock() {
       return methodInfo.getMock();
     }
 

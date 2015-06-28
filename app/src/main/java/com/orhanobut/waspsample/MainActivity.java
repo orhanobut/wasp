@@ -9,8 +9,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.orhanobut.wasp.Callback;
+import com.orhanobut.wasp.Response;
 import com.orhanobut.wasp.WaspError;
-import com.orhanobut.wasp.WaspResponse;
 
 
 @SuppressWarnings("unused")
@@ -31,12 +31,15 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
     String[] list = {
         "GET",
         "POST",
+        "POST_PATH",
         "PUT",
         "PATCH",
         "DELETE",
         "HEAD",
         "FORM_URL_ENCODED",
-        "MULTIPART"
+        "MULTIPART",
+        "IMAGE_LISTVIEW",
+        "IMAGE_RECYCLERVIEW"
     };
 
     ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -45,7 +48,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(this);
-
   }
 
   @Override
@@ -57,6 +59,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
         break;
       case "POST":
         post();
+        break;
+      case "POST_PATH":
+        postPath();
         break;
       case "PUT":
         put();
@@ -76,12 +81,18 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
       case "MULTIPART":
         multipart();
         break;
+      case "IMAGE_LISTVIEW":
+        startListViewActivity();
+        break;
+      case "IMAGE_RECYCLERVIEW":
+        startRecyclerViewActivity();
+        break;
     }
   }
 
   private final Callback<User> callback = new Callback<User>() {
     @Override
-    public void onSuccess(WaspResponse response, User user) {
+    public void onSuccess(Response response, User user) {
       if (user == null) {
         return;
       }
@@ -122,7 +133,19 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
     getService().post(new User("Wasp"), callback);
   }
 
+  private void postPath() {
+    getService().postPath("2423 234 ", new User("Wasp"), callback);
+  }
+
   private void get() {
     getService().get(callback);
+  }
+
+  private void startListViewActivity() {
+    startActivity(ListViewActivity.newIntent(this));
+  }
+
+  private void startRecyclerViewActivity() {
+    startActivity(RecyclerViewActivity.newIntent(this));
   }
 }

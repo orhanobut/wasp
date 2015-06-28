@@ -14,7 +14,7 @@ import com.orhanobut.wasp.utils.StringUtils;
  *
  * @author Orhan Obut
  */
-final class WaspImageHandler implements ImageHandler {
+final class InternalImageHandler implements ImageHandler {
 
   /**
    * It is used to determine which url is current for the ImageView
@@ -31,23 +31,23 @@ final class WaspImageHandler implements ImageHandler {
    */
   private final ImageNetworkHandler imageNetworkHandler;
 
-  WaspImageHandler(ImageCache cache, ImageNetworkHandler handler) {
+  InternalImageHandler(ImageCache cache, ImageNetworkHandler handler) {
     this.imageCache = cache;
     this.imageNetworkHandler = handler;
   }
 
   @Override
-  public void load(final WaspImage waspImage) {
+  public void load(ImageCreator imageCreator) {
     checkMain();
-    loadImage(waspImage);
+    loadImage(imageCreator);
   }
 
-  private void loadImage(final WaspImage waspImage) {
-    final String url = waspImage.getUrl();
-    final ImageView imageView = waspImage.getImageView();
+  private void loadImage(final ImageCreator imageCreator) {
+    final String url = imageCreator.getUrl();
+    final ImageView imageView = imageCreator.getImageView();
 
     // clear the target
-    initImageView(waspImage);
+    initImageView(imageCreator);
 
     // if there is any old request. cancel it
     String tag = (String) imageView.getTag(KEY_TAG);
@@ -91,7 +91,7 @@ final class WaspImageHandler implements ImageHandler {
     }
 
     // make a new request
-    imageNetworkHandler.requestImage(waspImage, maxWidth, maxHeight, new WaspCallback<Container>() {
+    imageNetworkHandler.requestImage(imageCreator, maxWidth, maxHeight, new InternalCallback<Container>() {
       @Override
       public void onSuccess(final Container container) {
         Bitmap bitmap = container.bitmap;
@@ -99,16 +99,16 @@ final class WaspImageHandler implements ImageHandler {
           return;
         }
 
-        container.waspImage.logSuccess(bitmap);
+        container.waspImageCreator.logSuccess(bitmap);
 
         // cache the image
         imageCache.putBitmap(container.cacheKey, container.bitmap);
 
-        ImageView imageView = container.waspImage.getImageView();
+        ImageView imageView = container.waspImageCreator.getImageView();
 
         // if it is the current url, set the image
         String tag = (String) imageView.getTag(KEY_TAG);
-        if (TextUtils.equals(tag, container.waspImage.getUrl())) {
+        if (TextUtils.equals(tag, container.waspImageCreator.getUrl())) {
           imageView.setImageBitmap(container.bitmap);
           imageView.setTag(KEY_TAG, null);
         }
@@ -116,17 +116,21 @@ final class WaspImageHandler implements ImageHandler {
 
       @Override
       public void onError(WaspError error) {
+        int errorImage = imageCreator.getErrorImage();
+        if (errorImage != 0) {
+          imageView.setImageResource(errorImage);
+        }
         error.log();
       }
     });
 
-    waspImage.logRequest();
+    imageCreator.logRequest();
   }
 
   // clear the target by setting null or default placeholder
-  private void initImageView(WaspImage waspImage) {
-    int defaultImage = waspImage.getDefaultImage();
-    ImageView imageView = waspImage.getImageView();
+  private void initImageView(ImageCreator waspImageCreator) {
+    int defaultImage = waspImageCreator.getDefaultImage();
+    ImageView imageView = waspImageCreator.getImageView();
     if (defaultImage != 0) {
       imageView.setImageResource(defaultImage);
       return;
@@ -163,7 +167,7 @@ final class WaspImageHandler implements ImageHandler {
 
   interface ImageNetworkHandler {
 
-    void requestImage(WaspImage waspImage, int maxWidth, int maxHeight, WaspCallback<Container> waspCallback);
+    void requestImage(ImageCreator waspImageCreator, int maxWidth, int maxHeight, InternalCallback<Container> waspCallback);
 
     void cancelRequest(String tag);
 
@@ -172,7 +176,7 @@ final class WaspImageHandler implements ImageHandler {
   static class Container {
     String cacheKey;
     Bitmap bitmap;
-    WaspImage waspImage;
+    ImageCreator waspImageCreator;
   }
 
 }

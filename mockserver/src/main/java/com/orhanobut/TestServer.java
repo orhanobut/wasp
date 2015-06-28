@@ -44,7 +44,7 @@ public class TestServer extends NanoHTTPD implements HttpServer {
 
   @Override
   public Response get(IHTTPSession session) {
-    return new Response(Response.Status.ACCEPTED, "application/json", session.getInputStream());
+    return new Response(Response.Status.ACCEPTED, "application/json", DEFAULT_RESPONSE);
   }
 
   @Override

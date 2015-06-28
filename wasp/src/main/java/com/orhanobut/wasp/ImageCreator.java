@@ -10,7 +10,7 @@ import com.orhanobut.wasp.utils.LogLevel;
 /**
  * @author Orhan Obut
  */
-final class WaspImage {
+final class ImageCreator {
 
   private final String url;
   private final ImageView imageView;
@@ -26,7 +26,7 @@ final class WaspImage {
   /**
    * For now, we will use Volley ImageLoader for the image handling
    */
-  private WaspImage(Builder builder) {
+  private ImageCreator(Builder builder) {
     this.imageHandler = builder.imageHandler;
     this.url = builder.url;
     this.imageView = builder.imageView;
@@ -52,21 +52,6 @@ final class WaspImage {
 
   int getErrorImage() {
     return errorImage;
-  }
-
-  @SuppressWarnings("unused")
-  boolean isCropCenter() {
-    return cropCenter;
-  }
-
-  @SuppressWarnings("unused")
-  boolean isFit() {
-    return fit;
-  }
-
-  @SuppressWarnings("unused")
-  Size getSize() {
-    return size;
   }
 
   /**
@@ -193,22 +178,10 @@ final class WaspImage {
     }
 
     //TODO
-    public Builder cropCenter() {
-      this.cropCenter = true;
-      return this;
-    }
-
-    //TODO
-    public Builder fit() {
-      this.fit = true;
-      return this;
-    }
-
-    //TODO
-    public Builder resize(int width, int height) {
-      this.size = new Size(width, height);
-      return this;
-    }
+    //    public Builder resize(int width, int height) {
+    //      this.size = new Size(width, height);
+    //      return this;
+    //    }
 
     /**
      * It is used to download and load the image
@@ -225,7 +198,7 @@ final class WaspImage {
      * This should be called to fetch the image
      */
     public void load() {
-      new WaspImage(this).load();
+      new ImageCreator(this).load();
     }
   }
 
