@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Orhan Obut
@@ -93,31 +94,41 @@ final class NetworkHandler implements InvocationHandler {
     final Callback<?> callback = (Callback<?>) lastArg;
     final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
-    RequestCreator waspRequest = new RequestCreator.Builder(methodInfo, args, endPoint)
+    RequestCreator requestCreator = new RequestCreator.Builder(methodInfo, args, endPoint)
         .setRequestInterceptor(requestInterceptor)
         .build();
-    waspRequest.log();
+    requestCreator.log();
+
+    final WaspRequest waspRequest = new InternalWaspRequest();
 
     InternalCallback<Response> responseWaspCallback = new InternalCallback<Response>() {
       @Override
       public void onSuccess(Response response) {
         response.log();
+        if (waspRequest.isCancelled()) {
+          Logger.i("Response not delivered because of cancelled request");
+          return;
+        }
         new ResponseWrapper(callback, response, response.getResponseObject()).submitResponse();
       }
 
       @Override
       public void onError(WaspError error) {
         error.log();
+        if (waspRequest.isCancelled()) {
+          Logger.i("Response not delivered because of cancelled request");
+          return;
+        }
         callback.onError(error);
       }
     };
 
     if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
-      MockNetworkStack.getDefault(context).invokeRequest(waspRequest, responseWaspCallback);
-      return null;
+      MockNetworkStack.getDefault(context).invokeRequest(requestCreator, responseWaspCallback);
+      return waspRequest;
     }
 
-    networkStack.invokeRequest(waspRequest, responseWaspCallback);
-    return null;
+    networkStack.invokeRequest(requestCreator, responseWaspCallback);
+    return waspRequest;
   }
 }
