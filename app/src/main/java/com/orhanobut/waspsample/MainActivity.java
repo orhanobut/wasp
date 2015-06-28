@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.orhanobut.wasp.CallBack;
 import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspError;
@@ -77,6 +78,11 @@ public class MainActivity extends BaseActivity {
 
         getService().fetchIp("ParamHeaderValue1", map, ip, new CallBack<Ip>() {
             @Override
+            public void onStart(Request<Ip> request) {
+
+            }
+
+            @Override
             public void onSuccess(Ip ip) {
                 textView.setText(ip.toString());
             }
@@ -90,6 +96,11 @@ public class MainActivity extends BaseActivity {
 
     private void fetchIps() {
         getService().fetchIps(new CallBack<List<Ip>>() {
+            @Override
+            public void onStart(Request<List<Ip>> request) {
+
+            }
+
             @Override
             public void onSuccess(List<Ip> ips) {
                 textView.setText(ips.toString());
@@ -106,6 +117,11 @@ public class MainActivity extends BaseActivity {
     private void postFoo() {
         getService().postFoo(new Ip("test", "test2"), new CallBack<Ip>() {
             @Override
+            public void onStart(Request<Ip> request) {
+
+            }
+
+            @Override
             public void onSuccess(Ip ip) {
                 textView.append(ip.toString());
             }
@@ -119,6 +135,11 @@ public class MainActivity extends BaseActivity {
 
     private void putFoo() {
         getService().putFoo(new Ip("test", "test2"), new CallBack<Ip>() {
+            @Override
+            public void onStart(Request<Ip> request) {
+
+            }
+
             @Override
             public void onSuccess(Ip ip) {
                 textView.append(ip.toString());
@@ -136,6 +157,11 @@ public class MainActivity extends BaseActivity {
         map.put("origin", "Test");
 
         getService().putFooMap(map, new CallBack<Ip>() {
+            @Override
+            public void onStart(Request<Ip> request) {
+
+            }
+
             @Override
             public void onSuccess(Ip ip) {
                 textView.append(ip.toString());
@@ -162,6 +188,11 @@ public class MainActivity extends BaseActivity {
 
     public void getFoo() {
         getService().get("Selam naber", new CallBack<Foo>() {
+            @Override
+            public void onStart(Request<Foo> request) {
+                
+            }
+
             @Override
             public void onSuccess(Foo foo) {
                 Log.d(TAG, foo.toString());

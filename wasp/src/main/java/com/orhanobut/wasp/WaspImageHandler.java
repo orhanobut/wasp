@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.android.volley.Request;
 import com.orhanobut.wasp.utils.StringUtils;
 
 /**
@@ -92,6 +93,11 @@ final class WaspImageHandler implements ImageHandler {
 
         // make a new request
         imageNetworkHandler.requestImage(waspImage, maxWidth, maxHeight, new CallBack<Container>() {
+            @Override
+            public void onStart(Request<Container> request) {
+
+            }
+
             @Override
             public void onSuccess(final Container container) {
                 Bitmap bitmap = container.bitmap;

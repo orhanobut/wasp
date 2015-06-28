@@ -62,6 +62,7 @@ final class VolleyNetworkStack implements NetworkStack {
             request.setRetryPolicy(policy);
         }
 
+        callBack.onStart(request);
         addToQueue(request);
     }
 
