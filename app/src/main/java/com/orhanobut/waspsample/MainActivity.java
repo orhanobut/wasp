@@ -1,176 +1,128 @@
 package com.orhanobut.waspsample;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.orhanobut.wasp.CallBack;
-import com.orhanobut.wasp.Wasp;
+import com.orhanobut.wasp.Callback;
 import com.orhanobut.wasp.WaspError;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.orhanobut.wasp.WaspResponse;
 
 
 @SuppressWarnings("unused")
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+  private static final String TAG = MainActivity.class.getSimpleName();
 
-    private TextView textView;
-    private ImageView imageView;
+  private TextView textView;
+  private ImageView imageView;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    ListView listView = (ListView) findViewById(R.id.list);
+
+    String[] list = {
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "HEAD",
+        "FORM_URL_ENCODED",
+        "MULTIPART"
+    };
+
+    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        this, android.R.layout.simple_list_item_1, list
+    );
+
+    listView.setAdapter(adapter);
+    listView.setOnItemClickListener(this);
+
+  }
+
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    String key = (String) parent.getItemAtPosition(position);
+    switch (key) {
+      case "GET":
+        get();
+        break;
+      case "POST":
+        post();
+        break;
+      case "PUT":
+        put();
+        break;
+      case "PATCH":
+        patch();
+        break;
+      case "DELETE":
+        delete();
+        break;
+      case "HEAD":
+        head();
+        break;
+      case "FORM_URL_ENCODED":
+        formUrlEncoded();
+        break;
+      case "MULTIPART":
+        multipart();
+        break;
+    }
+  }
+
+  private final Callback<User> callback = new Callback<User>() {
+    @Override
+    public void onSuccess(WaspResponse response, User user) {
+      if (user == null) {
+        return;
+      }
+      showToast(user.toString());
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        textView = (TextView) findViewById(R.id.text);
-        imageView = (ImageView) findViewById(R.id.image);
-
-        // fetchIp();
-        // postFoo();
-        putFoo();
-        //  putFooMap();
-        //  loadImage();
-        // getFoo();
-
-        findViewById(R.id.listView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startListViewActivity();
-            }
-        });
-
-        findViewById(R.id.recycler_view).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startRecyclerViewActivity();
-            }
-        });
-
-        findViewById(R.id.clear_cache).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Wasp.Image.clearCache();
-            }
-        });
-
+    public void onError(WaspError error) {
+      showToast(error.getErrorMessage());
     }
+  };
 
-    private void startListViewActivity() {
-        startActivity(ListViewActivity.newIntent(this));
-    }
+  private void multipart() {
+    //TODO
+  }
 
-    private void startRecyclerViewActivity() {
-        startActivity(RecyclerViewActivity.newIntent(this));
-    }
+  private void formUrlEncoded() {
+    getService().postFormUrlEncoded("param1", "param2", callback);
+  }
 
-    private void fetchIp() {
-        Ip ip = new Ip("origin", "foo");
-        Map<String, String> map = new HashMap<>();
-        map.put("QueryMapKey1", "QueryMapValue1");
-        map.put("QueryMapKey2", "QueryMapValue2");
+  private void head() {
+    getService().head(callback);
+  }
 
-        getService().fetchIp("ParamHeaderValue1", map, ip, new CallBack<Ip>() {
-            @Override
-            public void onSuccess(Ip ip) {
-                textView.setText(ip.toString());
-            }
+  private void delete() {
+    getService().delete(callback);
+  }
 
-            @Override
-            public void onError(WaspError error) {
-                showToast(error.toString());
-            }
-        });
-    }
+  private void patch() {
+    getService().patch(new User("Wasp"), callback);
+  }
 
-    private void fetchIps() {
-        getService().fetchIps(new CallBack<List<Ip>>() {
-            @Override
-            public void onSuccess(List<Ip> ips) {
-                textView.setText(ips.toString());
-            }
+  private void put() {
+    getService().put(new User("Wasp"), callback);
+  }
 
-            @Override
-            public void onError(WaspError error) {
-                showToast(error.toString());
-            }
-        });
-    }
+  private void post() {
+    getService().post(new User("Wasp"), callback);
+  }
 
-
-    private void postFoo() {
-        getService().postFoo(new Ip("test", "test2"), new CallBack<Ip>() {
-            @Override
-            public void onSuccess(Ip ip) {
-                textView.append(ip.toString());
-            }
-
-            @Override
-            public void onError(WaspError error) {
-                showToast(error.toString());
-            }
-        });
-    }
-
-    private void putFoo() {
-        getService().putFoo(new Ip("test", "test2"), new CallBack<Ip>() {
-            @Override
-            public void onSuccess(Ip ip) {
-                textView.append(ip.toString());
-            }
-
-            @Override
-            public void onError(WaspError error) {
-                showToast(error.toString());
-            }
-        });
-    }
-
-    private void putFooMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("origin", "Test");
-
-        getService().putFooMap(map, new CallBack<Ip>() {
-            @Override
-            public void onSuccess(Ip ip) {
-                textView.append(ip.toString());
-            }
-
-            @Override
-            public void onError(WaspError error) {
-                showToast(error.toString());
-            }
-        });
-    }
-
-
-    public void loadImage() {
-        String url = "http://developer.android.com/images/training/system-ui.png";
-        int defaultImage = R.drawable.ic_launcher;
-        int errorImage = R.drawable.error;
-        Wasp.Image.from(url)
-                .to(imageView)
-                .setError(errorImage)
-                .setDefault(defaultImage)
-                .load();
-    }
-
-    public void getFoo() {
-        getService().get("Selam naber", new CallBack<Foo>() {
-            @Override
-            public void onSuccess(Foo foo) {
-                Log.d(TAG, foo.toString());
-            }
-
-            @Override
-            public void onError(WaspError error) {
-                Log.d(TAG, error.getErrorMessage());
-            }
-        });
-    }
+  private void get() {
+    getService().get(callback);
+  }
 }

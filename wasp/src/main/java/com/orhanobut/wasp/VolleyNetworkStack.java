@@ -28,10 +28,13 @@ final class VolleyNetworkStack implements NetworkStack {
   private static final String METHOD_PUT = "PUT";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_DELETE = "DELETE";
+  private static final String METHOD_PATCH = "PATCH";
+  private static final String METHOD_HEAD = "HEAD";
 
   private final RequestQueue requestQueue;
 
   private VolleyNetworkStack(Context context, WaspHttpStack stack) {
+    //    requestQueue = Volley.newRequestQueue(context);
     requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
   }
 
@@ -40,22 +43,14 @@ final class VolleyNetworkStack implements NetworkStack {
   }
 
   synchronized RequestQueue getRequestQueue() {
-    if (requestQueue == null) {
-      throw new NullPointerException("Wasp.Builder must be called");
-    }
     return requestQueue;
   }
 
-  private <T> void addToQueue(final WaspRequest waspRequest, CallBack<T> callBack) {
+  private <T> void addToQueue(final WaspRequest waspRequest, WaspCallback<T> waspCallback) {
     String url = waspRequest.getUrl();
     int method = getMethod(waspRequest.getMethod());
-    VolleyListener<T> listener = new VolleyListener<>(callBack, url);
-    Request<T> request = new VolleyRequest<T>(method, url, waspRequest, listener) {
-      @Override
-      public Map<String, String> getHeaders() throws AuthFailureError {
-        return waspRequest.getHeaders();
-      }
-    };
+    VolleyListener<T> listener = new VolleyListener<>(waspCallback, url);
+    Request<T> request = new VolleyRequest<T>(method, url, waspRequest, listener);
 
     WaspRetryPolicy policy = waspRequest.getRetryPolicy();
     if (policy != null) {
@@ -75,8 +70,12 @@ final class VolleyNetworkStack implements NetworkStack {
         return Request.Method.PUT;
       case METHOD_DELETE:
         return Request.Method.DELETE;
+      case METHOD_PATCH:
+        return Request.Method.PATCH;
+      case METHOD_HEAD:
+        return Request.Method.HEAD;
       default:
-        throw new IllegalArgumentException("Method must be DELETE,POST,PUT or GET");
+        throw new IllegalArgumentException("Method must be DELETE,POST,PUT,GET,PATCH,HEAD");
     }
   }
 
@@ -85,26 +84,26 @@ final class VolleyNetworkStack implements NetworkStack {
   }
 
   @Override
-  public <T> void invokeRequest(WaspRequest waspRequest, CallBack<T> callBack) {
-    addToQueue(waspRequest, callBack);
+  public <T> void invokeRequest(WaspRequest waspRequest, WaspCallback<T> waspCallback) {
+    addToQueue(waspRequest, waspCallback);
   }
 
   private static class VolleyListener<T> implements
       Response.Listener<T>,
       Response.ErrorListener {
 
-    private final CallBack callBack;
+    private final WaspCallback waspCallback;
     private final String url;
 
-    VolleyListener(CallBack callBack, String url) {
-      this.callBack = callBack;
+    VolleyListener(WaspCallback waspCallback, String url) {
+      this.waspCallback = waspCallback;
       this.url = url;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void onResponse(T response) {
-      callBack.onSuccess(response);
+      waspCallback.onSuccess(response);
     }
 
     @Override
@@ -133,7 +132,7 @@ final class VolleyNetworkStack implements NetworkStack {
         }
       }
 
-      callBack.onError(new WaspError(builder.build(), errorMessage));
+      waspCallback.onError(new WaspError(builder.build(), errorMessage));
     }
   }
 
@@ -144,19 +143,11 @@ final class VolleyNetworkStack implements NetworkStack {
      */
     private static final String PROTOCOL_CHARSET = "UTF-8";
 
-    /**
-     * Content type for request.
-     */
-    private static final String PROTOCOL_CONTENT_TYPE = String.format(
-        "%1$s; charset=%2$s",
-        Wasp.getParser().getSupportedContentType(),
-        PROTOCOL_CHARSET
-    );
-
     private final VolleyListener<T> listener;
     private final String requestBody;
     private final String url;
     private final Type responseObjectType;
+    private final WaspRequest waspRequest;
 
     public VolleyRequest(int method, String url, WaspRequest request, VolleyListener<T> listener) {
       super(method, url, listener);
@@ -164,6 +155,12 @@ final class VolleyNetworkStack implements NetworkStack {
       this.listener = listener;
       this.requestBody = request.getBody();
       this.responseObjectType = request.getMethodInfo().getResponseObjectType();
+      this.waspRequest = request;
+    }
+
+    @Override
+    public Map<String, String> getHeaders() throws AuthFailureError {
+      return waspRequest.getHeaders();
     }
 
     @Override
@@ -199,13 +196,23 @@ final class VolleyNetworkStack implements NetworkStack {
 
     @Override
     public String getBodyContentType() {
-      return PROTOCOL_CONTENT_TYPE;
+      return String.format(
+          "%1$s; charset=%2$s",
+          waspRequest.getContentType(),
+          PROTOCOL_CHARSET
+      );
     }
 
     @Override
-    public byte[] getBody() {
+    protected Map<String, String> getParams() throws AuthFailureError {
+      return waspRequest.getFieldParams();
+    }
+
+    @Override
+    public byte[] getBody() throws AuthFailureError {
+      byte[] body;
       try {
-        return requestBody == null ? null : requestBody.getBytes(PROTOCOL_CHARSET);
+        body = requestBody == null ? null : requestBody.getBytes(PROTOCOL_CHARSET);
       } catch (UnsupportedEncodingException uee) {
         Logger.wtf("Unsupported Encoding while trying to get the bytes of %s using %s"
                 + requestBody
@@ -213,6 +220,10 @@ final class VolleyNetworkStack implements NetworkStack {
         );
         return null;
       }
+      if (body == null) {
+        return super.getBody();
+      }
+      return body;
     }
   }
 

@@ -91,7 +91,7 @@ final class WaspImageHandler implements ImageHandler {
     }
 
     // make a new request
-    imageNetworkHandler.requestImage(waspImage, maxWidth, maxHeight, new CallBack<Container>() {
+    imageNetworkHandler.requestImage(waspImage, maxWidth, maxHeight, new WaspCallback<Container>() {
       @Override
       public void onSuccess(final Container container) {
         Bitmap bitmap = container.bitmap;
@@ -154,16 +154,16 @@ final class WaspImageHandler implements ImageHandler {
    */
   interface ImageCache {
 
-    public Bitmap getBitmap(String url);
+    Bitmap getBitmap(String url);
 
-    public void putBitmap(String url, Bitmap bitmap);
+    void putBitmap(String url, Bitmap bitmap);
 
-    public void clearCache();
+    void clearCache();
   }
 
   interface ImageNetworkHandler {
 
-    void requestImage(WaspImage waspImage, int maxWidth, int maxHeight, CallBack<Container> callBack);
+    void requestImage(WaspImage waspImage, int maxWidth, int maxHeight, WaspCallback<Container> waspCallback);
 
     void cancelRequest(String tag);
 

@@ -23,21 +23,21 @@ public class WaspBuilderTest extends BaseTest {
     @GET("/repos/{user}/{repo}")
     void fetchRepo(@Path("user") String user,
                    @Path("repo") String repo,
-                   CallBack<Repo> callBack
+                   Callback<Repo> callback
     );
 
     @GET("/users/{user}/repos")
     void fetchRepoBySearch(@Path("user") String user,
                            @Query("page") int pageNumber,
                            @Query("sort") String sort,
-                           CallBack<List<Repo>> callBack
+                           Callback<List<Repo>> callback
     );
 
     @POST("/repos/{user}/{repo}")
     void addName(@Path("user") String user,
                  @Path("repo") String repo,
                  @Body String body,
-                 CallBack<Repo> callBack
+                 Callback<Repo> callback
     );
 
   }
