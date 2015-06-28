@@ -27,7 +27,7 @@ Wasp aims :
 
 ###Add dependency
 ```groovy
-compile 'com.orhanobut:wasp:1.9'
+compile 'com.orhanobut:wasp:1.10'
 ```
 
 ####Create a service interface
@@ -39,7 +39,7 @@ public interface GitHubService {
     void fetchRepo(
            @Path("user") String user,
            @Path("repo") String repo,
-           CallBack<Repo> callBack
+           Callback<Repo> callback
     );
 
     @Mock
@@ -49,11 +49,10 @@ public interface GitHubService {
           @Path("user") String user,
           @Header("auth") String authToken,
           @Body Repo repo,
-          CallBack<Repo> callBack
+          Callback<Repo> callback
     );
 }
 ```
-
 
 ####Initialize the wasp
 
@@ -72,10 +71,10 @@ GitHubService service = new Wasp.Builder(this)
 ####And use it everywhere!
 
 ```java
-service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
+service.fetchRepo("github","wasp", new Callback<List<Repo>>{
     
     @Override
-    public void onSuccess(List<Repo> repos) {
+    public void onSuccess(WaspResponse response, List<Repo> repos) {
         // do something
     }
     
@@ -93,7 +92,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @POST("/repos")
     void addName(
         @Body Repo repo,
-        CallBack<Repo> callBack
+        Callback<Repo> callback
     );
 
     service.addName(new Repo("3423",3),callback);
@@ -105,7 +104,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @POST("/repos")
     void addName(
         @BodyMap Map map,
-        CallBack<Repo> callBack
+        Callback<Repo> callback
     );
 
     Map map = new HashMap<>();
@@ -123,7 +122,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     void fetchRepoBySearch(
           @Query("page") int pageNumber,
           @Query("sort") String sort,
-          CallBack<Repo> callBack
+          Callback<Repo> callback
     );
 
     service.fetchRepoBySearch(2,"asc", callback);
@@ -134,7 +133,38 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @GET("/users/repos")
     void fetchRepoBySearch(
           @QueryMap Map queryParamsMap,
-          CallBack<Repo> callBack
+          Callback<Repo> callback
+    );
+
+    Map<String,String> map = new HashMap<>();
+    map.put("sort","asc");
+    map.put("offset", "100");
+
+    service.fetchRepoBySearch(map, callback);
+```
+
+####Form-url-encoded
+Use @Field annotation to provide key-value pairs
+
+```java
+    @FormUrlEncoded
+    @POST("/users/repos")
+    void fetchRepoBySearch(
+          @Field("page") int pageNumber,
+          @Field("sort") String sort,
+          Callback<Repo> callback
+    );
+
+    service.fetchRepoBySearch(2,"asc", callback);
+    //output url is ENDPOINT/users/repos?page=2&sort=asc
+```
+@FieldMap is used to add fields by map
+```java
+    @FormUrlEncoded
+    @POST("/users/repos")
+    void fetchRepoBySearch(
+          @FieldMap Map queryParamsMap,
+          Callback<Repo> callback
     );
 
     Map<String,String> map = new HashMap<>();
@@ -162,7 +192,7 @@ service.fetchRepo("github","wasp", new CallBack<List<Repo>>{
     @Headers("Accept-Language:en-En")
     @GET("/users")
     void fetchUsers(
-          RepoCallBack<List<User> callBack
+          Callback<List<User> callback
     );
 
     // Multiple static headers
@@ -219,7 +249,7 @@ Add auth token to the each request or filtered requests. Return a new AuthToken 
     @Auth
     @GET("/users")
     void fetchUsers(
-          RepoCallBack<List<User> callBack
+          Callback<List<User> callback
     );
 ```
 
@@ -250,7 +280,7 @@ You can use annotation to add specific policy for the specific calls. Annotation
     @RetryPolicy(timeout = 10000)
     @GET("/users")
     void fetchUsers(
-          RepoCallBack<List<User>> callBack
+          Callback<List<User>> callback
     );
 ```
 
@@ -272,7 +302,7 @@ You can add different end point url for some network calls, it will override the
     @EndPoint("http://www.google.com")
     @GET("/users")
     void fetchUsers(
-          RepoCallBack<List<User>> callBack
+          Callback<List<User>> callback
     );
 ```
 
@@ -284,7 +314,7 @@ You can mock your network calls easily by using mock annotation.
     @Mock
     @GET("/user")
     void fetchUser(
-          RepoCallBack<User> callBack
+          Callback<User> callback
     );
 ```
 @Mock(path="users.json") : Uses local file to generate mock. Local files must be under assets folder. This will return a response with the generated content by given path, with the status code 200
@@ -292,7 +322,7 @@ You can mock your network calls easily by using mock annotation.
     @Mock(path="user.json")
     @GET("/user")
     void fetchUser(
-          RepoCallBack<User> callBack
+          Callback<User> callback
     );
 ```
 @Mock(statusCode=404) : Returns a fail response with status code 404
@@ -300,7 +330,7 @@ You can mock your network calls easily by using mock annotation.
     @Mock(statusCode=404)
     @GET("/user")
     void fetchUser(
-          RepoCallBack<User> callBack
+          Callback<User> callback
     );
 ```
 @Mock(statusCode=201) : Returns a success with the status code 201 and auto generated response
@@ -308,7 +338,7 @@ You can mock your network calls easily by using mock annotation.
     @Mock(statusCode=201)
     @GET("/user")
     void fetchUser(
-          RepoCallBack<User> callBack
+         Callback<User> callback
     );
 ```
 
@@ -351,9 +381,20 @@ Certificate Pinning: Create a BKS file of your server certificate and put it und
 ```java
   GitHubService service = new Wasp.Builder(this)    
         .setEndpoint("https://api.github.com")   
-        .trustCertificates(R.raw.YOUR_TRUST_STORE, "YOUR_PASSWORD") //Trust only to the given certificate    
+        .trustCertificates(R.raw.YOUR_TRUST_STORE, "YOUR_PASSWORD") //Trust only to the given certificates
         .build()                        
         .create(MyService.class);
+```
+
+#### Image handling
+With wasp, you can also download and display the images. Wasp provides a good solution for flickering as well.
+```java
+    Wasp.Image
+        .from("url")
+        .setDefault(R.id.image)
+        .setError(R.id.image)
+        .to(imageView)
+        .load();
 ```
 
 

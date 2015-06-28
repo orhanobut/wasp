@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.orhanobut.wasp.Callback;
+import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspError;
 import com.orhanobut.wasp.WaspResponse;
 
@@ -45,7 +46,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
     listView.setAdapter(adapter);
     listView.setOnItemClickListener(this);
-
   }
 
   @Override
