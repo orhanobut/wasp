@@ -2,6 +2,7 @@ package com.orhanobut.wasp;
 
 import android.content.Context;
 
+import com.android.volley.Request;
 import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.RequestInterceptor;
 
@@ -99,6 +100,11 @@ final class NetworkHandler implements InvocationHandler {
         waspRequest.log();
 
         CallBack<WaspResponse> responseCallBack = new CallBack<WaspResponse>() {
+            @Override
+            public void onStart(Request<WaspResponse> request) {
+
+            }
+
             @Override
             public void onSuccess(WaspResponse response) {
                 response.log();
