@@ -202,7 +202,7 @@ Use @Field annotation to provide key-value pairs
     })
 ```
 
-##### Request cancel
+#### Request cancel
 Use WaspRequest as return type and take the advantage of features such as cancel.
 ```java
 
@@ -218,7 +218,7 @@ Use WaspRequest as return type and take the advantage of features such as cancel
     request.cancel();
 ```
 
-for multiple request, use the request manager to cancel all request at once
+for multiple requests, use the request manager to cancel all request at once
 ```java
 private final RequestManager requestManager = new SimpleRequestManager();
 
