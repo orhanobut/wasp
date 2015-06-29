@@ -1,6 +1,7 @@
 package com.orhanobut.wasp;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import com.orhanobut.wasp.utils.MockFactory;
@@ -33,9 +34,9 @@ class MockNetworkStack implements NetworkStack {
 
   @Override
   @SuppressWarnings("unchecked")
-  public <T> void invokeRequest(RequestCreator waspRequest, InternalCallback<T> waspCallback) {
+  public <T> void invokeRequest(RequestCreator waspRequest, final InternalCallback<T> waspCallback) {
     MockHolder mock = waspRequest.getMock();
-    int statusCode = mock.getStatusCode();
+    final int statusCode = mock.getStatusCode();
 
     MethodInfo methodInfo = waspRequest.getMethodInfo();
     Type responseType = methodInfo.getResponseObjectType();
@@ -57,21 +58,28 @@ class MockNetworkStack implements NetworkStack {
       }
     }
 
-    Response waspResponse = new Response.Builder()
+    final Response waspResponse = new Response.Builder()
         .setUrl(waspRequest.getUrl())
         .setStatusCode(statusCode)
         .setHeaders(Collections.<String, String>emptyMap())
         .setBody(responseString)
         .setResponseObject(responseObject)
         .setLength(responseString.length())
-        .setNetworkTime(0)
+        .setNetworkTime(1000)
         .build();
 
-    if (statusCode < 200 || statusCode > 299) {
-      waspCallback.onError(new WaspError(waspResponse, "Mock error message!"));
-      return;
-    }
+    //delay the response 1 second
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (statusCode < 200 || statusCode > 299) {
+          waspCallback.onError(new WaspError(waspResponse, "Mock error message!"));
+          return;
+        }
 
-    waspCallback.onSuccess((T) waspResponse);
+        waspCallback.onSuccess((T) waspResponse);
+      }
+    }, 1000);
+
   }
 }
