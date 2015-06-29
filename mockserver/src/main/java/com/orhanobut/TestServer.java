@@ -1,10 +1,8 @@
 package com.orhanobut;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.ServerRunner;
@@ -21,6 +19,11 @@ public class TestServer extends NanoHTTPD implements HttpServer {
 
   @Override
   public Response serve(IHTTPSession session) {
+    try {
+      Thread.sleep(4000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     Method method = session.getMethod();
 
     switch (method) {
@@ -63,26 +66,26 @@ public class TestServer extends NanoHTTPD implements HttpServer {
 
   @Override
   public Response put(IHTTPSession session) {
-    return new Response(Response.Status.ACCEPTED, "application/json", session.getInputStream());
+    return new Response(Response.Status.ACCEPTED, "application/json", DEFAULT_RESPONSE);
   }
 
   @Override
   public Response patch(IHTTPSession session) {
-    return new Response(Response.Status.ACCEPTED, "application/json", session.getInputStream());
+    return new Response(Response.Status.ACCEPTED, "application/json", DEFAULT_RESPONSE);
   }
 
   @Override
   public Response head(IHTTPSession session) {
-    return new Response(Response.Status.ACCEPTED, "application/json", session.getInputStream());
+    return new Response(Response.Status.ACCEPTED, "application/json", DEFAULT_RESPONSE);
   }
 
   @Override
   public Response delete(IHTTPSession session) {
-    return new Response(Response.Status.ACCEPTED, "application/json", session.getInputStream());
+    return new Response(Response.Status.ACCEPTED, "application/json", DEFAULT_RESPONSE);
   }
 
   @Override
   public Response options(IHTTPSession session) {
-    return new Response(Response.Status.ACCEPTED, "application/json", session.getInputStream());
+    return new Response(Response.Status.ACCEPTED, "application/json", DEFAULT_RESPONSE);
   }
 }

@@ -1,6 +1,7 @@
 package com.orhanobut.waspsample;
 
 import com.orhanobut.wasp.Callback;
+import com.orhanobut.wasp.WaspRequest;
 import com.orhanobut.wasp.http.Body;
 import com.orhanobut.wasp.http.DELETE;
 import com.orhanobut.wasp.http.Field;
@@ -18,48 +19,48 @@ import com.orhanobut.wasp.http.Path;
 public interface MyService {
 
   @GET("/get")
-  void get(
+  WaspRequest get(
       Callback<User> callback
   );
 
   @POST("/post")
-  void post(
+  WaspRequest post(
       @Body User user,
       Callback<User> callback
   );
 
   @POST("/post/{id}")
-  void postPath(
+  WaspRequest postPath(
       @Path("id") String id,
       @Body User user,
       Callback<User> callback
   );
 
   @PUT("/put")
-  void put(
+  WaspRequest put(
       @Body User user,
       Callback<User> callback
   );
 
   @PATCH("/patch")
-  void patch(
+  WaspRequest patch(
       @Body User user,
       Callback<User> callback
   );
 
   @DELETE("/delete")
-  void delete(
+  WaspRequest delete(
       Callback<User> callback
   );
 
   @HEAD("/head")
-  void head(
+  WaspRequest head(
       Callback<User> callback
   );
 
   @FormUrlEncoded
   @POST("/post")
-  void postFormUrlEncoded(
+  WaspRequest postFormUrlEncoded(
       @Field("param1") String param1,
       @Field("param2") String param2,
       Callback<User> callback

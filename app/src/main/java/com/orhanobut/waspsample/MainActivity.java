@@ -10,13 +10,19 @@ import android.widget.TextView;
 
 import com.orhanobut.wasp.Callback;
 import com.orhanobut.wasp.Response;
+import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspError;
+import com.orhanobut.wasp.WaspRequest;
+import com.orhanobut.wasp.utils.RequestManager;
+import com.orhanobut.wasp.utils.SimpleRequestManager;
 
 
 @SuppressWarnings("unused")
 public class MainActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
+
+  private final RequestManager requestManager = new SimpleRequestManager();
 
   private TextView textView;
   private ImageView imageView;
@@ -109,6 +115,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
     //TODO
   }
 
+  @Override
+  protected void onStop() {
+    requestManager.cancelAll();
+    super.onStop();
+  }
+
   private void formUrlEncoded() {
     getService().postFormUrlEncoded("param1", "param2", callback);
   }
@@ -126,19 +138,23 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
   }
 
   private void put() {
-    getService().put(new User("Wasp"), callback);
+    WaspRequest request = getService().put(new User("Wasp"), callback);
+    requestManager.addRequest(request);
   }
 
   private void post() {
-    getService().post(new User("Wasp"), callback);
+    WaspRequest request = getService().post(new User("Wasp"), callback);
+    requestManager.addRequest(request);
   }
 
   private void postPath() {
-    getService().postPath("2423 234 ", new User("Wasp"), callback);
+    WaspRequest request = getService().postPath("2423 234 ", new User("Wasp"), callback);
+    requestManager.addRequest(request);
   }
 
   private void get() {
-    getService().get(callback);
+    WaspRequest request = getService().get(callback);
+    requestManager.addRequest(request);
   }
 
   private void startListViewActivity() {
