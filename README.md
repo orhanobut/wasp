@@ -27,7 +27,7 @@ Wasp aims :
 
 ###Add dependency
 ```groovy
-compile 'com.orhanobut:wasp:1.10'
+compile 'com.orhanobut:wasp:1.12'
 ```
 
 ####Create a service interface
@@ -36,7 +36,7 @@ compile 'com.orhanobut:wasp:1.10'
 public interface GitHubService {
 
     @GET("/repos/{user}/{repo}")
-    void fetchRepo(
+    void getRepo(
            @Path("user") String user,
            @Path("repo") String repo,
            Callback<Repo> callback
@@ -200,6 +200,42 @@ Use @Field annotation to provide key-value pairs
         "Accept-Language:en-En",
         "Content-type:application/json"
     })
+```
+
+##### Request cancel
+Use WaspRequest as return type and take the advantage of features such as cancel.
+```java
+
+    @GET("/repos/{user}/{repo}")
+    WaspRequest getRepo(
+           @Path("user") String user,
+           @Path("repo") String repo,
+           Callback<Repo> callback
+    );
+
+
+    WaspRequest request = service.getRepo();
+    request.cancel();
+```
+
+for multiple request, use the request manager to cancel all request at once
+```java
+private final RequestManager requestManager = new SimpleRequestManager();
+
+public void onRefreshData(){
+   WaspRequest request = service.getData();
+   requestManager.addRequest(request);
+}
+
+public void onAnotherNetworkCall() {
+   WaspRequest request = service.getFoo();
+   requestManager.addRequest(request);
+}
+
+public void onDestroy(){
+   requestManager.cancelAll();
+}
+
 ```
 
 ##### Request Interceptor
