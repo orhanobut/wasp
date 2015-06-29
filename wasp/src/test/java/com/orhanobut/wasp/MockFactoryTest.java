@@ -2,20 +2,26 @@ package com.orhanobut.wasp;
 
 import com.orhanobut.wasp.utils.MockFactory;
 
-import java.lang.reflect.Field;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Oguz Babaoglu
  */
-public class MockFactoryTest extends BaseTest {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, sdk = 21)
+public class MockFactoryTest {
 
+  @Test
   public void testInstantiateObject() {
     class Safe {
       Safe() {
@@ -35,6 +41,7 @@ public class MockFactoryTest extends BaseTest {
     assertThat(unsafe).isNotNull();
   }
 
+  @Test
   public void testPrimitiveFields() {
     class Primitive {
       int anInt;
@@ -52,6 +59,7 @@ public class MockFactoryTest extends BaseTest {
     assertThat(mock.aBoolean).isTrue();
   }
 
+  @Test
   public void testObjectFields() {
     class First {
       String aString;
@@ -79,6 +87,7 @@ public class MockFactoryTest extends BaseTest {
     assertThat(first.second.third.anInt).isEqualTo(10);
   }
 
+  @Test
   public void testListFields() {
     class Foo {
       List<String> aStringList;
@@ -120,6 +129,7 @@ public class MockFactoryTest extends BaseTest {
     int subInt;
   }
 
+  @Test
   public void testSuperFields() {
 
     SubClass mock = MockFactory.createMockObject(SubClass.class);

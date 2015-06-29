@@ -20,6 +20,9 @@ public class GsonParser implements Parser {
   }
 
   public GsonParser(Gson gson) {
+    if (gson == null) {
+      throw new NullPointerException("Gson object should not be null");
+    }
     this.gson = gson;
   }
 
@@ -28,11 +31,17 @@ public class GsonParser implements Parser {
     if (TextUtils.isEmpty(content)) {
       return null;
     }
+    if (type == null) {
+      throw new NullPointerException("Type should not be null");
+    }
     return gson.fromJson(content, type);
   }
 
   @Override
   public String toBody(Object body) {
+    if (body == null) {
+      return null;
+    }
     return gson.toJson(body);
   }
 

@@ -123,7 +123,7 @@ public class Wasp {
 
     public Builder(Context context) {
       if (context == null) {
-        throw new NullPointerException("Context may not be null");
+        throw new NullPointerException("Context should not be null");
       }
       this.context = context.getApplicationContext();
     }

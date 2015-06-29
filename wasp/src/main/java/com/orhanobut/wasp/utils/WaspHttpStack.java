@@ -17,7 +17,7 @@ public interface WaspHttpStack<T extends HttpStack> {
    *
    * @return instance of HttpStack
    */
-  public T getHttpStack();
+  T getHttpStack();
 
   /**
    * Set hostnameVerifier of the http client used by HttpStack
@@ -25,7 +25,7 @@ public interface WaspHttpStack<T extends HttpStack> {
    *
    * @param hostnameVerifier
    */
-  public void setHostnameVerifier(HostnameVerifier hostnameVerifier);
+  void setHostnameVerifier(HostnameVerifier hostnameVerifier);
 
   /**
    * Set sslSocketFactory of the http client used by HttpStack
@@ -34,7 +34,7 @@ public interface WaspHttpStack<T extends HttpStack> {
    *
    * @param sslSocketFactory
    */
-  public void setSslSocketFactory(SSLSocketFactory sslSocketFactory);
+  void setSslSocketFactory(SSLSocketFactory sslSocketFactory);
 
   /**
    * Set cookieHandler of the http client used by HttpStack
@@ -42,6 +42,6 @@ public interface WaspHttpStack<T extends HttpStack> {
    *
    * @param cookieHandler
    */
-  public void setCookieHandler(CookieHandler cookieHandler);
+  void setCookieHandler(CookieHandler cookieHandler);
 
 }

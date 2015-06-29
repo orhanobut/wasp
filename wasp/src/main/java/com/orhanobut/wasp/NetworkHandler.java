@@ -13,7 +13,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * @author Orhan Obut
@@ -83,15 +85,68 @@ final class NetworkHandler implements InvocationHandler {
 
   @Override
   @SuppressWarnings("unchecked")
-  public Object invoke(Object proxy, final Method method, Object[] args) throws Throwable {
-    if (args.length == 0) {
-      throw new IllegalArgumentException("Callback must be sent as param");
+  public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
+    final MethodInfo methodInfo = methodInfoCache.get(method.getName());
+
+    switch (methodInfo.getReturnType()) {
+      case VOID:
+        return invokeCallbackRequest(proxy, method, args);
+      case REQUEST:
+        return invokeWaspRequest(proxy, method, args);
+      case OBSERVABLE:
+        return invokeObservable(method, args);
+      case SYNC:
+        return invokeSyncRequest(method, args);
+      default:
+        throw new IllegalStateException(
+            "Return type should be void, WaspRequest, Observable or Object"
+        );
     }
-    Object lastArg = args[args.length - 1];
-    if (!(lastArg instanceof Callback)) {
-      throw new IllegalArgumentException("Last param must be type of CallBack<T>");
+  }
+
+  private Object invokeSyncRequest(final Method method, final Object[] args) throws Exception {
+    final MethodInfo methodInfo = methodInfoCache.get(method.getName());
+    RequestCreator requestCreator = new RequestCreator.Builder(methodInfo, args, endPoint)
+        .setRequestInterceptor(requestInterceptor)
+        .build();
+    requestCreator.log();
+    if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
+      return MockNetworkStack.getDefault(context).invokeRequest(requestCreator);
     }
-    final Callback<?> callback = (Callback<?>) lastArg;
+
+    return networkStack.invokeRequest(requestCreator);
+  }
+
+  private Object invokeObservable(final Method method, final Object[] args) {
+    final MethodInfo methodInfo = methodInfoCache.get(method.getName());
+
+    return Observable.create(new Observable.OnSubscribe<Object>() {
+      @Override
+      public void call(final Subscriber<? super Object> subscriber) {
+        try {
+          RequestCreator requestCreator = new RequestCreator.Builder(methodInfo, args, endPoint)
+              .setRequestInterceptor(requestInterceptor)
+              .build();
+          requestCreator.log();
+
+          if (networkMode == NetworkMode.MOCK && methodInfo.isMocked()) {
+            subscriber.onNext(MockNetworkStack.getDefault(context).invokeRequest(requestCreator));
+            return;
+          }
+
+          subscriber.onNext(networkStack.invokeRequest(requestCreator));
+        } catch (Exception e) {
+          subscriber.onError(e);
+        }
+      }
+    });
+  }
+
+  private Object invokeWaspRequest(Object proxy, final Method method, final Object[] args) {
+    return invokeCallbackRequest(proxy, method, args);
+  }
+
+  private Object invokeCallbackRequest(Object proxy, final Method method, final Object[] args) {
     final MethodInfo methodInfo = methodInfoCache.get(method.getName());
 
     RequestCreator requestCreator = new RequestCreator.Builder(methodInfo, args, endPoint)
@@ -101,6 +156,10 @@ final class NetworkHandler implements InvocationHandler {
 
     final WaspRequest waspRequest = new InternalWaspRequest();
 
+
+    Object lastArg = args[args.length - 1];
+    final Callback<?> callback = (Callback<?>) lastArg;
+
     InternalCallback<Response> responseWaspCallback = new InternalCallback<Response>() {
       @Override
       public void onSuccess(Response response) {
@@ -109,6 +168,7 @@ final class NetworkHandler implements InvocationHandler {
           Logger.i("Response not delivered because of cancelled request");
           return;
         }
+
         new ResponseWrapper(callback, response, response.getResponseObject()).submitResponse();
       }
 

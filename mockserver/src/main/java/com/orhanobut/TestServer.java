@@ -10,7 +10,7 @@ import fi.iki.elonen.ServerRunner;
 public class TestServer extends NanoHTTPD implements HttpServer {
 
   public TestServer() {
-    super(9090);
+    super(9095);
   }
 
   public static void main(String[] args) {
