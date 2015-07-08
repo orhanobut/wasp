@@ -27,7 +27,7 @@ Wasp aims :
 
 ###Add dependency
 ```groovy
-compile 'com.orhanobut:wasp:1.12'
+compile 'com.orhanobut:wasp:1.11'
 ```
 
 ####Create a service interface
