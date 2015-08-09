@@ -20,6 +20,10 @@ Wasp provides:
 - **Cookie management**
 - **Certificate management**
 - Painless Image loading
+- RxJava support
+- Request cancelation feature
+- Sync request call
+- Async request call
 
 Wasp aims :
 - There are many open issues to contribute. Get this chance to contribute and improve your knowledge!
