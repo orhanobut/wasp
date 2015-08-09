@@ -1,9 +1,9 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Wasp-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1412)    [![API](https://img.shields.io/badge/API-10%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=10) [![Join the chat at https://gitter.im/orhanobut/wasp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orhanobut/wasp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![](https://img.shields.io/badge/AndroidWeekly-%23143-blue.svg)](http://androidweekly.net/issues/issue-143)
 
 #Wasp
-Wasp is a compact and easy to use, 'all-in-one' network solution. Wasp uses the interface approach of retrofit with **Volley** network stack and adds functionalities such as **MOCK**, **Certificate management**, **Cookie management** and more. Basically it provides a universal solution for all your networking needs.
+Wasp is a compact and easy to use, 'all-in-one' network solution. 
 
-<img src='https://github.com/orhanobut/wasp/blob/master/images/logo_wasp.png' width='128' height='128'/>
+<img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
 
 Wasp internally uses:
 - Volley for the network stack
@@ -15,8 +15,8 @@ Wasp provides:
 - **MOCK** response via text file or **auto generated** from model class!
 - Request Interceptors to add attributes (query params, headers, retry policy) to each call
 - **Call based headers**
-- Call based endpoint url
-- Call based retry policy
+- Api based end point
+- Api based retry policy
 - **Cookie management**
 - **Certificate management**
 - Painless Image loading
@@ -85,14 +85,6 @@ service.fetchRepo("github","wasp", new Callback<List<Repo>>{
 });
 ```
 #### Check wiki for more details
-
-<img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
-
-#### You might also like
-- [Hawk](https://github.com/orhanobut/hawk) Secure simple key-value storage
-- [Bee](https://github.com/orhanobut/bee) QA/Debug tool
-- [DialogPlus](https://github.com/orhanobut/dialogplus) Easy, simple dialog solution
-- [SimpleListView](https://github.com/orhanobut/simplelistview) Simple basic listview implementation with linearlayout
 
 ###License
 <pre>
