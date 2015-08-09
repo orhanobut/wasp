@@ -109,7 +109,6 @@ final class RequestCreator {
     return contentType;
   }
 
-
   static class Builder {
 
     private static final String KEY_AUTH = "Authorization";

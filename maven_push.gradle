@@ -1,5 +1,6 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
+
 def sonatypeRepositoryUrl
 if (isReleaseBuild()) {
   println 'RELEASE BUILD'
@@ -24,6 +25,7 @@ afterEvaluate { project ->
     } catch (FileNotFoundException e) {
       println 'Failed to find file credential.properties. Maven deploy disabled'
     }
+
     repositories {
       mavenDeployer {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
@@ -52,6 +54,32 @@ afterEvaluate { project ->
             developer {
               id POM_DEVELOPER_ID
               name POM_DEVELOPER_NAME
+            }
+          }
+        }
+
+        pom.withXml {
+          asNode().dependencies.dependency.findAll { xmlDep ->
+            // mark optional dependencies
+            if (project.configurations.optional.allDependencies.findAll { dep ->
+              xmlDep.groupId.text() == dep.group && xmlDep.artifactId.text() == dep.name
+            }) {
+              def xmlOptional = xmlDep.optional[0];
+              if (!xmlOptional) {
+                xmlOptional = xmlDep.appendNode('optional')
+              }
+              xmlOptional.value = 'true';
+            }
+
+            // fix maven-publish issue when all maven dependencies are placed into runtime scope
+            if (project.configurations.compile.allDependencies.findAll { dep ->
+              xmlDep.groupId.text() == dep.group && xmlDep.artifactId.text() == dep.name
+            }) {
+              def xmlScope = xmlDep.scope[0];
+              if (!xmlScope) {
+                xmlScope = xmlDep.appendNode('scope')
+              }
+              xmlScope.value = 'compile';
             }
           }
         }

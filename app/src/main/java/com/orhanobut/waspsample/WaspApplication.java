@@ -6,6 +6,7 @@ import android.util.Log;
 import com.orhanobut.wasp.Wasp;
 import com.orhanobut.wasp.WaspOkHttpStack;
 import com.orhanobut.wasp.utils.LogLevel;
+import com.orhanobut.wasp.utils.NetworkMode;
 import com.orhanobut.wasp.utils.OkHttpLogInterceptor;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -45,9 +46,10 @@ public class WaspApplication extends Application {
     okHttpClient.networkInterceptors().add(new OkHttpLogInterceptor());
 
     service = new Wasp.Builder(this)
-        .setEndpoint("http://10.0.3.2:9090")
+        .setEndpoint("http://10.0.3.2:9095")
         .setLogLevel(LogLevel.FULL)
         .setWaspHttpStack(new WaspOkHttpStack(okHttpClient))
+        .setNetworkMode(NetworkMode.MOCK)
         .build()
         .create(MyService.class);
   }

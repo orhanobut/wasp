@@ -9,7 +9,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Orhan Obut
@@ -33,7 +36,6 @@ final class VolleyNetworkStack implements NetworkStack {
   private final RequestQueue requestQueue;
 
   private VolleyNetworkStack(Context context, WaspHttpStack stack) {
-    //    requestQueue = Volley.newRequestQueue(context);
     requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
   }
 
@@ -45,11 +47,28 @@ final class VolleyNetworkStack implements NetworkStack {
     return requestQueue;
   }
 
+  private <T> T addToQueueSync(RequestCreator requestCreator) throws Exception {
+    RequestFuture<T> future = RequestFuture.newFuture();
+    Request<T> request = new VolleyRequest<>(
+        getMethod(requestCreator.getMethod()),
+        requestCreator.getUrl(),
+        requestCreator,
+        null
+    );
+    future.setRequest(request);
+    addToQueue(request);
+    int timeout = 30;
+    if (requestCreator.getRetryPolicy() != null) {
+      timeout = requestCreator.getRetryPolicy().getCurrentTimeout();
+    }
+    return future.get(timeout, TimeUnit.SECONDS);
+  }
+
   private <T> void addToQueue(final RequestCreator waspRequest, InternalCallback<T> waspCallback) {
     String url = waspRequest.getUrl();
     int method = getMethod(waspRequest.getMethod());
     VolleyListener<T> listener = new VolleyListener<>(waspCallback, url);
-    Request<T> request = new VolleyRequest<T>(method, url, waspRequest, listener);
+    Request<T> request = new VolleyRequest<>(method, url, waspRequest, listener);
 
     WaspRetryPolicy policy = waspRequest.getRetryPolicy();
     if (policy != null) {
@@ -85,6 +104,11 @@ final class VolleyNetworkStack implements NetworkStack {
   @Override
   public <T> void invokeRequest(RequestCreator waspRequest, InternalCallback<T> waspCallback) {
     addToQueue(waspRequest, waspCallback);
+  }
+
+  @Override
+  public <T> T invokeRequest(RequestCreator requestCreator) throws Exception {
+    return addToQueueSync(requestCreator);
   }
 
   private static class VolleyListener<T> implements
@@ -185,7 +209,8 @@ final class VolleyNetworkStack implements NetworkStack {
             .setNetworkTime(response.networkTimeMs)
             .build();
 
-        return com.android.volley.Response.success(waspResponse, HttpHeaderParser.parseCacheHeaders(response));
+        return com.android.volley.Response.success(waspResponse,
+            HttpHeaderParser.parseCacheHeaders(response));
       } catch (UnsupportedEncodingException e) {
         return com.android.volley.Response.error(new ParseError(e));
       } catch (IOException e) {

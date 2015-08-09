@@ -82,4 +82,48 @@ class MockNetworkStack implements NetworkStack {
     }, 1000);
 
   }
+
+  @Override
+  public <T> T invokeRequest(RequestCreator requestCreator) {
+    MockHolder mock = requestCreator.getMock();
+    final int statusCode = mock.getStatusCode();
+
+    MethodInfo methodInfo = requestCreator.getMethodInfo();
+    Type responseType = methodInfo.getResponseObjectType();
+
+    String responseString;
+    Object responseObject;
+
+    if (TextUtils.isEmpty(mock.getPath())) {
+      //Create mock object and return
+      responseObject = MockFactory.createMockObject(responseType);
+      responseString = Wasp.getParser().toBody(responseObject);
+    } else {
+      responseString = MockFactory.readMockResponse(context, mock.getPath());
+      try {
+        responseObject = Wasp.getParser().fromBody(responseString, responseType);
+      } catch (IOException e) {
+        throw new RuntimeException("Mock file \"" + mock.getPath()
+            + "\" is in an invalid format", e);
+      }
+    }
+
+    final Response waspResponse = new Response.Builder()
+        .setUrl(requestCreator.getUrl())
+        .setStatusCode(statusCode)
+        .setHeaders(Collections.<String, String>emptyMap())
+        .setBody(responseString)
+        .setResponseObject(responseObject)
+        .setLength(responseString.length())
+        .setNetworkTime(1000)
+        .build();
+
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      Logger.e(e.getMessage());
+    }
+
+    return (T) waspResponse.getResponseObject();
+  }
 }

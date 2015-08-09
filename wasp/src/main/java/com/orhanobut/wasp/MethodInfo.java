@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
+
 /**
  * @author Orhan Obut
  */
@@ -51,6 +53,11 @@ final class MethodInfo {
   private Map<String, String> headers;
   private MockHolder mock;
   private boolean isAuthTokenEnabled;
+  private ReturnType returnType;
+
+  enum ReturnType {
+    REQUEST, OBSERVABLE, SYNC, VOID
+  }
 
   private MethodInfo(Context context, Method method) {
     this.context = context;
@@ -60,7 +67,7 @@ final class MethodInfo {
 
   synchronized void init() {
     parseMethodAnnotations();
-    parseResponseObjectType();
+    parseReturnType();
     parseParamAnnotations();
   }
 
@@ -161,7 +168,7 @@ final class MethodInfo {
     }
   }
 
-  private void parseResponseObjectType() {
+  private void parseCallbackResponseObjectType() {
     Type[] parameterTypes = method.getGenericParameterTypes();
     if (parameterTypes.length == 0) {
       throw new IllegalArgumentException("Callback should be added as param");
@@ -185,6 +192,13 @@ final class MethodInfo {
     if (lastArgType instanceof ParameterizedType) {
       responseObjectType = getParameterUpperBound((ParameterizedType) lastArgType);
     }
+  }
+
+  private void parseObservableResponseObjectType() {
+    Type type = method.getGenericReturnType();
+    Class rawType = RetroTypes.getRawType(type);
+    Type returnType = RetroTypes.getSupertype(type, rawType, Observable.class);
+    responseObjectType = getParameterUpperBound((ParameterizedType) returnType);
   }
 
   private void parseParamAnnotations() {
@@ -241,6 +255,30 @@ final class MethodInfo {
       }
       methodAnnotations[i] = annotationResult;
     }
+  }
+
+  private void parseReturnType() {
+    Type type = method.getGenericReturnType();
+    Class clazz = RetroTypes.getRawType(type);
+
+    // async operation with callback
+    if (type == void.class) {
+      returnType = ReturnType.VOID;
+      parseCallbackResponseObjectType();
+      return;
+    }
+    if (Utils.hasRxJavaOnClasspath() && Observable.class.isAssignableFrom(clazz)) {
+      returnType = ReturnType.OBSERVABLE;
+      parseObservableResponseObjectType();
+      return;
+    }
+    if (WaspRequest.class.isAssignableFrom(clazz)) {
+      returnType = ReturnType.REQUEST;
+      parseCallbackResponseObjectType();
+      return;
+    }
+    returnType = ReturnType.SYNC;
+    responseObjectType = type;
   }
 
   private static Type getParameterUpperBound(ParameterizedType type) {
@@ -308,5 +346,9 @@ final class MethodInfo {
 
   public String getContentType() {
     return contentType;
+  }
+
+  public ReturnType getReturnType() {
+    return returnType;
   }
 }

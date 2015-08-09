@@ -8,10 +8,13 @@ import com.orhanobut.wasp.http.Field;
 import com.orhanobut.wasp.http.FormUrlEncoded;
 import com.orhanobut.wasp.http.GET;
 import com.orhanobut.wasp.http.HEAD;
+import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.PATCH;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.http.PUT;
 import com.orhanobut.wasp.http.Path;
+
+import rx.Observable;
 
 /**
  * @author Orhan Obut
@@ -22,6 +25,12 @@ public interface MyService {
   WaspRequest get(
       Callback<User> callback
   );
+
+  @GET("/get")
+  Observable<User> getObservable();
+
+  @GET("/get")
+  User getSync();
 
   @POST("/post")
   WaspRequest post(

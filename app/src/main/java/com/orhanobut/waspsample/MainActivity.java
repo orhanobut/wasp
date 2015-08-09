@@ -1,6 +1,7 @@
 package com.orhanobut.waspsample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,6 +16,10 @@ import com.orhanobut.wasp.WaspError;
 import com.orhanobut.wasp.WaspRequest;
 import com.orhanobut.wasp.utils.RequestManager;
 import com.orhanobut.wasp.utils.SimpleRequestManager;
+
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 @SuppressWarnings("unused")
@@ -36,6 +41,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
     String[] list = {
         "GET",
+        "GET_OBSERVABLE",
+        "GET_SYNC",
         "POST",
         "POST_PATH",
         "PUT",
@@ -62,6 +69,12 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
     switch (key) {
       case "GET":
         get();
+        break;
+      case "GET_OBSERVABLE":
+        getObservable();
+        break;
+      case "GET_SYNC":
+        getSync();
         break;
       case "POST":
         post();
@@ -155,6 +168,32 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
   private void get() {
     WaspRequest request = getService().get(callback);
     requestManager.addRequest(request);
+  }
+
+  private void getObservable() {
+    getService().getObservable()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<User>() {
+          @Override
+          public void onCompleted() {
+            Log.d("tag", "completed");
+          }
+
+          @Override
+          public void onError(Throwable e) {
+            Log.d("tag", e.getMessage());
+          }
+
+          @Override
+          public void onNext(User user) {
+            Log.d("tag", user.toString());
+          }
+        });
+  }
+
+  private void getSync() {
+    User user = getService().getSync();
   }
 
   private void startListViewActivity() {
