@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
+import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
@@ -35,8 +36,7 @@ final class VolleyNetworkStack implements NetworkStack {
   private final RequestQueue requestQueue;
 
   private VolleyNetworkStack(Context context, WaspHttpStack stack) {
-    requestQueue = Volley.newRequestQueue(context);
-    //    requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
+    requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
   }
 
   static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
@@ -57,7 +57,11 @@ final class VolleyNetworkStack implements NetworkStack {
     );
     future.setRequest(request);
     addToQueue(request);
-    return future.get(30, TimeUnit.SECONDS);
+    int timeout = 30;
+    if (requestCreator.getRetryPolicy() != null) {
+      timeout = requestCreator.getRetryPolicy().getCurrentTimeout();
+    }
+    return future.get(timeout, TimeUnit.SECONDS);
   }
 
   private <T> void addToQueue(final RequestCreator waspRequest, InternalCallback<T> waspCallback) {
