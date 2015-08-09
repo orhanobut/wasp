@@ -1,9 +1,11 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Wasp-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1412)    [![API](https://img.shields.io/badge/API-10%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=10) [![Join the chat at https://gitter.im/orhanobut/wasp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orhanobut/wasp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![](https://img.shields.io/badge/AndroidWeekly-%23143-blue.svg)](http://androidweekly.net/issues/issue-143)
 
-#Wasp
-Wasp is a compact and easy to use, 'all-in-one' network solution. 
+A compact and easy to use, 'all-in-one' network solution. 
 
 <img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
+
+#### The problem
+When it comes to daily development, you need more than just a library to handle networking, you need to handle mocking calls, using multiple end points, handling certificates andcookies and many other boiler plate code. With wasp, you can easily handle everything.
 
 Wasp internally uses:
 - Volley for the network stack
@@ -14,14 +16,14 @@ Wasp provides:
 - Easy implementation
 - **MOCK** response via text file or **auto generated** from model class!
 - Request Interceptors to add attributes (query params, headers, retry policy) to each call
-- **Call based headers**
-- Api based end point
-- Api based retry policy
+- **Api call based headers**
+- Api call based end point
+- Api call based retry policy
 - **Cookie management**
 - **Certificate management**
 - Painless Image loading
-- RxJava support
-- Request cancelation feature
+- **RxJava support**
+- **Request cancelation**
 - Sync request call
 - Async request call
 
