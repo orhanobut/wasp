@@ -84,6 +84,7 @@ service.fetchRepo("github","wasp", new Callback<List<Repo>>{
     }
 });
 ```
+#### Check wiki for more details
 
 <img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
 
