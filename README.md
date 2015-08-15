@@ -71,12 +71,12 @@ GitHubService service = new Wasp.Builder(this)
 ```
 
 ####And use it everywhere!
-
+Async
 ```java
-service.fetchRepo("github","wasp", new Callback<List<Repo>>{
+service.getRepo(id, new Callback<Repo>{
 
   @Override
-  public void onSuccess(WaspResponse response, List<Repo> repos) {
+  public void onSuccess(WaspResponse response, Repo repo) {
     // do something
   }
   
@@ -85,6 +85,16 @@ service.fetchRepo("github","wasp", new Callback<List<Repo>>{
     // handle error
   }
 });
+```
+
+Rx
+```java
+Observable<Repo> observable = service.createRepo(repo);
+```
+
+Sync
+```java
+User user = service.getUser(id);
 ```
 #### Check wiki for more details
 
