@@ -41,21 +41,18 @@ compile 'com.orhanobut:wasp:1.13'
 ```java
 public interface GitHubService {
 
-    @GET("/repos/{user}/{repo}")
-    void getRepo(
-           @Path("user") String user,
-           @Path("repo") String repo,
-           Callback<Repo> callback
-    );
-
-    @Mock
-    @Headers 
-    @POST("/repos/{user}")
-    Observable<Repo> addName(
-          @Path("user") String user,
-          @Header("auth") String authToken,
-          @Body Repo repo
-    );
+  // Async call
+  @GET("/repos/{id}")
+  void getRepo(@Path("id") String id, Callback<Repo> callback);
+    
+  // Rx
+  @Mock
+  @POST("/repos")
+  Observable<Repo> createRepo(@Body Repo repo);
+  
+  // sync call
+  @GET("/users/{id}")
+  User getUser(@Path("id") String id);
 }
 ```
 
@@ -63,30 +60,30 @@ public interface GitHubService {
 
 ```java
 GitHubService service = new Wasp.Builder(this)
-    .setEndpoint("https://api.github.com")
-    .setRequestInterceptor                     // Optional
-    .trustCertificates                         // Optional
-    .setHttpStack                              // Optional
-    .enableCookies                             // Optional
-    .setNetworkMode(NetworkMode.MOCK)          // Optional(Used for Mock)
-    .build()
-    .create(GitHubService.class);
+  .setEndpoint("https://api.github.com")
+  .setRequestInterceptor                     // Optional
+  .trustCertificates                         // Optional
+  .setHttpStack                              // Optional
+  .enableCookies                             // Optional
+  .setNetworkMode(NetworkMode.MOCK)          // Optional(Used for Mock)
+  .build()
+  .create(GitHubService.class);
 ```
 
 ####And use it everywhere!
 
 ```java
 service.fetchRepo("github","wasp", new Callback<List<Repo>>{
-    
-    @Override
-    public void onSuccess(WaspResponse response, List<Repo> repos) {
-        // do something
-    }
-    
-    @Override
-    public void onError(WaspError error) {
-        // handle error
-    }
+
+  @Override
+  public void onSuccess(WaspResponse response, List<Repo> repos) {
+    // do something
+  }
+  
+  @Override
+  public void onError(WaspError error) {
+    // handle error
+  }
 });
 ```
 #### Check wiki for more details
