@@ -51,11 +51,10 @@ public interface GitHubService {
     @Mock
     @Headers 
     @POST("/repos/{user}")
-    void addName(
+    Observable<Repo> addName(
           @Path("user") String user,
           @Header("auth") String authToken,
-          @Body Repo repo,
-          Callback<Repo> callback
+          @Body Repo repo
     );
 }
 ```
