@@ -57,11 +57,11 @@ final class VolleyNetworkStack implements NetworkStack {
     );
     future.setRequest(request);
     addToQueue(request);
-    int timeout = 30;
+    int timeout = 30000;
     if (requestCreator.getRetryPolicy() != null) {
       timeout = requestCreator.getRetryPolicy().getCurrentTimeout();
     }
-    return future.get(timeout, TimeUnit.SECONDS);
+    return future.get(timeout, TimeUnit.MILLISECONDS);
   }
 
   private <T> void addToQueue(final RequestCreator waspRequest, InternalCallback<T> waspCallback) {
