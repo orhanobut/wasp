@@ -5,7 +5,7 @@ package com.orhanobut.wasp;
  */
 interface NetworkStack {
 
-  <T> void invokeRequest(RequestCreator requestCreator, InternalCallback<T> waspCallback);
+  void invokeRequest(RequestCreator requestCreator, InternalCallback<Response> waspCallback);
 
-  <T> T invokeRequest(RequestCreator requestCreator) throws Exception;
+  Object invokeRequest(RequestCreator requestCreator) throws Exception;
 }

@@ -11,7 +11,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
-import com.orhanobut.wasp.http.RetryPolicy;
 import com.orhanobut.wasp.utils.WaspHttpStack;
 import com.orhanobut.wasp.utils.WaspRetryPolicy;
 
@@ -47,14 +46,16 @@ final class VolleyNetworkStack implements NetworkStack {
     return requestQueue;
   }
 
-  private <T> T addToQueueSync(RequestCreator requestCreator) throws Exception {
-    RequestFuture<T> future = RequestFuture.newFuture();
-    Request<T> request = new VolleyRequest<>(
-        getMethod(requestCreator.getMethod()),
-        requestCreator.getUrl(),
-        requestCreator,
-        null
-    );
+  private Object addToQueueSync(RequestCreator requestCreator) throws Exception {
+    final RequestFuture<Object> future = RequestFuture.newFuture();
+    Request<Response> request = new VolleyRequest(getMethod(requestCreator.getMethod()),
+            requestCreator.getUrl(), requestCreator, future) {
+      @Override
+      protected void deliverResponse(Response response) {
+        super.deliverResponse(response);
+        future.onResponse(response.getResponseObject());
+      }
+    };
     future.setRequest(request);
     addToQueue(request);
     int timeout = 30000;
@@ -64,11 +65,17 @@ final class VolleyNetworkStack implements NetworkStack {
     return future.get(timeout, TimeUnit.MILLISECONDS);
   }
 
-  private <T> void addToQueue(final RequestCreator waspRequest, InternalCallback<T> waspCallback) {
+  private void addToQueue(final RequestCreator waspRequest, InternalCallback<Response> waspCallback) {
     String url = waspRequest.getUrl();
     int method = getMethod(waspRequest.getMethod());
-    VolleyListener<T> listener = new VolleyListener<>(waspCallback, url);
-    Request<T> request = new VolleyRequest<>(method, url, waspRequest, listener);
+    final VolleyListener listener = new VolleyListener(waspCallback, url);
+    Request<Response> request = new VolleyRequest(method, url, waspRequest, listener) {
+      @Override
+      protected void deliverResponse(Response response) {
+        super.deliverResponse(response);
+        listener.onResponse(response);
+      }
+    };
 
     WaspRetryPolicy policy = waspRequest.getRetryPolicy();
     if (policy != null) {
@@ -102,17 +109,17 @@ final class VolleyNetworkStack implements NetworkStack {
   }
 
   @Override
-  public <T> void invokeRequest(RequestCreator waspRequest, InternalCallback<T> waspCallback) {
+  public void invokeRequest(RequestCreator waspRequest, InternalCallback<Response> waspCallback) {
     addToQueue(waspRequest, waspCallback);
   }
 
   @Override
-  public <T> T invokeRequest(RequestCreator requestCreator) throws Exception {
+  public Object invokeRequest(RequestCreator requestCreator) throws Exception {
     return addToQueueSync(requestCreator);
   }
 
-  private static class VolleyListener<T> implements
-      com.android.volley.Response.Listener<T>,
+  private static class VolleyListener implements
+      com.android.volley.Response.Listener<Response>,
       com.android.volley.Response.ErrorListener {
 
     private final InternalCallback waspCallback;
@@ -125,7 +132,7 @@ final class VolleyNetworkStack implements NetworkStack {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onResponse(T response) {
+    public void onResponse(Response response) {
       waspCallback.onSuccess(response);
     }
 
@@ -159,23 +166,22 @@ final class VolleyNetworkStack implements NetworkStack {
     }
   }
 
-  private static class VolleyRequest<T> extends Request<T> {
+  private static class VolleyRequest extends Request<Response> {
 
     /**
      * Charset for request.
      */
     private static final String PROTOCOL_CHARSET = "UTF-8";
 
-    private final VolleyListener<T> listener;
     private final String requestBody;
     private final String url;
     private final Type responseObjectType;
     private final RequestCreator waspRequest;
 
-    public VolleyRequest(int method, String url, RequestCreator request, VolleyListener<T> listener) {
+    public VolleyRequest(int method, String url, RequestCreator request,
+                         final com.android.volley.Response.ErrorListener listener) {
       super(method, url, listener);
       this.url = url;
-      this.listener = listener;
       this.requestBody = request.getBody();
       this.responseObjectType = request.getMethodInfo().getResponseObjectType();
       this.waspRequest = request;
@@ -187,8 +193,8 @@ final class VolleyNetworkStack implements NetworkStack {
     }
 
     @Override
-    protected void deliverResponse(T response) {
-      listener.onResponse(response);
+    protected void deliverResponse(Response response) {
+      response.log();
     }
 
     @Override
