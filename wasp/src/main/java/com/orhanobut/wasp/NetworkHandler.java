@@ -163,7 +163,6 @@ final class NetworkHandler implements InvocationHandler {
     InternalCallback<Response> responseWaspCallback = new InternalCallback<Response>() {
       @Override
       public void onSuccess(Response response) {
-        response.log();
         if (waspRequest.isCancelled()) {
           Logger.i("Response not delivered because of cancelled request");
           return;
