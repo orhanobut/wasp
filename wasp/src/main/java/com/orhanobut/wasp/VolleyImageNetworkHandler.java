@@ -15,9 +15,6 @@ import com.orhanobut.wasp.utils.WaspHttpStack;
 
 import java.io.UnsupportedEncodingException;
 
-/**
- * @author Orhan Obut
- */
 public class VolleyImageNetworkHandler implements InternalImageHandler.ImageNetworkHandler {
 
   private final RequestQueue requestQueue;
@@ -28,7 +25,8 @@ public class VolleyImageNetworkHandler implements InternalImageHandler.ImageNetw
   }
 
   @Override
-  public void requestImage(final ImageCreator waspImageCreator, final int maxWidth, final int maxHeight,
+  public void requestImage(final ImageCreator waspImageCreator, final int maxWidth,
+                           final int maxHeight,
                            final InternalCallback<InternalImageHandler.Container> waspCallback) {
 
     final String url = waspImageCreator.getUrl();

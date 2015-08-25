@@ -11,8 +11,6 @@ import com.orhanobut.wasp.utils.StringUtils;
 /**
  * This class is responsible of the loading image. It automatically handles the canceling and
  * loading images for the recycled view as well.
- *
- * @author Orhan Obut
  */
 final class InternalImageHandler implements ImageHandler {
 
@@ -91,7 +89,9 @@ final class InternalImageHandler implements ImageHandler {
     }
 
     // make a new request
-    imageNetworkHandler.requestImage(imageCreator, maxWidth, maxHeight, new InternalCallback<Container>() {
+    imageNetworkHandler.requestImage(imageCreator, maxWidth, maxHeight,
+        new InternalCallback<Container>() {
+
       @Override
       public void onSuccess(final Container container) {
         Bitmap bitmap = container.bitmap;
@@ -167,7 +167,8 @@ final class InternalImageHandler implements ImageHandler {
 
   interface ImageNetworkHandler {
 
-    void requestImage(ImageCreator waspImageCreator, int maxWidth, int maxHeight, InternalCallback<Container> waspCallback);
+    void requestImage(ImageCreator waspImageCreator, int maxWidth, int maxHeight,
+                      InternalCallback<Container> waspCallback);
 
     void cancelRequest(String tag);
 

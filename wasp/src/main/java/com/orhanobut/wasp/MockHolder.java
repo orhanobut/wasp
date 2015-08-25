@@ -1,8 +1,5 @@
 package com.orhanobut.wasp;
 
-/**
- * @author Emmar Kardeslik
- */
 class MockHolder {
 
   private final int statusCode;

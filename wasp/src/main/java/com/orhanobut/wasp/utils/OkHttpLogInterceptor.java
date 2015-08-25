@@ -14,10 +14,9 @@ import java.io.IOException;
 import okio.Buffer;
 
 /**
- * An {@link com.squareup.okhttp.Interceptor} implementation which logs all info about outgoing request and related response
- * including complete header set, request and response bodies and network time
- *
- * @author Emmar Kardeslik
+ * An {@link com.squareup.okhttp.Interceptor} implementation which logs all info about
+ * outgoing request and related response including complete header set, request
+ * and response bodies and network time
  */
 public class OkHttpLogInterceptor implements Interceptor {
 
@@ -48,8 +47,8 @@ public class OkHttpLogInterceptor implements Interceptor {
     logHeaders(response.headers());
     String responseBody = response.body().string();
     Logger.d(TextUtils.isEmpty(responseBody) ? "Body - no body" : "Body - " + responseBody);
-    Logger.d("<--- END " + "(Size: " + response.body().contentLength() + " bytes - " +
-        "Network time: " + (t2 - t1) / MILLI_AS_NANO + " ms)");
+    Logger.d("<--- END " + "(Size: " + response.body().contentLength() + " bytes - "
+        + "Network time: " + (t2 - t1) / MILLI_AS_NANO + " ms)");
 
     return response;
   }

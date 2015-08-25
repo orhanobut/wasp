@@ -5,8 +5,6 @@ import java.util.Map;
 /**
  * Instead of implementing request interceptor, this class can used for simplicity.
  * Only required methods can be overwrite
- *
- * @author Orhan Obut
  */
 public class SimpleRequestInterceptor implements RequestInterceptor {
 

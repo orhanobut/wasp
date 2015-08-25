@@ -4,11 +4,12 @@ import android.util.Log;
 
 import com.orhanobut.wasp.utils.LogLevel;
 
-/**
- * @author Orhan Obut
- */
 @SuppressWarnings("unused")
 public final class Logger {
+
+  private Logger() {
+    //no instance
+  }
 
   /*Android's max limit for a log entry is ~4076 bytes,
   so 4000 bytes is used as chunk size since default charset is UTF-8*/

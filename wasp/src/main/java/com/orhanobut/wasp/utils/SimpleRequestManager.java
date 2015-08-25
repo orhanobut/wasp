@@ -5,9 +5,6 @@ import com.orhanobut.wasp.WaspRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Orhan Obut
- */
 public class SimpleRequestManager implements RequestManager {
 
   private final List<WaspRequest> list;

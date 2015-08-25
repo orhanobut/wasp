@@ -27,8 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An HttpStack implementation which uses {@link com.squareup.okhttp.OkHttpClient} as http client
- *
- * @author Emmar Kardeslik
  */
 class OkHttpStack implements HttpStack {
 
@@ -101,13 +99,16 @@ class OkHttpStack implements HttpStack {
   }
 
   private static void setConnectionParametersForRequest(
-      com.squareup.okhttp.Request.Builder builder, Request<?> request) throws IOException, AuthFailureError {
+      com.squareup.okhttp.Request.Builder builder, Request<?> request)
+      throws IOException, AuthFailureError {
     switch (request.getMethod()) {
       case Request.Method.DEPRECATED_GET_OR_POST:
         // Ensure backwards compatibility.  Volley assumes a request with a null body is a GET.
         byte[] postBody = request.getPostBody();
         if (postBody != null) {
-          builder.post(RequestBody.create(MediaType.parse(request.getPostBodyContentType()), postBody));
+          builder.post(RequestBody.create(
+              MediaType.parse(request.getPostBodyContentType()), postBody
+          ));
         }
         break;
       case Request.Method.GET:

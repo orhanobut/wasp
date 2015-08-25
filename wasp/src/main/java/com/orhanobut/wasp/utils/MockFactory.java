@@ -18,8 +18,6 @@ import java.util.List;
 
 /**
  * Factory util for creating populated mock response objects.
- *
- * @author Oguz Babaoglu
  */
 public final class MockFactory {
 
@@ -156,7 +154,7 @@ public final class MockFactory {
   private static Object generateValue(Field field) {
     Class<?> rawType = field.getType();
 
-    // TODO: Objects other than Lists might need parametrized types.
+    //TODO Objects other than Lists might need parametrized types.
     if (List.class.isAssignableFrom(rawType)) {
       ParameterizedType genericType = (ParameterizedType) field.getGenericType();
       return createListObject(genericType);
@@ -190,7 +188,7 @@ public final class MockFactory {
     } else if (!rawType.isArray()) {
       return createMockObject(rawType);
     }
-    // TODO: Date and BigInteger classes may be considered.
+    //TODO Date and BigInteger classes may be considered.
 
     // Field type is not supported.
     Logger.w("Unsupported field type : " + rawType.getCanonicalName());

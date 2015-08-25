@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-/**
- * @author Orhan Obut
- */
 public class MyListAdapter extends BaseAdapter {
 
   final String[] list;

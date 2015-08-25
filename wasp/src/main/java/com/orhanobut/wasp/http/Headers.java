@@ -9,8 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Add a static headers to request
- *
- * @author Orhan Obut
  */
 @Documented
 @Target(METHOD)

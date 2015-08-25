@@ -32,8 +32,16 @@ Wasp aims :
 - We want to make something that is useful and also motivates people to contribute
 
 ###Add dependency
+More info https://jitpack.io/#orhanobut/wasp/1.14
 ```groovy
-compile 'com.orhanobut:wasp:1.13'
+	repositories {
+	  // ...
+	  maven { url "https://jitpack.io" }
+	}
+
+	dependencies {
+  	compile 'com.github.orhanobut:wasp:1.14'
+  }
 ```
 
 ####Create a service interface

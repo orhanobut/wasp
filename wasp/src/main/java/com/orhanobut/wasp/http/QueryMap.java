@@ -9,8 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Define the query param map to append to the url
- *
- * @author alessandro.balocco
  */
 @Documented
 @Target(PARAMETER)

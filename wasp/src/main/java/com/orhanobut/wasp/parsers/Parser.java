@@ -3,9 +3,6 @@ package com.orhanobut.wasp.parsers;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-/**
- * @author Orhan Obut
- */
 public interface Parser {
 
   /**

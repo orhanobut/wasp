@@ -19,9 +19,6 @@ import java.net.CookieStore;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
-/**
- * @author Orhan Obut
- */
 public class Wasp {
 
   private static Context context;

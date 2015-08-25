@@ -1,8 +1,5 @@
 package com.orhanobut.wasp.utils;
 
-/**
- * @author Orhan Obut
- */
 public enum LogLevel {
   /**
    * No logs are printed

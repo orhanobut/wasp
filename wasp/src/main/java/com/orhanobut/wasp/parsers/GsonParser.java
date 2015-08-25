@@ -8,9 +8,6 @@ import com.orhanobut.wasp.utils.MimeTypes;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-/**
- * @author Orhan Obut
- */
 public class GsonParser implements Parser {
 
   private final Gson gson;

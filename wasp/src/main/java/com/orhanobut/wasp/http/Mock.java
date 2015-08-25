@@ -9,8 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Enables the mocking for the network regarding to mock type
- *
- * @author Orhan Obut
  */
 @Documented
 @Target(METHOD)

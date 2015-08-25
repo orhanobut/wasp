@@ -16,9 +16,6 @@ import com.orhanobut.wasp.http.Path;
 
 import rx.Observable;
 
-/**
- * @author Orhan Obut
- */
 public interface MyService {
 
   @GET("/get")

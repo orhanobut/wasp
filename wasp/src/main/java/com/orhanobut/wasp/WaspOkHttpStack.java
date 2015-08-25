@@ -11,8 +11,6 @@ import javax.net.ssl.SSLSocketFactory;
 /**
  * Wasp's default {@link com.orhanobut.wasp.utils.WaspHttpStack} implementation which uses
  * {@link com.squareup.okhttp.OkHttpClient} as http client
- *
- * @author Emmar Kardeslik
  */
 public class WaspOkHttpStack implements WaspHttpStack<OkHttpStack> {
 

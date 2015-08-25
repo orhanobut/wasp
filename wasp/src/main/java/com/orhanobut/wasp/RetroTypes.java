@@ -277,7 +277,8 @@ final class RetroTypes {
 
     @Override
     public boolean equals(Object other) {
-      return other instanceof ParameterizedType && RetroTypes.equals(this, (ParameterizedType) other);
+      return other instanceof ParameterizedType
+          && RetroTypes.equals(this, (ParameterizedType) other);
     }
 
     @Override

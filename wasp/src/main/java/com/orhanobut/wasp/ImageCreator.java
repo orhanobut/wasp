@@ -7,9 +7,6 @@ import android.widget.ImageView;
 
 import com.orhanobut.wasp.utils.LogLevel;
 
-/**
- * @author Orhan Obut
- */
 final class ImageCreator {
 
   private final String url;

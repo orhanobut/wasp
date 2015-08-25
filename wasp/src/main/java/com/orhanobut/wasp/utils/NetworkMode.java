@@ -1,8 +1,5 @@
 package com.orhanobut.wasp.utils;
 
-/**
- * @author Emmar Kardeslik
- */
 public enum NetworkMode {
 
   /**

@@ -33,9 +33,6 @@ import java.util.Map;
 
 import rx.Observable;
 
-/**
- * @author Orhan Obut
- */
 final class MethodInfo {
 
   private static final int HEAD_VALUE_LENGTH = 2;
@@ -113,8 +110,8 @@ final class MethodInfo {
 
         String path = mock.path();
         if (!TextUtils.isEmpty(path) && !IOUtils.assetsFileExists(context, path)) {
-          throw new RuntimeException("Could not find given file for \"" +
-              method.getDeclaringClass().getSimpleName() + "." + method.getName() + "\""
+          throw new RuntimeException("Could not find given file for \""
+              + method.getDeclaringClass().getSimpleName() + "." + method.getName() + "\""
           );
         }
         this.mock = new MockHolder(mock.statusCode(), path);
@@ -188,7 +185,10 @@ final class MethodInfo {
       throw new IllegalArgumentException("Last param should be CallBack");
     }
 
-    lastArgType = RetroTypes.getSupertype(lastArgType, RetroTypes.getRawType(lastArgType), Callback.class);
+    lastArgType = RetroTypes.getSupertype(
+        lastArgType, RetroTypes.getRawType(lastArgType),
+        Callback.class
+    );
     if (lastArgType instanceof ParameterizedType) {
       responseObjectType = getParameterUpperBound((ParameterizedType) lastArgType);
     }

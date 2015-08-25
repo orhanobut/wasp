@@ -25,9 +25,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * @author Orhan Obut
- */
 final class RequestCreator {
 
   private final String url;
@@ -295,7 +292,8 @@ final class RequestCreator {
     }
 
     /**
-     * If endpoint is set as annotation, it uses that endpoint for the call, otherwise it uses endpoint
+     * If endpoint is set as annotation, it uses that endpoint for the call,
+     * otherwise it uses endpoint
      *
      * @return full url
      */
@@ -333,7 +331,8 @@ final class RequestCreator {
     private void addHeaderParam(String key, String value) {
       Map<String, String> headers = this.headers;
       if (headers == null) {
-        this.headers = headers = new LinkedHashMap<>();
+        headers = new LinkedHashMap<>();
+        this.headers = headers;
       }
       headers.put(key, value);
     }
@@ -347,7 +346,8 @@ final class RequestCreator {
     private void addFieldParams(String key, String value) {
       Map<String, String> params = this.fieldParams;
       if (params == null) {
-        this.fieldParams = params = new LinkedHashMap<>();
+        params = new LinkedHashMap<>();
+        this.fieldParams = params;
       }
       params.put(key, value);
     }

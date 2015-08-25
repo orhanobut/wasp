@@ -2,9 +2,6 @@ package com.orhanobut.wasp.utils;
 
 import java.util.Map;
 
-/**
- * @author Orhan Obut
- */
 public interface RequestInterceptor {
 
   /**

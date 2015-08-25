@@ -1,7 +1,6 @@
 package com.orhanobut.wasp;
 
 import com.google.gson.Gson;
-import com.orhanobut.wasp.BuildConfig;
 import com.orhanobut.wasp.parsers.GsonParser;
 import com.orhanobut.wasp.parsers.Parser;
 
@@ -16,9 +15,6 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Orhan Obut
- */
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class GsonParserTest extends TestCase {

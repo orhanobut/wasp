@@ -20,9 +20,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author Orhan Obut
- */
 final class VolleyNetworkStack implements NetworkStack {
 
   private static final String METHOD_GET = "GET";
@@ -65,7 +62,8 @@ final class VolleyNetworkStack implements NetworkStack {
     return future.get(timeout, TimeUnit.MILLISECONDS);
   }
 
-  private void addToQueue(final RequestCreator waspRequest, InternalCallback<Response> waspCallback) {
+  private void addToQueue(final RequestCreator waspRequest,
+                          InternalCallback<Response> waspCallback) {
     String url = waspRequest.getUrl();
     int method = getMethod(waspRequest.getMethod());
     final VolleyListener listener = new VolleyListener(waspCallback, url);
