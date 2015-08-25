@@ -7,9 +7,6 @@ import java.net.CookieHandler;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
-/**
- * @author Emmar Kardeslik
- */
 public interface WaspHttpStack<T extends HttpStack> {
 
   /**

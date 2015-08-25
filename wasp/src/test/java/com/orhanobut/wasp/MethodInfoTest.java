@@ -3,10 +3,6 @@ package com.orhanobut.wasp;
 import android.app.Activity;
 import android.content.Context;
 
-import com.orhanobut.wasp.BuildConfig;
-import com.orhanobut.wasp.Callback;
-import com.orhanobut.wasp.Wasp;
-import com.orhanobut.wasp.WaspRequest;
 import com.orhanobut.wasp.http.Mock;
 import com.orhanobut.wasp.http.POST;
 import com.orhanobut.wasp.utils.NetworkMode;
@@ -22,9 +18,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Observer;
 
-/**
- * @author Orhan Obut
- */
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class MethodInfoTest {

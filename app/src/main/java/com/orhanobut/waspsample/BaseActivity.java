@@ -3,9 +3,6 @@ package com.orhanobut.waspsample;
 import android.app.Activity;
 import android.widget.Toast;
 
-/**
- * @author Orhan Obut
- */
 public class BaseActivity extends Activity {
 
     private final MyService service = WaspApplication.getService();

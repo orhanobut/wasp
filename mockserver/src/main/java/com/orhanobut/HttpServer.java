@@ -2,9 +2,6 @@ package com.orhanobut;
 
 import fi.iki.elonen.NanoHTTPD;
 
-/**
- * @author Orhan Obut
- */
 public interface HttpServer {
 
   public NanoHTTPD.Response get(NanoHTTPD.IHTTPSession session);

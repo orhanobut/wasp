@@ -14,9 +14,6 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-/**
- * @author Orhan Obut
- */
 @SuppressWarnings("unused")
 public class WaspApplication extends Application {
 

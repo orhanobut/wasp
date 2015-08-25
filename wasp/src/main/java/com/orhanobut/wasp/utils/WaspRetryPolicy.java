@@ -3,9 +3,6 @@ package com.orhanobut.wasp.utils;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 
-/**
- * @author Emmar Kardeslik
- */
 public class WaspRetryPolicy implements RetryPolicy {
 
   /**

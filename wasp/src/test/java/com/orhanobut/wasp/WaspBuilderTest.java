@@ -6,9 +6,6 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Orhan Obut
- */
 public class WaspBuilderTest extends BaseTestCase {
 
   @Test

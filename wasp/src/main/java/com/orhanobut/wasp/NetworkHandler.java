@@ -17,9 +17,6 @@ import java.util.Map;
 import rx.Observable;
 import rx.Subscriber;
 
-/**
- * @author Orhan Obut
- */
 final class NetworkHandler implements InvocationHandler {
 
   private final Map<String, MethodInfo> methodInfoCache = new LinkedHashMap<>();

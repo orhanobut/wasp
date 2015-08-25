@@ -2,9 +2,6 @@ package com.orhanobut.wasp.utils;
 
 import java.util.LinkedHashMap;
 
-/**
- * @author Orhan Obut
- */
 public class WaspCache<K, V> {
 
   private final LinkedHashMap<K, V> map;

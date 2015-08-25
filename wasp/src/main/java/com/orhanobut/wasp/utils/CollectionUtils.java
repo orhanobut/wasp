@@ -3,9 +3,6 @@ package com.orhanobut.wasp.utils;
 import java.util.Iterator;
 import java.util.Map;
 
-/**
- * @author Orhan Obut
- */
 public class CollectionUtils {
 
   private CollectionUtils() {

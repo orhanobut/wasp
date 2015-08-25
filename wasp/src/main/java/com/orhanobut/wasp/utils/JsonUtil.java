@@ -3,9 +3,6 @@ package com.orhanobut.wasp.utils;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
-/**
- * @author Emmar Kardeslik
- */
 public class JsonUtil {
 
   private JsonUtil() {

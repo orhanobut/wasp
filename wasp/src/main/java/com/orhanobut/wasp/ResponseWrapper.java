@@ -1,8 +1,5 @@
 package com.orhanobut.wasp;
 
-/**
- * @author Orhan Obut
- */
 final class ResponseWrapper<T> {
 
   private final Callback<T> callback;

@@ -18,9 +18,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-/**
- * @author Emmar Kardeslik
- */
 public final class SSLUtils {
 
   private SSLUtils() {
@@ -68,7 +65,9 @@ public final class SSLUtils {
    *
    * @return created specific factory
    */
-  public static SSLSocketFactory getPinnedCertSslSocketFactory(Context context, int keyStoreRawResId, String keyStorePassword) {
+  public static SSLSocketFactory getPinnedCertSslSocketFactory(Context context,
+                                                               int keyStoreRawResId,
+                                                               String keyStorePassword) {
     InputStream in = null;
     try {
       // Get an instance of the Bouncy Castle KeyStore format

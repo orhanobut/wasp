@@ -1,8 +1,5 @@
 package com.orhanobut.wasp;
 
-/**
- * @author Orhan Obut
- */
 public class InternalWaspRequest implements WaspRequest {
 
   private boolean cancelled;

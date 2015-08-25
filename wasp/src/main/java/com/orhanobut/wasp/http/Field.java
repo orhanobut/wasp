@@ -9,8 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Creates a field for form url
- *
- * @author Orhan Obut
  */
 @Documented
 @Target(PARAMETER)

@@ -9,8 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Make a DELETE request to a REST path relative to base URL
- *
- * @author Orhan Obut
  */
 @Documented
 @Target(METHOD)

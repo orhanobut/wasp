@@ -6,9 +6,6 @@ import com.orhanobut.wasp.utils.LogLevel;
 
 import java.lang.reflect.Type;
 
-/**
- * @author Orhan Obut
- */
 @SuppressWarnings("unused")
 public class WaspError extends Throwable {
 
@@ -40,7 +37,8 @@ public class WaspError extends Throwable {
   }
 
   /**
-   * HTTP response body parsed via provided {@code type}. {@code null} if there is no response or no body.
+   * HTTP response body parsed via provided {@code type}. {@code null} if there is no response
+   * or no body.
    *
    * @throws RuntimeException if unable to convert the body to the provided {@code type}.
    */
@@ -82,6 +80,8 @@ public class WaspError extends Throwable {
         Logger.d("<--- ERROR");
         Logger.d("Message - " + "[" + errorMessage + "]");
         response.log();
+        break;
+      default:
         break;
     }
   }

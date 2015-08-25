@@ -4,10 +4,8 @@ import android.graphics.Bitmap;
 
 import com.orhanobut.wasp.utils.WaspCache;
 
-/**
- * @author Orhan Obut
- */
-public class BitmapWaspCache extends WaspCache<String, Bitmap> implements InternalImageHandler.ImageCache {
+public class BitmapWaspCache extends WaspCache<String, Bitmap> implements
+    InternalImageHandler.ImageCache {
 
   @Override
   public Bitmap getBitmap(String url) {

@@ -9,8 +9,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Used to define the body for the request
- *
- * @author Orhan Obut
  */
 @Documented
 @Target(PARAMETER)

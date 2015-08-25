@@ -1,8 +1,5 @@
 package com.orhanobut.wasp.utils;
 
-/**
- * @author Orhan Obut
- */
 public class StringUtils {
 
   private StringUtils() {

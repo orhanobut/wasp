@@ -12,8 +12,6 @@ import java.util.Collections;
 
 /**
  * A NetworkStack implementation for delivering offline mock responses.
- *
- * @author Orhan Obut
  */
 class MockNetworkStack implements NetworkStack {
 
@@ -34,7 +32,8 @@ class MockNetworkStack implements NetworkStack {
 
   @Override
   @SuppressWarnings("unchecked")
-  public void invokeRequest(RequestCreator waspRequest, final InternalCallback<Response> waspCallback) {
+  public void invokeRequest(RequestCreator waspRequest,
+                            final InternalCallback<Response> waspCallback) {
     MockHolder mock = waspRequest.getMock();
     final int statusCode = mock.getStatusCode();
 

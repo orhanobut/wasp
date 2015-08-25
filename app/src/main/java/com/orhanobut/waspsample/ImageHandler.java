@@ -9,9 +9,6 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
 import com.orhanobut.wasp.Wasp;
 
-/**
- * @author Orhan Obut
- */
 public class ImageHandler {
 
   static RequestQueue requestQueue;

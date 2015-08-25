@@ -7,9 +7,6 @@ import com.orhanobut.wasp.utils.LogLevel;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * @author alessandro.balocco
- */
 public final class Response {
 
   private final int statusCode;
@@ -102,7 +99,8 @@ public final class Response {
           }
         }
         Logger.d(TextUtils.isEmpty(body) ? "Body - no body" : "Body - " + getFormattedBody());
-        Logger.d("<--- END " + "(Size: " + length + " bytes - Network time: " + networkTime + " ms)");
+        Logger.d("<--- END " + "(Size: " + length + " bytes - Network time: "
+            + networkTime + " ms)");
         break;
       default:
         // Method is called but log level is not meant to log anything
