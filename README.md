@@ -34,14 +34,14 @@ Wasp aims :
 ###Add dependency
 More info https://jitpack.io/#orhanobut/wasp/1.14
 ```groovy
-	repositories {
-	  // ...
-	  maven { url "https://jitpack.io" }
-	}
+repositories {
+  // ...
+  maven { url "https://jitpack.io" }
+}
 
-	dependencies {
-  	compile 'com.github.orhanobut:wasp:1.14'
-  }
+dependencies {
+  compile 'com.github.orhanobut:wasp:1.14'
+}
 ```
 
 ####Create a service interface
