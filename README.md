@@ -5,7 +5,7 @@ A compact and easy to use, 'all-in-one' network solution.
 <img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
 
 #### The problem
-When it comes to daily development, you need more than just a library to handle networking, you need to handle mocking calls, using multiple end points, handling certificates andcookies and many other boiler plate code. With wasp, you can easily handle everything.
+When it comes to daily development, you need more than just a library to handle networking, you need to handle mocking calls, using multiple end points, handling certificates and cookies and many other boiler plate code. With wasp, you can easily handle everything.
 
 Wasp internally uses:
 - Volley for the network stack
@@ -52,6 +52,10 @@ public interface GitHubService {
   // Async call
   @GET("/repos/{id}")
   void getRepo(@Path("id") String id, Callback<Repo> callback);
+  
+  // Async call with WaspRequest (cancelable)
+  @GET("/repos/{id}")
+  WaspRequest getRepo(@Path("id") String id, Callback<Repo> callback);
     
   // Rx
   @Mock
@@ -93,6 +97,23 @@ service.getRepo(id, new Callback<Repo>{
     // handle error
   }
 });
+```
+
+Async with WaspRequest (cancelable)
+```java
+WaspRequest request = service.getRepo(id, new Callback<Repo>{
+
+  @Override
+  public void onSuccess(WaspResponse response, Repo repo) {
+    // do something
+  }
+  
+  @Override
+  public void onError(WaspError error) {
+    // handle error
+  }
+});
+request.cancel();  //cancels the request
 ```
 
 Rx
