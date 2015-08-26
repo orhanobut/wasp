@@ -58,9 +58,9 @@ configurations {
 }
 
 dependencies {
-  compile 'com.mcxiaoke.volley:library:1.0.16'
-  compile 'com.google.code.gson:gson:2.3'
-  compile 'com.squareup.okhttp:okhttp:2.2.0'
+  compile 'com.mcxiaoke.volley:library:1.0.18'
+  compile 'com.google.code.gson:gson:2.3.1'
+  compile 'com.squareup.okhttp:okhttp:2.5.0'
 
   optional 'io.reactivex:rxandroid:0.25.0'
 
