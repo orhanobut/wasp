@@ -31,9 +31,9 @@ public class Wasp {
   private Wasp(Builder builder) {
     this.builder = builder;
 
-    logLevel = builder.logLevel;
-    context = builder.context;
-    parser = builder.parser;
+    logLevel = builder.getLogLevel();
+    context = builder.getContext();
+    parser = builder.getParser();
     httpStack = builder.getWaspHttpStack();
   }
 
@@ -122,12 +122,12 @@ public class Wasp {
       if (context == null) {
         throw new NullPointerException("Context should not be null");
       }
-      this.context = context.getApplicationContext();
+      this.context = context;
     }
 
     public Builder setEndpoint(String url) {
       if (url == null || url.trim().length() == 0) {
-        throw new NullPointerException("End point url may not be null");
+        throw new NullPointerException("End point url may not be null or empty");
       }
       if (url.charAt(url.length() - 1) == '/') {
         throw new IllegalArgumentException("End point should not end with \"/\"");
@@ -149,6 +149,12 @@ public class Wasp {
     }
 
     public WaspHttpStack getWaspHttpStack() {
+      if (waspHttpStack == null) {
+        waspHttpStack = new WaspOkHttpStack();
+      }
+      waspHttpStack.setHostnameVerifier(hostnameVerifier);
+      waspHttpStack.setSslSocketFactory(sslSocketFactory);
+      waspHttpStack.setCookieHandler(cookieHandler);
       return this.waspHttpStack;
     }
 
@@ -186,38 +192,17 @@ public class Wasp {
       return this;
     }
 
-    public Wasp build() {
-      init();
-      return new Wasp(this);
-    }
-
-    private void init() {
+    String getEndPointUrl() {
       if (endPointUrl == null) {
         throw new NullPointerException("Endpoint may not be null");
       }
-      if (parser == null) {
-        parser = new GsonParser();
-      }
-      if (logLevel == null) {
-        logLevel = LogLevel.NONE;
-      }
-      if (networkMode == null) {
-        networkMode = NetworkMode.LIVE;
-      }
-      if (waspHttpStack == null) {
-        waspHttpStack = new WaspOkHttpStack();
-      }
-      waspHttpStack.setHostnameVerifier(hostnameVerifier);
-      waspHttpStack.setSslSocketFactory(sslSocketFactory);
-      waspHttpStack.setCookieHandler(cookieHandler);
-      networkStack = VolleyNetworkStack.newInstance(context, waspHttpStack);
-    }
-
-    String getEndPointUrl() {
       return endPointUrl;
     }
 
     LogLevel getLogLevel() {
+      if (logLevel == null) {
+        logLevel = LogLevel.NONE;
+      }
       return logLevel;
     }
 
@@ -230,6 +215,9 @@ public class Wasp {
     }
 
     NetworkMode getNetworkMode() {
+      if (networkMode == null) {
+        networkMode = NetworkMode.LIVE;
+      }
       return networkMode;
     }
 
@@ -247,6 +235,9 @@ public class Wasp {
     }
 
     Parser getParser() {
+      if (parser == null) {
+        parser = new GsonParser();
+      }
       return parser;
     }
 
@@ -268,8 +259,20 @@ public class Wasp {
       return this;
     }
 
-    NetworkStack getNetworkStack() {
+    public Builder setNetworkStack(NetworkStack networkStack) {
+      this.networkStack = networkStack;
+      return this;
+    }
+
+    public NetworkStack getNetworkStack() {
+      if (networkStack == null) {
+        networkStack = VolleyNetworkStack.newInstance(getContext(), getWaspHttpStack());
+      }
       return networkStack;
+    }
+
+    public Wasp build() {
+      return new Wasp(this);
     }
   }
 }

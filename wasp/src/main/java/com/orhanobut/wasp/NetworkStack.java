@@ -1,6 +1,6 @@
 package com.orhanobut.wasp;
 
-interface NetworkStack {
+public interface NetworkStack {
 
   void invokeRequest(RequestCreator requestCreator, InternalCallback<Response> waspCallback);
 

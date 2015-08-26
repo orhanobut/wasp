@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-final class VolleyNetworkStack implements NetworkStack {
+public final class VolleyNetworkStack implements NetworkStack {
 
   private static final String METHOD_GET = "GET";
   private static final String METHOD_PUT = "PUT";
@@ -31,12 +31,20 @@ final class VolleyNetworkStack implements NetworkStack {
 
   private final RequestQueue requestQueue;
 
+  private VolleyNetworkStack(RequestQueue requestQueue) {
+    this.requestQueue = requestQueue;
+  }
+
   private VolleyNetworkStack(Context context, WaspHttpStack stack) {
     requestQueue = Volley.newRequestQueue(context, stack.getHttpStack());
   }
 
   static VolleyNetworkStack newInstance(Context context, WaspHttpStack stack) {
     return new VolleyNetworkStack(context, stack);
+  }
+
+  static VolleyNetworkStack newInstance(RequestQueue requestQueue) {
+    return new VolleyNetworkStack(requestQueue);
   }
 
   synchronized RequestQueue getRequestQueue() {
@@ -46,7 +54,7 @@ final class VolleyNetworkStack implements NetworkStack {
   private Object addToQueueSync(RequestCreator requestCreator) throws Exception {
     final RequestFuture<Object> future = RequestFuture.newFuture();
     Request<Response> request = new VolleyRequest(getMethod(requestCreator.getMethod()),
-            requestCreator.getUrl(), requestCreator, future) {
+        requestCreator.getUrl(), requestCreator, future) {
       @Override
       protected void deliverResponse(Response response) {
         super.deliverResponse(response);
