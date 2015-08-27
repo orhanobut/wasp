@@ -32,7 +32,7 @@ Wasp aims :
 - We want to make something that is useful and also motivates people to contribute
 
 ###Add dependency
-More info https://jitpack.io/#orhanobut/wasp/1.14
+More info https://jitpack.io/#orhanobut/wasp/1.15
 ```groovy
 repositories {
   // ...
