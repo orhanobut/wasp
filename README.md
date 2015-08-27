@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-  compile 'com.github.orhanobut:wasp:1.14'
+  compile 'com.github.orhanobut:wasp:1.15'
 }
 ```
 
