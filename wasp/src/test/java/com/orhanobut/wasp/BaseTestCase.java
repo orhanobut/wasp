@@ -1,13 +1,14 @@
 package com.orhanobut.wasp;
 
+import android.app.Activity;
 import android.content.Context;
 
 import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -17,7 +18,7 @@ public class BaseTestCase extends TestCase {
   protected final Context context;
 
   public BaseTestCase() {
-    context = RuntimeEnvironment.application.getBaseContext();
+    context = Robolectric.buildActivity(Activity.class).create().get();
   }
 
   @Test

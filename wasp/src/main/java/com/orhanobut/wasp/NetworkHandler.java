@@ -132,6 +132,7 @@ final class NetworkHandler implements InvocationHandler {
           }
 
           subscriber.onNext(networkStack.invokeRequest(requestCreator));
+          subscriber.onCompleted();
         } catch (Exception e) {
           subscriber.onError(e);
         }
@@ -153,7 +154,6 @@ final class NetworkHandler implements InvocationHandler {
 
     final WaspRequest waspRequest = new InternalWaspRequest();
 
-
     Object lastArg = args[args.length - 1];
     final Callback<?> callback = (Callback<?>) lastArg;
 
@@ -164,7 +164,6 @@ final class NetworkHandler implements InvocationHandler {
           Logger.i("Response not delivered because of cancelled request");
           return;
         }
-
         new ResponseWrapper(callback, response, response.getResponseObject()).submitResponse();
       }
 
