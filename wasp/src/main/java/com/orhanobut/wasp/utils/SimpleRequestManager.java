@@ -23,5 +23,6 @@ public class SimpleRequestManager implements RequestManager {
     for (int i = 0, size = list.size(); i < size; i++) {
       list.get(i).cancel();
     }
+    list.clear();
   }
 }
