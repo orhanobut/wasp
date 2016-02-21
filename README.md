@@ -88,7 +88,7 @@ Async
 service.getRepo(id, new Callback<Repo>{
 
   @Override
-  public void onSuccess(WaspResponse response, Repo repo) {
+  public void onSuccess(Response response, Repo repo) {
     // do something
   }
   
@@ -104,7 +104,7 @@ Async with WaspRequest (cancelable)
 WaspRequest request = service.getRepo(id, new Callback<Repo>{
 
   @Override
-  public void onSuccess(WaspResponse response, Repo repo) {
+  public void onSuccess(Response response, Repo repo) {
     // do something
   }
   
