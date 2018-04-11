@@ -3,7 +3,7 @@
 <img align='right' src='https://github.com/orhanobut/wasp/blob/master/images/logo_wasp.png' width='128' height='128'/>
 
 # Deprecated
-Unfortunately due to many reason including maintenance cost this library is deprecated. I'd recommend to use Retrofit/OkHttp instead. This project currently only aims to provide some experimental functionalities.
+Unfortunately due to many reasons including maintenance cost, this library is deprecated. I recommend to use Retrofit/OkHttp instead. Currently this project only aims to provide some experimental functionalities.
 
 # Wasp
 A compact and easy to use, 'all-in-one' network solution. 
