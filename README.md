@@ -1,5 +1,11 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Wasp-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/1412)    [![API](https://img.shields.io/badge/API-10%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=10) [![Join the chat at https://gitter.im/orhanobut/wasp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/orhanobut/wasp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![](https://img.shields.io/badge/AndroidWeekly-%23143-blue.svg)](http://androidweekly.net/issues/issue-143)
-#Wasp
+
+<img align='right' src='https://github.com/orhanobut/wasp/blob/master/images/logo_wasp.png' width='128' height='128'/>
+
+# Deprecated
+Unfortunately due to many reason including maintenance cost this library is deprecated. I'd recommend to use Retrofit/OkHttp instead. This project currently only aims to provide some experimental functionalities.
+
+# Wasp
 A compact and easy to use, 'all-in-one' network solution. 
 
 <img src='https://github.com/orhanobut/wasp/blob/master/images/wasp-diagram.png'/>
@@ -31,7 +37,7 @@ Wasp aims :
 - There are many open issues to contribute. Get this chance to contribute and improve your knowledge!
 - We want to make something that is useful and also motivates people to contribute
 
-###Add dependency
+### Add dependency
 More info https://jitpack.io/#orhanobut/wasp/1.15
 ```groovy
 repositories {
@@ -44,7 +50,7 @@ dependencies {
 }
 ```
 
-####Create a service interface
+#### Create a service interface
 
 ```java
 public interface GitHubService {
@@ -68,7 +74,7 @@ public interface GitHubService {
 }
 ```
 
-####Initialize the wasp
+#### Initialize the wasp
 
 ```java
 GitHubService service = new Wasp.Builder(this)
@@ -82,7 +88,7 @@ GitHubService service = new Wasp.Builder(this)
   .create(GitHubService.class);
 ```
 
-####And use it everywhere!
+#### And use it everywhere!
 Async
 ```java
 service.getRepo(id, new Callback<Repo>{
@@ -127,7 +133,7 @@ User user = service.getUser(id);
 ```
 #### Check wiki for more details
 
-###License
+### License
 <pre>
 Copyright 2014 Orhan Obut
 
